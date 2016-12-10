@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 
 namespace Monitor
 {
@@ -30,6 +31,15 @@ namespace Monitor
             // Start worker thread that pulls MEMORY and CPU 
             monitorInfoWorkerThread = new Thread(new ThreadStart(PercMonitorThread));
             monitorInfoWorkerThread.Start();
+        }
+
+        private void ContentForm_Load(object sender, EventArgs e)
+        {
+            if (File.Exists("Settings.txt") == true)
+            {
+                // Assign startup settings from file
+                cpuTextBox.Text = File.ReadAllText("Settings.txt"); ;
+            }
         }
         #endregion
 
