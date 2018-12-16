@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Rooms">
+      <UniqueIdentifier>{055eeacb-f039-48c9-a2c6-87b881ce56e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ExtraScripts">
+      <UniqueIdentifier>{6b2b9f91-541b-4cb3-b6dd-855cc7bbaf1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtraScripts">
+      <UniqueIdentifier>{e98613e5-f122-40f0-b24a-de7c1acd555b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ECS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainmenu.cpp">
+      <Filter>Source Files\Rooms</Filter>
+    </ClCompile>
+    <ClCompile Include="inventorypanel.cpp">
+      <Filter>Source Files\ExtraScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="consolepanel.cpp">
+      <Filter>Source Files\ExtraScripts</Filter>
+    </ClCompile>
+    <ClCompile Include="mainhall.cpp">
+      <Filter>Source Files\Rooms</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="room.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inventorypanel.h">
+      <Filter>Header Files\ExtraScripts</Filter>
+    </ClInclude>
+    <ClInclude Include="consolepanel.h">
+      <Filter>Header Files\ExtraScripts</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
