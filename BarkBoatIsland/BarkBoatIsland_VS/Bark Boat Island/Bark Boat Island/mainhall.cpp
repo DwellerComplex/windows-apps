@@ -67,6 +67,7 @@ void Game::MainHall()
 		theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&key, &keyNear);
 	}
 
+
 	while (room.GetIsPlaying())
 	{
 		theEntityComponentSystem.Input();
