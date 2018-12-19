@@ -488,6 +488,8 @@ void ECS::Movement(Room &room)
 	CollisionComponent* colDownComp;
 	CollisionComponent* colLeftComp;
 	CollisionComponent* colRightComp;
+	PositionComponent* otherPosComp;
+	NearbyComponent* otherNearComp;
 
 	while (entityIterator != theEntityManager.getMap()->end()) {
 
@@ -512,19 +514,29 @@ void ECS::Movement(Room &room)
 				{
 					otherEntity = theEntityManager.getEntity(nearComp->nbrUp);
 					colUpComp = theComponentManagers.theCollisionManager.getComponent(nearComp->nbrUp);
+					otherPosComp = theComponentManagers.thePositionManager.getComponent(nearComp->nbrUp);
+					otherNearComp = theComponentManagers.theNearbyManager.getComponent(nearComp->nbrUp);
 
 					if (nearComp->nbrUp == room.floorID ||
-						(colUpComp != nullptr && colUpComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colUpComp->collisionSetting == 1)) ||
+						(colUpComp != nullptr && colUpComp->collisionSetting != 2 && colUpComp->collisionSetting != 3 && (colComp->collisionSetting == 1 || colUpComp->collisionSetting == 1)) ||
 						(colUpComp == nullptr && otherEntity != nullptr))
 					{
 						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
 						posComp->posY -= motionComp->up;
+					}
+					else if (colUpComp != nullptr && colUpComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrUp == room.floorID)
+					{
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						posComp->posY -= motionComp->up;
+						otherPosComp->posY -= motionComp->up;
 					}
 				}
 				if (motionComp->down != 0)
 				{
 					otherEntity = theEntityManager.getEntity(nearComp->nbrDown);
 					colDownComp = theComponentManagers.theCollisionManager.getComponent(nearComp->nbrDown);
+					otherPosComp = theComponentManagers.thePositionManager.getComponent(nearComp->nbrDown);
+					otherNearComp = theComponentManagers.theNearbyManager.getComponent(nearComp->nbrDown);
 
 					if (nearComp->nbrDown == room.floorID ||
 						(colDownComp != nullptr && colDownComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colDownComp->collisionSetting == 1)) ||
@@ -533,11 +545,19 @@ void ECS::Movement(Room &room)
 						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
 						posComp->posY += motionComp->down;
 					}
+					else if (colDownComp != nullptr && colDownComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrDown == room.floorID)
+					{
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						posComp->posY += motionComp->down;
+						otherPosComp->posY += motionComp->down;
+					}
 				}
 				if (motionComp->left != 0)
 				{
 					otherEntity = theEntityManager.getEntity(nearComp->nbrLeft);
 					colLeftComp = theComponentManagers.theCollisionManager.getComponent(nearComp->nbrLeft);
+					otherPosComp = theComponentManagers.thePositionManager.getComponent(nearComp->nbrLeft);
+					otherNearComp = theComponentManagers.theNearbyManager.getComponent(nearComp->nbrLeft);
 
 					if (nearComp->nbrLeft == room.floorID ||
 						(colLeftComp != nullptr && colLeftComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colLeftComp->collisionSetting == 1)) ||
@@ -546,11 +566,19 @@ void ECS::Movement(Room &room)
 						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
 						posComp->posX -= motionComp->left;
 					}
+					else if (colLeftComp != nullptr && colLeftComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrLeft == room.floorID)
+					{
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						posComp->posX -= motionComp->left;
+						otherPosComp->posX -= motionComp->left;
+					}
 				}
 				if (motionComp->right != 0)
 				{
 					otherEntity = theEntityManager.getEntity(nearComp->nbrRight);
 					colRightComp = theComponentManagers.theCollisionManager.getComponent(nearComp->nbrRight);
+					otherPosComp = theComponentManagers.thePositionManager.getComponent(nearComp->nbrRight);
+					otherNearComp = theComponentManagers.theNearbyManager.getComponent(nearComp->nbrRight);
 
 					if (nearComp->nbrRight == room.floorID ||
 						(colRightComp != nullptr && colRightComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colRightComp->collisionSetting == 1)) ||
@@ -558,6 +586,12 @@ void ECS::Movement(Room &room)
 					{
 						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
 						posComp->posX += motionComp->right;
+					}
+					else if (colRightComp != nullptr && colRightComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrRight == room.floorID)
+					{
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						posComp->posX += motionComp->right;
+						otherPosComp->posX += motionComp->right;
 					}
 				}
 

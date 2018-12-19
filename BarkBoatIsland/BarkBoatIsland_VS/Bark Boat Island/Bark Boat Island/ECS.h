@@ -80,7 +80,10 @@ struct CollisionComponent
 {
 public:
 	CollisionComponent();
-	//0: normal (only ignores kinetic items), 1: kinetic (ingore normal and kinetic items) 2: solid (ignore no items, block all) 
+	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
+	//1: kinetic (ignore normal and kinetic items) 
+	//2: solid (ignore no items, block all) 
+	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
 	short int collisionSetting;
 };
 #pragma endregion

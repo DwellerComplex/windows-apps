@@ -51,9 +51,10 @@ void Game::MainHall()
 	SpriteComponent keySpr(char(235));
 	PositionComponent keyPos(2, 7);
 	CollisionComponent keyCol;
-	keyCol.collisionSetting = 0;
+	keyCol.collisionSetting = 3;
 	InventoryItemComponent keyInvItem;
 	ConsoleOutputComponent keyOut("Picked up key.");
+	NearbyComponent keyNear;
 	
 	if (theEntityComponentSystem.theEntityManager.getEntity(key.id) == nullptr)
 	{
@@ -63,6 +64,7 @@ void Game::MainHall()
 		theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&key, &keyCol);
 		theEntityComponentSystem.theComponentManagers.theInventoryItemManager.addComponent(&key, &keyInvItem);
 		theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&key, &keyOut);
+		theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&key, &keyNear);
 	}
 
 	while (room.GetIsPlaying())
