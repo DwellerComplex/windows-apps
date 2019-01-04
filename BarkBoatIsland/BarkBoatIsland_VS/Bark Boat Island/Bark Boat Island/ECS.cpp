@@ -474,6 +474,7 @@ void ECS::MovementInput()
 void ECS::Movement(Room &room)
 {
 	Application& app = Application::get_instance();
+	float timePoint = app.GetGlobalTimer();
 
 	typedef std::map<int, Entity*>::const_iterator const_map_iter;
 	const_map_iter entityIterator = theEntityManager.getMap()->begin();
@@ -503,7 +504,7 @@ void ECS::Movement(Room &room)
 			nearComp != nullptr &&
 			colComp != nullptr)
 		{			
-			if (motionComp->movementRate == 0.0f || app.GetGlobalTimer() >= motionComp->timeToMove)
+			if (motionComp->movementRate == 0.0f || timePoint >= motionComp->timeToMove)
 			{
 				if (motionComp->footprint == char())
 				{
@@ -604,7 +605,7 @@ void ECS::Movement(Room &room)
 				}
 				else
 				{
-					motionComp->timeToMove = app.GetGlobalTimer() + (1.0f / motionComp->movementRate);
+					motionComp->timeToMove = timePoint + (1.0f / motionComp->movementRate);
 				}
 			}
 		}
