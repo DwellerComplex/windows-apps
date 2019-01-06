@@ -2,7 +2,7 @@
 
 void ConsolePanel::create(int const topLeftX, int const topLeftY, int const width, int const height)
 {
-	Room* con = new Room("Console", char(39), char(248), char(248), char(248), char(248), char(248), char(248), width, height, topLeftX, topLeftY,8,3); //char(219)
+	Room* con = new Room("Console", char(176), char(248), char(248), char(248), char(248), char(248), char(248), width, height, topLeftX, topLeftY,8,3); //char(219)
 	this->console = con;
 
 	this->outputQueue.resize(this->console->GetHeight() - 2);

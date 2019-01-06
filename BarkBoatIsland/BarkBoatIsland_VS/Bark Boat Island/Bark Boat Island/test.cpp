@@ -10,9 +10,9 @@ void Game::Test()
 	theConsolePanel->console->BackupLoad();
 
 	//Create room
-	Room room("Test", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 0, 0, 3, 9);
+	Room room("Hall", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 0, 0, 3, 9);
 	room.CreateFromVector2D(app.ReadFileToVector2D("Scenes/mainhall.txt"));
-	theInventoryPanel->setTitle("Test");
+	theInventoryPanel->setTitle("Hall");
 
 
 	Entity key("Yellow Key");
@@ -40,7 +40,7 @@ void Game::Test()
 	PositionComponent doorPos(14, 1);
 	SceneComponent doorRoom("MainMenu");
 	LockComponent doorLock("Yellow Key");
-	ConsoleOutputComponent doorOutput("WaterScene Locked");
+	ConsoleOutputComponent doorOutput("Locked");
 	CollisionComponent doorCol;
 	doorCol.collisionSetting = 2;
 
@@ -52,10 +52,25 @@ void Game::Test()
 	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door, &doorOutput);
 	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door, &doorCol);
 
+	Entity door2;
+	SpriteComponent door2Sprite(char(179), 8);
+	PositionComponent door2Pos(0, 4);
+	ConsoleOutputComponent door2Output("Locked");
+	CollisionComponent door2Col;
+	door2Col.collisionSetting = 2;
+
+	theEntityComponentSystem.theEntityManager.addEntity(&door2);
+	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&door2, &door2Sprite);
+	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&door2, &door2Pos);
+	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door2, &door2Output);
+	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door2, &door2Col);
+
 	Entity merl("Merl");
 	SpriteComponent merlSprite('#', 8);
 	PositionComponent merlPos(2, 1);
+	MotionComponent merlMotion;
 	ConsoleOutputComponent merlOutput;
+	NearbyComponent merlNearby;
 	vector<string> out = {
 		"Oh, you are early! Hello, I am in dire need of help.", 
 		"I am Merl, not that such formalities really matter in these times hehe...", 
@@ -73,8 +88,10 @@ void Game::Test()
 	theEntityComponentSystem.theEntityManager.addEntity(&merl);
 	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&merl, &merlSprite);
 	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&merl, &merlPos);
+	theEntityComponentSystem.theComponentManagers.theMotionManager.addComponent(&merl, &merlMotion);
 	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&merl, &merlOutput);
 	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&merl, &merlCol);
+	theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&merl, &merlNearby);
 
 	Entity obst;
 	SpriteComponent obstSpr('X', 4);
@@ -216,34 +233,46 @@ void Game::Test()
 		if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 1 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 7)
 		{
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 1;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
+			obstMotion5.right = 1;
+			obstMotion5.left = 0;
+			obstMotion5.up = 0;
+			obstMotion5.down = 0;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 6 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 7)
 		{
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 1;
+			obstMotion5.right = 0;
+			obstMotion5.left = 0;
+			obstMotion5.up = 0;
+			obstMotion5.down = 1;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 6 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 10)
 		{
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 1;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
+			obstMotion5.right = 0;
+			obstMotion5.left = 1;
+			obstMotion5.up = 0;
+			obstMotion5.down = 0;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 1 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 10)
 		{
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 1;
-			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
+			obstMotion5.right = 0;
+			obstMotion5.left = 0;
+			obstMotion5.up = 1;
+			obstMotion5.down = 0;
+		}
+
+		if (this->playerPosition->posY > 6 && merlPos.posY < 4 && merlPos.posX > 1) {
+			merlMotion.left = true;
+			merlMotion.down = true;
+			merlMotion.movementRate = 2.0;
+		}
+		else if(merlPos.posY == 4 && merlPos.posX == 1 && theEntityComponentSystem.theEntityManager.getEntity(merl.id) != nullptr)
+		{
+			room.DrawSprite(room.GetFloor(), merlPos.posX, merlPos.posY,3);
+			theEntityComponentSystem.theEntityManager.destroyEntity(theEntityComponentSystem.theEntityManager.getEntity(merl.id));
+			int i;
 		}
 	}
 
