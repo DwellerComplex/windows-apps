@@ -51,6 +51,9 @@
     <ClCompile Include="mainhall.cpp">
       <Filter>Source Files\Rooms</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files\Rooms</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">

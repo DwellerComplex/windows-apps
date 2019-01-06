@@ -124,6 +124,7 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="room.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="consolepanel.h" />

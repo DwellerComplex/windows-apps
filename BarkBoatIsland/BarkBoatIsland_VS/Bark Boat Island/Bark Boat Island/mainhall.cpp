@@ -18,7 +18,7 @@ void CreateObst(ECS* theEntityComponentSystem, int x, int y, vector<Entity*>* ar
 		obstMotion->up = 1;
 	}
 	
-	obstMotion->movementRate = 10.0f;
+	obstMotion->movementRate = 20.0f;
 	NearbyComponent* obstNearby = new NearbyComponent;
 	AttackComponent* obstAtt = new AttackComponent;
 	obstAtt->damage = 1;
@@ -129,6 +129,7 @@ void Game::MainHall()
 	CreateObst(&theEntityComponentSystem, 27, 3, &obstacles, false);
 	CreateObst(&theEntityComponentSystem, 28, 2, &obstacles, false);
 	CreateObst(&theEntityComponentSystem, 29, 1, &obstacles, false);
+
 	while (room.GetIsPlaying())
 	{
 		theEntityComponentSystem.Input();

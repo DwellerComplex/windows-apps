@@ -18,6 +18,7 @@ public:
 
 	void MainMenu();
 	void MainHall();
+	void Test();
 private:
 	std::string currentRoom;
 

@@ -13,7 +13,7 @@ Game::Game()
 	playerMotion = new MotionComponent;
 	playerInventory = new InventoryComponent;
 	playerLife = new LifeComponent;
-	playerLife->life = 5;
+	playerLife->life = 1;
 	playerCollision = new CollisionComponent;
 	playerCollision->collisionSetting = 0;
 
@@ -44,6 +44,10 @@ void Game::PlayRoom()
 	else if (currentRoom == "MainHall")
 	{
 		this->MainHall();
+	}
+	else if (currentRoom == "Test")
+	{
+		this->Test();
 	}
 	else
 	{

@@ -636,9 +636,9 @@ void ECS::Platform()
 			posComp != nullptr &&
 			motionComp != nullptr)
 		{
-			while (otherIterator != theEntityManager.getMap()->end()) {
-				otherPosComp = theComponentManagers.thePositionManager.getComponent(otherIterator->first);
-				otherMotionComp = theComponentManagers.theMotionManager.getComponent(otherIterator->first);
+			//while (otherIterator != theEntityManager.getMap()->end()) { LÄGG TILL PLATFORMRIDER component
+				otherPosComp = theComponentManagers.thePositionManager.getComponent(1);//otherIterator->first);
+				otherMotionComp = theComponentManagers.theMotionManager.getComponent(1);//otherIterator->first);
 
 				if (otherPosComp != nullptr && entityIterator->first != otherIterator->first)
 				{
@@ -685,9 +685,9 @@ void ECS::Platform()
 					}
 				}
 
-				++otherIterator;
-			}
-			otherIterator = theEntityManager.getMap()->begin();
+				//++otherIterator;
+			//}
+			//otherIterator = theEntityManager.getMap()->begin();
 		}
 		++entityIterator;
 	}

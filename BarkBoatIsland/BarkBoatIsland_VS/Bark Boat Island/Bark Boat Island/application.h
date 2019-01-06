@@ -22,6 +22,7 @@ public:
 	//char input();
 	short input(int vKey);
 	void SetTextColor(int const color = 15);
+	void SetFontSize(int w, int h);
 
 	static Application& get_instance()
 	{

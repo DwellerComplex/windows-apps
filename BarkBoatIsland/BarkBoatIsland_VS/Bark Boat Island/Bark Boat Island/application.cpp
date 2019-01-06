@@ -161,3 +161,17 @@ float Application::GetGlobalTimer()
 
 	return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - this->startTime).count() / 1000.0f;
 }
+
+void Application::SetFontSize(int w, int h)
+{
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+	lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+	GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+	lpConsoleCurrentFontEx->dwFontSize.X = w;
+	lpConsoleCurrentFontEx->dwFontSize.Y = h;
+	lpConsoleCurrentFontEx->FontFamily = FF_DONTCARE;
+	lpConsoleCurrentFontEx->FontWeight = FW_NORMAL;
+	wcscpy_s(lpConsoleCurrentFontEx->FaceName, L"Consolas");
+	SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+}

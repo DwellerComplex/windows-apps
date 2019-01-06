@@ -41,7 +41,11 @@ void ConsolePanel::enqueue(std::string const output)
 		for (int charPos = 0; charPos < out.size(); charPos++)
 		{
 			character = out[charPos];
-			console->DrawSprite(character, charPos + 1, row + 1);
+
+			if(row == 0)
+				console->DrawSprite(character, charPos + 1, row + 1);
+			else
+				console->DrawSprite(character, charPos + 1, row + 1, 8);
 		}
 	}
 }
