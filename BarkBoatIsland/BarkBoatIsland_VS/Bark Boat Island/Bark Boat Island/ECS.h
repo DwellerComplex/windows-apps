@@ -80,6 +80,7 @@ struct CollisionComponent
 {
 public:
 	CollisionComponent();
+	CollisionComponent(int setting);
 	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
 	//1: kinetic (ignore normal and kinetic items) 
 	//2: solid (ignore no items, block all) 
@@ -128,10 +129,12 @@ struct MotionComponent
 {
 public:
 	MotionComponent();
+	MotionComponent(bool up, bool down, bool left, bool right, float movementRate, int footprintColor = 15, char footprint = char());
 	bool up, down, left, right;
 	float movementRate;
 	float timeToMove;
 	char footprint;
+	int footprintColor;
 };
 
 #pragma endregion
@@ -190,6 +193,7 @@ struct LifeComponent
 {
 public:
 	LifeComponent() {};
+	LifeComponent(int life);
 	int life;
 };
 
@@ -201,6 +205,7 @@ struct AttackComponent
 {
 public:
 	AttackComponent() {};
+	AttackComponent(int damage);
 	int damage;
 };
 
@@ -220,7 +225,15 @@ public:
 	MotionComponent backupMotionComponent;
 };
 
+
+struct PlatformRiderComponent
+{
+	PlatformRiderComponent() {};
+};
+
 #pragma endregion
+
+
 
 //Bounce (on colliders) ?
 
@@ -250,16 +263,6 @@ public:
 #pragma region CONSOLEOUTPUT
 struct ConsoleOutputComponent
 {
-//public:
-//	ConsoleOutputComponent();
-//	ConsoleOutputComponent(std::string const output);
-//	void setActive(bool const status);
-//	bool getActive();
-//	
-//
-//private:
-//	std::string output;
-//	bool active = true;
 public:
 	ConsoleOutputComponent();
 	ConsoleOutputComponent(std::string const output);
@@ -294,6 +297,7 @@ struct ComponentManagers
 	ComponentManager<LifeComponent> theLifeManager;
 	ComponentManager<CollisionComponent> theCollisionManager;
 	ComponentManager<PlatformComponent> thePlatformManager;
+	ComponentManager<PlatformRiderComponent> thePlatformRiderManager;
 };
 
 #pragma region ENTITY
@@ -330,7 +334,6 @@ struct ECS
 	void Interact(Room & room, ConsolePanel * consolePanel);
 	void InteractAction(Room & room, int const entity, int const other, ConsolePanel * consolePanel);
 	void Input();
-	//void UpdateRoomWithInventories(Room &room);
 
 	EntityManager theEntityManager;
 	ComponentManagers theComponentManagers;

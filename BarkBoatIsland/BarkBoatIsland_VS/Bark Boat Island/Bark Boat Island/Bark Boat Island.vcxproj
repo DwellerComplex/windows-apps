@@ -118,13 +118,12 @@
     <ClCompile Include="consolepanel.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="hall.cpp" />
     <ClCompile Include="inventorypanel.cpp" />
-    <ClCompile Include="mainhall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="room.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="consolepanel.h" />

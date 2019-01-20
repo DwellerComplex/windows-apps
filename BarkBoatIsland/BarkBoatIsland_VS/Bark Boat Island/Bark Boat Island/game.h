@@ -17,8 +17,7 @@ public:
 	void SetCurrentRoom(std::string currentRoom);
 
 	void MainMenu();
-	void MainHall();
-	void Test();
+	void Hall();
 private:
 	std::string currentRoom;
 
@@ -35,4 +34,5 @@ private:
 	InventoryComponent* playerInventory;
 	LifeComponent* playerLife;
 	CollisionComponent* playerCollision;
+	PlatformRiderComponent* playerPlatformRider;
 };

@@ -14,7 +14,7 @@ int main(int argc, const char** argv)
 
 	//Start a game
 	Game gameInstance;
-	gameInstance.SetCurrentRoom("Test");
+	gameInstance.SetCurrentRoom("Hall");
 
 	while (gameInstance.GetCurrentRoom() != "")
 	{

@@ -10,12 +10,11 @@ Game::Game()
 	playerPosition = new PositionComponent(1, 4);
 	playerSprite = new SpriteComponent('#', 13, 1);//14
 	playerInput = new InputComponent;
-	playerMotion = new MotionComponent;
+	playerMotion = new MotionComponent(0,0,0,0,0,4);
 	playerInventory = new InventoryComponent;
-	playerLife = new LifeComponent;
-	playerLife->life = 1;
-	playerCollision = new CollisionComponent;
-	playerCollision->collisionSetting = 0;
+	playerLife = new LifeComponent(1);
+	playerCollision = new CollisionComponent(0);
+	playerPlatformRider = new PlatformRiderComponent;
 
 	theEntityComponentSystem.theEntityManager.addEntity(player);
 	theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(player, playerNearby);
@@ -26,6 +25,7 @@ Game::Game()
 	theEntityComponentSystem.theComponentManagers.theInventoryManager.addComponent(player, playerInventory);
 	theEntityComponentSystem.theComponentManagers.theLifeManager.addComponent(player, playerLife);
 	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(player, playerCollision);
+	theEntityComponentSystem.theComponentManagers.thePlatformRiderManager.addComponent(player, playerPlatformRider);
 
 	theInventoryPanel = new InventoryPanel(playerInventory);
 
@@ -41,13 +41,9 @@ void Game::PlayRoom()
 	{
 		this->MainMenu();
 	}
-	else if (currentRoom == "MainHall")
+	else if (currentRoom == "Hall")
 	{
-		this->MainHall();
-	}
-	else if (currentRoom == "Test")
-	{
-		this->Test();
+		this->Hall();
 	}
 	else
 	{

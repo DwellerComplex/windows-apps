@@ -73,6 +73,7 @@ void EntityManager::destroyEntity(Entity* entity)
 	theComponentManagers->theLifeManager.destroyComponent(entity->id);
 	theComponentManagers->theCollisionManager.destroyComponent(entity->id);
 	theComponentManagers->thePlatformManager.destroyComponent(entity->id);
+	theComponentManagers->thePlatformRiderManager.destroyComponent(entity->id);
 	
 	if (this->getEntity(entity->id) != nullptr)
 	{
@@ -99,6 +100,7 @@ void EntityManager::copyEntity(Entity* entity, Entity* copy)
 	AttackComponent* attackComp = theComponentManagers->theAttackManager.getComponent(entity->id);
 	CollisionComponent* colComp = theComponentManagers->theCollisionManager.getComponent(entity->id);
 	PlatformComponent* platformComp = theComponentManagers->thePlatformManager.getComponent(entity->id);
+	PlatformRiderComponent* platformRiderComp = theComponentManagers->thePlatformRiderManager.getComponent(entity->id);
 
 	if (nearComp != nullptr)
 	{
@@ -156,6 +158,10 @@ void EntityManager::copyEntity(Entity* entity, Entity* copy)
 	{
 		theComponentManagers->thePlatformManager.addComponent(copy, platformComp);
 	}
+	if (platformRiderComp != nullptr)
+	{
+		theComponentManagers->thePlatformRiderManager.addComponent(copy, platformRiderComp);
+	}
 }
 #pragma endregion
 
@@ -169,7 +175,21 @@ MotionComponent::MotionComponent()
 	this->movementRate = 0.0f;
 	this->timeToMove = 0.0f;
 	this->footprint = char();
+	this->footprintColor = 15;
 }
+
+MotionComponent::MotionComponent(bool up, bool down, bool left, bool right, float movementRate, int footprintColor, char footprint)
+{
+	this->up = up;
+	this->down = down;
+	this->left = left;
+	this->right = right;
+	this->movementRate = movementRate;
+	this->timeToMove = 0.0f;
+	this->footprint = footprint;
+	this->footprintColor = footprintColor;
+}
+
 #pragma endregion
 
 #pragma region POSITION
@@ -259,18 +279,7 @@ int ConsoleOutputComponent::getOutputSize()
 #pragma region INVENTORY
 void InventoryComponent::add(Entity& entity)
 {
-	//if(hasEntity(entity) == false)
-	//{
-	//	Entity* copy = new Entity(entity.name);
-	//	theEntityManager.copyEntity(entity, *copy);
-	//	entities.push_back(copy);
-
-	//	theInventoryItemManager.getComponent(copy->id)->inInventory = true;
-
-	//	theEntityManager.destroyEntity(entity);
-	//}
 	entities.push_back(&entity);
-
 }
 
 void InventoryComponent::remove(Entity& entity)
@@ -333,6 +342,25 @@ NearbyComponent::NearbyComponent()
 CollisionComponent::CollisionComponent()
 {
 	this->collisionSetting = 0;
+}
+
+CollisionComponent::CollisionComponent(int setting)
+{
+	this->collisionSetting = setting;
+}
+#pragma endregion
+
+#pragma region LIFE
+LifeComponent::LifeComponent(int life)
+{
+	this->life = life;
+}
+#pragma endregion
+
+#pragma region ATTACK
+AttackComponent::AttackComponent(int damage)
+{
+	this->damage = damage;
 }
 #pragma endregion
 
@@ -522,12 +550,12 @@ void ECS::Movement(Room &room)
 						(colUpComp != nullptr && colUpComp->collisionSetting != 2 && colUpComp->collisionSetting != 3 && (colComp->collisionSetting == 1 || colUpComp->collisionSetting == 1)) ||
 						(colUpComp == nullptr && otherEntity != nullptr))
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor); //room.GetFloorColor());
 						posComp->posY -= motionComp->up;
 					}
 					else if (colUpComp != nullptr && colUpComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrUp == room.floorID)
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor); //room.GetFloorColor());
 						posComp->posY -= motionComp->up;
 						otherPosComp->posY -= motionComp->up;
 					}
@@ -543,12 +571,12 @@ void ECS::Movement(Room &room)
 						(colDownComp != nullptr && colDownComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colDownComp->collisionSetting == 1)) ||
 						(colDownComp == nullptr && otherEntity != nullptr))
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor); //room.GetFloorColor());
 						posComp->posY += motionComp->down;
 					}
 					else if (colDownComp != nullptr && colDownComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrDown == room.floorID)
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor); //room.GetFloorColor());
 						posComp->posY += motionComp->down;
 						otherPosComp->posY += motionComp->down;
 					}
@@ -564,12 +592,12 @@ void ECS::Movement(Room &room)
 						(colLeftComp != nullptr && colLeftComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colLeftComp->collisionSetting == 1)) ||
 						(colLeftComp == nullptr && otherEntity != nullptr))
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor);//room.GetFloorColor());
 						posComp->posX -= motionComp->left;
 					}
 					else if (colLeftComp != nullptr && colLeftComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrLeft == room.floorID)
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor);//room.GetFloorColor());
 						posComp->posX -= motionComp->left;
 						otherPosComp->posX -= motionComp->left;
 					}
@@ -585,12 +613,12 @@ void ECS::Movement(Room &room)
 						(colRightComp != nullptr && colRightComp->collisionSetting != 2 && (colComp->collisionSetting == 1 || colRightComp->collisionSetting == 1)) ||
 						(colRightComp == nullptr && otherEntity != nullptr))
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor); //room.GetFloorColor());
 						posComp->posX += motionComp->right;
 					}
 					else if (colRightComp != nullptr && colRightComp->collisionSetting == 3 && otherPosComp != nullptr && otherNearComp != nullptr && otherNearComp->nbrRight == room.floorID)
 					{
-						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, room.GetFloorColor());
+						room.DrawSprite(motionComp->footprint, posComp->posX, posComp->posY, motionComp->footprintColor);//room.GetFloorColor());
 						posComp->posX += motionComp->right;
 						otherPosComp->posX += motionComp->right;
 					}
@@ -625,6 +653,7 @@ void ECS::Platform()
 
 	PositionComponent* otherPosComp;
 	MotionComponent* otherMotionComp;
+	PlatformRiderComponent* otherPlatformRiderComp;
 
 	while (entityIterator != theEntityManager.getMap()->end()) {
 		
@@ -636,13 +665,14 @@ void ECS::Platform()
 			posComp != nullptr &&
 			motionComp != nullptr)
 		{
-			//while (otherIterator != theEntityManager.getMap()->end()) { LÄGG TILL PLATFORMRIDER component
-				otherPosComp = theComponentManagers.thePositionManager.getComponent(1);//otherIterator->first);
-				otherMotionComp = theComponentManagers.theMotionManager.getComponent(1);//otherIterator->first);
+			while (otherIterator != theEntityManager.getMap()->end()) { 
+				otherPosComp = theComponentManagers.thePositionManager.getComponent(otherIterator->first);
+				otherMotionComp = theComponentManagers.theMotionManager.getComponent(otherIterator->first);
+				otherPlatformRiderComp = theComponentManagers.thePlatformRiderManager.getComponent(otherIterator->first);
 
 				if (otherPosComp != nullptr && entityIterator->first != otherIterator->first)
 				{
-					if (otherMotionComp != nullptr)
+					if (otherMotionComp != nullptr && otherPlatformRiderComp != nullptr)
 					{
 
 						if (otherPosComp->posX == posComp->posX &&
@@ -685,9 +715,9 @@ void ECS::Platform()
 					}
 				}
 
-				//++otherIterator;
-			//}
-			//otherIterator = theEntityManager.getMap()->begin();
+				++otherIterator;
+			}
+			otherIterator = theEntityManager.getMap()->begin();
 		}
 		++entityIterator;
 	}
@@ -974,3 +1004,5 @@ void ECS::Input()
 //		}
 //	}
 //}
+
+

@@ -48,10 +48,7 @@
     <ClCompile Include="consolepanel.cpp">
       <Filter>Source Files\ExtraScripts</Filter>
     </ClCompile>
-    <ClCompile Include="mainhall.cpp">
-      <Filter>Source Files\Rooms</Filter>
-    </ClCompile>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="hall.cpp">
       <Filter>Source Files\Rooms</Filter>
     </ClCompile>
   </ItemGroup>
