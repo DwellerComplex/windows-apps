@@ -400,6 +400,15 @@ void ECS::Attack(Room &room)
 					otherIterator->first != entityIterator->first)
 				{
 					lifeComp->life -= otherAttackComp->damage;
+
+					//special case for player
+					if (entityIterator->first == 1) 
+					{
+						theComponentManagers.thePositionManager.getComponent(1)->posX = theComponentManagers.thePositionManager.getComponent(2)->posX;
+						theComponentManagers.thePositionManager.getComponent(1)->posY = theComponentManagers.thePositionManager.getComponent(2)->posY;
+						room.SetNextRoomName(room.GetName());
+						room.SetIsPlaying(false);
+					}
 				}
 				++otherIterator;
 			}

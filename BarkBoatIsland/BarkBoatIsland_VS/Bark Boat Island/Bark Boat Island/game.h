@@ -35,4 +35,7 @@ private:
 	LifeComponent* playerLife;
 	CollisionComponent* playerCollision;
 	PlatformRiderComponent* playerPlatformRider;
+
+	Entity* checkpoint;
+	PositionComponent* checkpointPosition;
 };

@@ -41,6 +41,9 @@ void Game::Hall()
 	theInventoryPanel->inventory->BackupLoad();
 	theConsolePanel->console->BackupLoad();
 
+	checkpointPosition->posX = playerPosition->posX;
+	checkpointPosition->posY = playerPosition->posY;
+
 	//Create room
 	Room room("Hall", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 0, 0, 3, 9);
 	room.CreateFromVector2D(app.ReadFileToVector2D("Scenes/mainhall.txt"));
@@ -208,10 +211,10 @@ void Game::Hall()
 			merlMotion.down = true;
 			merlMotion.movementRate = 2.0;
 		}
-		else if (merlPos.posY == 4 && merlPos.posX == 1 && theEntityComponentSystem.theEntityManager.getEntity(merl.id) != nullptr)
+		if (merlPos.posY == 4 && merlPos.posX == 1 && theEntityComponentSystem.theEntityManager.getEntity(merl.id) != nullptr)
 		{
 			room.DrawSprite(room.GetFloor(), merlPos.posX, merlPos.posY, 3);
-			theEntityComponentSystem.theEntityManager.destroyEntity(theEntityComponentSystem.theEntityManager.getEntity(merl.id));
+			theEntityComponentSystem.theEntityManager.destroyEntity(&merl);
 		}
 	}
 
@@ -221,6 +224,7 @@ void Game::Hall()
 
 	theEntityComponentSystem.theEntityManager.destroyEntity(&door);
 	theEntityComponentSystem.theEntityManager.destroyEntity(&obst5);
+	theEntityComponentSystem.theEntityManager.destroyEntity(&merl);
 	for (int i = 0; i < obstacles.size(); i++)
 	{
 		theEntityComponentSystem.theEntityManager.destroyEntity(obstacles[i]);

@@ -1,5 +1,5 @@
 ﻿#include "game.h"
-//fixa inventory, fixa room som pointer i ecs
+
 void Game::MainMenu()
 {
 	theInventoryPanel->erase();
@@ -14,7 +14,7 @@ void Game::MainMenu()
 	Entity mainHallDoor;
 	SpriteComponent mainHallDoorSprite(char(179));
 	PositionComponent mainHallDoorPos(2, 4);
-	SceneComponent mainHallDoorNextRoom("MainHall");
+	SceneComponent mainHallDoorNextRoom("Hall");
 
 	theEntityComponentSystem.theEntityManager.addEntity(&mainHallDoor);
 	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&mainHallDoor, &mainHallDoorSprite);
@@ -39,8 +39,6 @@ void Game::MainMenu()
 		theEntityComponentSystem.Movement(room);
 		theEntityComponentSystem.Display(room);
 		room.Draw();
-
-		//quitDoorPos.posX = 1;
 	}
 
 	theEntityComponentSystem.theEntityManager.destroyEntity(&mainHallDoor);
@@ -51,10 +49,9 @@ void Game::MainMenu()
 
 	playerMotion->footprint = char();
 
-	if (room.GetNextName() == "MainHall")
+	if (room.GetNextName() == "Hall")
 	{
-		PositionComponent* playerPosition = theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(1);
-		playerPosition->posX = 1;
+		playerPosition->posX = 13;
 		playerPosition->posY = 1;
 	}
 }
