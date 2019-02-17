@@ -311,7 +311,7 @@ struct EntityManager
 	Entity* getEntity(int entityID);
 	eMap* getMap();
 	void destroyEntity(Entity* entity);
-	void copyEntity(Entity* entity, Entity* copy);
+	//void copyEntity(Entity* entity, Entity* copy);
 
 	ComponentManagers* theComponentManagers;
 private:

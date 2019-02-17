@@ -4,31 +4,20 @@ using namespace std;
 void CreateObst(ECS* theEntityComponentSystem, int x, int y, vector<Entity*>* arr, bool left, int footprColor)
 {
 	Entity* obst = new Entity;
-	SpriteComponent* obstSprite = new SpriteComponent('O', 4);
-	PositionComponent* obstPos = new PositionComponent(x, y);
-	CollisionComponent* obstCollision = new CollisionComponent(1);
-	MotionComponent* obstMotion = new MotionComponent;
+	theEntityComponentSystem->theEntityManager.addEntity(obst);
+	theEntityComponentSystem->theComponentManagers.theSpriteManager.addComponent(obst, new SpriteComponent('O', 4));
+	theEntityComponentSystem->theComponentManagers.thePositionManager.addComponent(obst, new PositionComponent(x, y));
+	theEntityComponentSystem->theComponentManagers.theCollisionManager.addComponent(obst, new CollisionComponent(1));
+	theEntityComponentSystem->theComponentManagers.theNearbyManager.addComponent(obst, new NearbyComponent);
+	theEntityComponentSystem->theComponentManagers.theAttackManager.addComponent(obst, new AttackComponent(1));
 
 	if (!left) {
-		obstMotion->right = 1;
+		theEntityComponentSystem->theComponentManagers.theMotionManager.addComponent(obst, new MotionComponent(0,0,0,1,10.0f, footprColor));
 	}
 	else
 	{
-		obstMotion->left = 1;
+		theEntityComponentSystem->theComponentManagers.theMotionManager.addComponent(obst, new MotionComponent(0, 0, 1, 0, 10.0f, footprColor));
 	}
-
-	obstMotion->movementRate = 10.0f;
-	obstMotion->footprintColor = footprColor;
-	NearbyComponent* obstNearby = new NearbyComponent;
-	AttackComponent* obstAtt = new AttackComponent(1);
-
-	theEntityComponentSystem->theEntityManager.addEntity(obst);
-	theEntityComponentSystem->theComponentManagers.theSpriteManager.addComponent(obst, obstSprite);
-	theEntityComponentSystem->theComponentManagers.thePositionManager.addComponent(obst, obstPos);
-	theEntityComponentSystem->theComponentManagers.theCollisionManager.addComponent(obst, obstCollision);
-	theEntityComponentSystem->theComponentManagers.theMotionManager.addComponent(obst, obstMotion);
-	theEntityComponentSystem->theComponentManagers.theNearbyManager.addComponent(obst, obstNearby);
-	theEntityComponentSystem->theComponentManagers.theAttackManager.addComponent(obst, obstAtt);
 
 	arr->push_back(obst);
 }
@@ -48,54 +37,34 @@ void Game::Hall()
 	Room room("Hall", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 0, 0, 3, 9);
 	room.CreateFromVector2D(app.ReadFileToVector2D("Scenes/mainhall.txt"));
 	theInventoryPanel->setTitle("Hall");
-
-
-	Entity key("Yellow Key");
-	SpriteComponent keySpr(char(235), 14);
-	PositionComponent keyPos(2, 9);
-	CollisionComponent keyCol(3);
-	InventoryItemComponent keyInvItem;
-	ConsoleOutputComponent keyOut("Picked up Yellow Key.");
-	NearbyComponent keyNear;
-
-	if (theEntityComponentSystem.theEntityManager.getEntity(key.id) == nullptr)
+	
+	if (theEntityComponentSystem.theEntityManager.getEntity(3) == nullptr)
 	{
-		theEntityComponentSystem.theEntityManager.addEntity(&key);
-		theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&key, &keySpr);
-		theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&key, &keyPos);
-		theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&key, &keyCol);
-		theEntityComponentSystem.theComponentManagers.theInventoryItemManager.addComponent(&key, &keyInvItem);
-		theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&key, &keyOut);
-		theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&key, &keyNear);
+		Entity* key = new Entity(3, "Yellow Key");
+		theEntityComponentSystem.theEntityManager.addEntity(key);
+		theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(key, new SpriteComponent(char(235), 14));
+		theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(key, new PositionComponent(2, 9));
+		theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(key, new CollisionComponent(3));
+		theEntityComponentSystem.theComponentManagers.theInventoryItemManager.addComponent(key, new InventoryItemComponent);
+		theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(key, new ConsoleOutputComponent("Picked up Yellow Key."));
+		theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(key, new NearbyComponent);
 	}
 
 	Entity door;
-	SpriteComponent doorSprite(char(179), 14);
-	PositionComponent doorPos(14, 1);
-	SceneComponent doorRoom("MainMenu");
-	LockComponent doorLock("Yellow Key");
-	ConsoleOutputComponent doorOutput("Locked");
-	CollisionComponent doorCol(2);
-
 	theEntityComponentSystem.theEntityManager.addEntity(&door);
-	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&door, &doorSprite);
-	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&door, &doorPos);
-	theEntityComponentSystem.theComponentManagers.theSceneManager.addComponent(&door, &doorRoom);
-	theEntityComponentSystem.theComponentManagers.theLockManager.addComponent(&door, &doorLock);
-	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door, &doorOutput);
-	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door, &doorCol);
+	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&door, new SpriteComponent(char(179), 14));
+	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&door, new PositionComponent(14, 1));
+	theEntityComponentSystem.theComponentManagers.theSceneManager.addComponent(&door, new SceneComponent("MainMenu"));
+	theEntityComponentSystem.theComponentManagers.theLockManager.addComponent(&door, new LockComponent("Yellow Key"));
+	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door, new ConsoleOutputComponent("Locked"));
+	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door, new CollisionComponent(2));
 
 	Entity door2;
-	SpriteComponent door2Sprite(char(179), 8);
-	PositionComponent door2Pos(0, 4);
-	ConsoleOutputComponent door2Output("Locked");
-	CollisionComponent door2Col(2);
-
-	theEntityComponentSystem.theEntityManager.addEntity(&door2);
-	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&door2, &door2Sprite);
-	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&door2, &door2Pos);
-	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door2, &door2Output);
-	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door2, &door2Col);
+	theEntityComponentSystem.theEntityManager.addEntity(&door2);	
+	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&door2, new SpriteComponent(char(179), 8));
+	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&door2, new PositionComponent(0,4));
+	theEntityComponentSystem.theComponentManagers.theConsoleOutputManager.addComponent(&door2, new ConsoleOutputComponent("Locked"));
+	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&door2, new CollisionComponent(2));
 
 	Entity merl("Merl");
 	SpriteComponent merlSprite('#', 8);
@@ -131,20 +100,13 @@ void Game::Hall()
 	CreateObst(&theEntityComponentSystem, 13, 5, &obstacles, true, room.GetFloorColor());
 
 	Entity obst5;
-	SpriteComponent obstSpr5('X', 4);
-	PositionComponent obstPos5(1, 7);
-	CollisionComponent obstCol5(1);
-	MotionComponent obstMotion5(0,0,0,1,5.0f,room.GetFloorColor());
-	NearbyComponent obstNearby5;
-	AttackComponent obstAtt5(1);
-
 	theEntityComponentSystem.theEntityManager.addEntity(&obst5);
-	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&obst5, &obstSpr5);
-	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&obst5, &obstPos5);
-	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&obst5, &obstCol5);
-	theEntityComponentSystem.theComponentManagers.theMotionManager.addComponent(&obst5, &obstMotion5);
-	theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&obst5, &obstNearby5);
-	theEntityComponentSystem.theComponentManagers.theAttackManager.addComponent(&obst5, &obstAtt5);
+	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&obst5, new SpriteComponent('X', 4));
+	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&obst5, new PositionComponent(1, 7));
+	theEntityComponentSystem.theComponentManagers.theCollisionManager.addComponent(&obst5, new CollisionComponent(1));
+	theEntityComponentSystem.theComponentManagers.theMotionManager.addComponent(&obst5, new MotionComponent(0, 0, 0, 1, 5.0f, room.GetFloorColor()));
+	theEntityComponentSystem.theComponentManagers.theNearbyManager.addComponent(&obst5, new NearbyComponent);
+	theEntityComponentSystem.theComponentManagers.theAttackManager.addComponent(&obst5, new AttackComponent(1));
 
 	while (room.GetIsPlaying())
 	{
@@ -176,34 +138,34 @@ void Game::Hall()
 		if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 1 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 7)
 		{
-			obstMotion5.right = 1;
-			obstMotion5.left = 0;
-			obstMotion5.up = 0;
-			obstMotion5.down = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 1;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 6 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 7)
 		{
-			obstMotion5.right = 0;
-			obstMotion5.left = 0;
-			obstMotion5.up = 0;
-			obstMotion5.down = 1;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 1;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 6 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 10)
 		{
-			obstMotion5.right = 0;
-			obstMotion5.left = 1;
-			obstMotion5.up = 0;
-			obstMotion5.down = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 1;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
 		}
 		else if (theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posX == 1 &&
 			theEntityComponentSystem.theComponentManagers.thePositionManager.getComponent(obst5.id)->posY == 10)
 		{
-			obstMotion5.right = 0;
-			obstMotion5.left = 0;
-			obstMotion5.up = 1;
-			obstMotion5.down = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->right = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->left = 0;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->up = 1;
+			theEntityComponentSystem.theComponentManagers.theMotionManager.getComponent(obst5.id)->down = 0;
 		}
 
 		if (this->playerPosition->posY > 6 && merlPos.posY < 4 && merlPos.posX > 1) {
@@ -223,6 +185,7 @@ void Game::Hall()
 
 
 	theEntityComponentSystem.theEntityManager.destroyEntity(&door);
+	theEntityComponentSystem.theEntityManager.destroyEntity(&door2);
 	theEntityComponentSystem.theEntityManager.destroyEntity(&obst5);
 	theEntityComponentSystem.theEntityManager.destroyEntity(&merl);
 	for (int i = 0; i < obstacles.size(); i++)

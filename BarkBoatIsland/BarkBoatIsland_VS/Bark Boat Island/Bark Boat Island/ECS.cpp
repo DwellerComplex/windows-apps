@@ -81,88 +81,88 @@ void EntityManager::destroyEntity(Entity* entity)
 	}
 }
 
-void EntityManager::copyEntity(Entity* entity, Entity* copy)
-{
-	addEntity(copy);
-	copy->name = entity->name;
-
-	NearbyComponent* nearComp = theComponentManagers->theNearbyManager.getComponent(entity->id);
-	PositionComponent* posComp = theComponentManagers->thePositionManager.getComponent(entity->id);
-	SpriteComponent* spriteComp = theComponentManagers->theSpriteManager.getComponent(entity->id);
-	InputComponent* inputComp = theComponentManagers->theInputManager.getComponent(entity->id);
-	MotionComponent* motionComp = theComponentManagers->theMotionManager.getComponent(entity->id);
-	SceneComponent* sceneComp = theComponentManagers->theSceneManager.getComponent(entity->id);
-	InventoryComponent* invComp = theComponentManagers->theInventoryManager.getComponent(entity->id);
-	LockComponent* lockComp = theComponentManagers->theLockManager.getComponent(entity->id);
-	InventoryItemComponent* invItemComp = theComponentManagers->theInventoryItemManager.getComponent(entity->id);
-	ConsoleOutputComponent* consoleOutComp = theComponentManagers->theConsoleOutputManager.getComponent(entity->id);
-	LifeComponent* lifeComp = theComponentManagers->theLifeManager.getComponent(entity->id);
-	AttackComponent* attackComp = theComponentManagers->theAttackManager.getComponent(entity->id);
-	CollisionComponent* colComp = theComponentManagers->theCollisionManager.getComponent(entity->id);
-	PlatformComponent* platformComp = theComponentManagers->thePlatformManager.getComponent(entity->id);
-	PlatformRiderComponent* platformRiderComp = theComponentManagers->thePlatformRiderManager.getComponent(entity->id);
-
-	if (nearComp != nullptr)
-	{
-		theComponentManagers->theNearbyManager.addComponent(copy, nearComp);
-	}
-	if (posComp != nullptr)
-	{
-		theComponentManagers->thePositionManager.addComponent(copy, posComp);
-	}
-	if (spriteComp != nullptr)
-	{
-		theComponentManagers->theSpriteManager.addComponent(copy, spriteComp);
-	}
-	if (inputComp != nullptr)
-	{
-		theComponentManagers->theInputManager.addComponent(copy, inputComp);
-	}
-	if (motionComp != nullptr)
-	{
-		theComponentManagers->theMotionManager.addComponent(copy, motionComp);
-	}
-	if (sceneComp != nullptr)
-	{
-		theComponentManagers->theSceneManager.addComponent(copy, sceneComp);
-	}
-	if (invComp != nullptr)
-	{
-		theComponentManagers->theInventoryManager.addComponent(copy, invComp);
-	}
-	if (lockComp != nullptr)
-	{
-		theComponentManagers->theLockManager.addComponent(copy, lockComp);
-	}
-	if (invItemComp != nullptr)
-	{
-		theComponentManagers->theInventoryItemManager.addComponent(copy, invItemComp);
-	}
-	if (consoleOutComp != nullptr)
-	{
-		theComponentManagers->theConsoleOutputManager.addComponent(copy, consoleOutComp);
-	}
-	if (lifeComp != nullptr)
-	{
-		theComponentManagers->theLifeManager.addComponent(copy, lifeComp);
-	}
-	if (attackComp != nullptr)
-	{
-		theComponentManagers->theAttackManager.addComponent(copy, attackComp);
-	}
-	if (colComp != nullptr)
-	{
-		theComponentManagers->theCollisionManager.addComponent(copy, colComp);
-	}
-	if (platformComp != nullptr)
-	{
-		theComponentManagers->thePlatformManager.addComponent(copy, platformComp);
-	}
-	if (platformRiderComp != nullptr)
-	{
-		theComponentManagers->thePlatformRiderManager.addComponent(copy, platformRiderComp);
-	}
-}
+//void EntityManager::copyEntity(Entity* entity, Entity* copy)
+//{
+//	addEntity(copy);
+//	copy->name = entity->name;
+//
+//	NearbyComponent* nearComp = theComponentManagers->theNearbyManager.getComponent(entity->id);
+//	PositionComponent* posComp = theComponentManagers->thePositionManager.getComponent(entity->id);
+//	SpriteComponent* spriteComp = theComponentManagers->theSpriteManager.getComponent(entity->id);
+//	InputComponent* inputComp = theComponentManagers->theInputManager.getComponent(entity->id);
+//	MotionComponent* motionComp = theComponentManagers->theMotionManager.getComponent(entity->id);
+//	SceneComponent* sceneComp = theComponentManagers->theSceneManager.getComponent(entity->id);
+//	InventoryComponent* invComp = theComponentManagers->theInventoryManager.getComponent(entity->id);
+//	LockComponent* lockComp = theComponentManagers->theLockManager.getComponent(entity->id);
+//	InventoryItemComponent* invItemComp = theComponentManagers->theInventoryItemManager.getComponent(entity->id);
+//	ConsoleOutputComponent* consoleOutComp = theComponentManagers->theConsoleOutputManager.getComponent(entity->id);
+//	LifeComponent* lifeComp = theComponentManagers->theLifeManager.getComponent(entity->id);
+//	AttackComponent* attackComp = theComponentManagers->theAttackManager.getComponent(entity->id);
+//	CollisionComponent* colComp = theComponentManagers->theCollisionManager.getComponent(entity->id);
+//	PlatformComponent* platformComp = theComponentManagers->thePlatformManager.getComponent(entity->id);
+//	PlatformRiderComponent* platformRiderComp = theComponentManagers->thePlatformRiderManager.getComponent(entity->id);
+//
+//	if (nearComp != nullptr)
+//	{
+//		theComponentManagers->theNearbyManager.addComponent(copy, nearComp);
+//	}
+//	if (posComp != nullptr)
+//	{
+//		theComponentManagers->thePositionManager.addComponent(copy, posComp);
+//	}
+//	if (spriteComp != nullptr)
+//	{
+//		theComponentManagers->theSpriteManager.addComponent(copy, spriteComp);
+//	}
+//	if (inputComp != nullptr)
+//	{
+//		theComponentManagers->theInputManager.addComponent(copy, inputComp);
+//	}
+//	if (motionComp != nullptr)
+//	{
+//		theComponentManagers->theMotionManager.addComponent(copy, motionComp);
+//	}
+//	if (sceneComp != nullptr)
+//	{
+//		theComponentManagers->theSceneManager.addComponent(copy, sceneComp);
+//	}
+//	if (invComp != nullptr)
+//	{
+//		theComponentManagers->theInventoryManager.addComponent(copy, invComp);
+//	}
+//	if (lockComp != nullptr)
+//	{
+//		theComponentManagers->theLockManager.addComponent(copy, lockComp);
+//	}
+//	if (invItemComp != nullptr)
+//	{
+//		theComponentManagers->theInventoryItemManager.addComponent(copy, invItemComp);
+//	}
+//	if (consoleOutComp != nullptr)
+//	{
+//		theComponentManagers->theConsoleOutputManager.addComponent(copy, consoleOutComp);
+//	}
+//	if (lifeComp != nullptr)
+//	{
+//		theComponentManagers->theLifeManager.addComponent(copy, lifeComp);
+//	}
+//	if (attackComp != nullptr)
+//	{
+//		theComponentManagers->theAttackManager.addComponent(copy, attackComp);
+//	}
+//	if (colComp != nullptr)
+//	{
+//		theComponentManagers->theCollisionManager.addComponent(copy, colComp);
+//	}
+//	if (platformComp != nullptr)
+//	{
+//		theComponentManagers->thePlatformManager.addComponent(copy, platformComp);
+//	}
+//	if (platformRiderComp != nullptr)
+//	{
+//		theComponentManagers->thePlatformRiderManager.addComponent(copy, platformRiderComp);
+//	}
+//}
 #pragma endregion
 
 #pragma region MOTION
