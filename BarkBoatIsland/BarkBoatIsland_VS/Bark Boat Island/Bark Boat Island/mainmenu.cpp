@@ -2,56 +2,54 @@
 
 void Game::MainMenu()
 {
-	theInventoryPanel->erase();
-	theConsolePanel->erase();
-
 	//Create room
-	Room room("MainMenu", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 2, 1);
-	Application& app = Application::get_instance();
+	Scene scene("MainMenu", char(177), char(186), char(205), char(201), char(187), char(188), char(200), 0, 0, 2, 1);
 
-	room.CreateFromVector2D(app.ReadFileToVector2D("Scenes/mainmenu.txt")); 
+	scene.CreateFromVector2D(Application::ReadFileToVector2D("Scenes/mainmenu.txt"));
+	ECS::AssignScene(scene);
 
-	Entity mainHallDoor;
-	SpriteComponent mainHallDoorSprite(char(179));
-	PositionComponent mainHallDoorPos(2, 4);
-	SceneComponent mainHallDoorNextRoom("Hall");
+	ECS::Add<SpriteComponent>(PLAYER)->sprite = '#';
+	ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 4));
+	ECS::Add<CollisionComponent>(PLAYER)->collisionSetting = 0;
+	ECS::Add<NearbyComponent>(PLAYER);
+	ECS::Add<MotionComponent>(PLAYER);
+	ECS::Add<InputComponent>(PLAYER);
+	ECS::Add<BackpackComponent>(PLAYER);
 
-	theEntityComponentSystem.theEntityManager.addEntity(&mainHallDoor);
-	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&mainHallDoor, &mainHallDoorSprite);
-	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&mainHallDoor, &mainHallDoorPos);
-	theEntityComponentSystem.theComponentManagers.theSceneManager.addComponent(&mainHallDoor, &mainHallDoorNextRoom);
+	ECS::Add<SpriteComponent>(MAINMENU_DOOR_PLAY)->sprite = char(179);
+	ECS::Add<PositionComponent>(MAINMENU_DOOR_PLAY, PositionComponent(2,4));
+	ECS::Add<SceneComponent>(MAINMENU_DOOR_PLAY)->nextScene = Scenes::WORLDONE;
+	ECS::Add<CollisionComponent>(MAINMENU_DOOR_PLAY)->collisionSetting = 2;
 
-	Entity quitDoor;
-	SpriteComponent quitDoorSprite(char(179));
-	PositionComponent quitDoorPos(2, 6);
-	SceneComponent quitDoorNextRoom("Quit");
+	ECS::Add<SpriteComponent>(MAINMENU_DOOR_QUIT)->sprite = char(179);
+	ECS::Add<PositionComponent>(MAINMENU_DOOR_QUIT, PositionComponent(2, 6));
+	ECS::Add<SceneComponent>(MAINMENU_DOOR_QUIT)->nextScene = Scenes::QUIT;
+	ECS::Add<CollisionComponent>(MAINMENU_DOOR_QUIT)->collisionSetting = 2;
 
-	theEntityComponentSystem.theEntityManager.addEntity(&quitDoor);
-	theEntityComponentSystem.theComponentManagers.theSpriteManager.addComponent(&quitDoor, &quitDoorSprite);
-	theEntityComponentSystem.theComponentManagers.thePositionManager.addComponent(&quitDoor, &quitDoorPos);
-	theEntityComponentSystem.theComponentManagers.theSceneManager.addComponent(&quitDoor, &quitDoorNextRoom);
 
-	while (room.GetIsPlaying())
+	double tick = Application::GetGlobalTimer();
+	while (scene.GetIsPlaying())
 	{
-		theEntityComponentSystem.Input();
-		theEntityComponentSystem.MovementInput();
-		theEntityComponentSystem.Interact(room, theConsolePanel);
-		theEntityComponentSystem.Movement(room);
-		theEntityComponentSystem.Display(room);
-		room.Draw();
+		double const newTick = Application::GetGlobalTimer();
+		if (tick < newTick)
+		{
+			ECS::Systems::Input();
+			ECS::Systems::Movement();
+			ECS::Systems::ExecuteOrder66();
+			ECS::Systems::Draw();
+			scene.Draw();
+
+			tick = newTick + 0.01;
+		}
 	}
 
-	theEntityComponentSystem.theEntityManager.destroyEntity(&mainHallDoor);
-	theEntityComponentSystem.theEntityManager.destroyEntity(&quitDoor);
+	//Put entities in kill queue before next scene
+	ECS::killQueue.emplace_back(MAINMENU_DOOR_PLAY);
+	ECS::killQueue.emplace_back(MAINMENU_DOOR_QUIT);
 
-	room.Erase();
-	this->currentRoom = room.GetNextName();
+	//Kill entities
+	ECS::Systems::ExecuteOrder66();
 
-	playerMotion->footprint = char();
-
-	if (room.GetNextName() == "Hall")
-	{
-		playerPosition->posX = 13;
-		playerPosition->posY = 1;
-	}
+	scene.Erase();
+	this->currentScene = scene.GetNextName();
 }

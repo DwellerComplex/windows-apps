@@ -2,40 +2,47 @@
 #include <string>
 
 #include "application.h"
-#include "inventorypanel.h"
-#include "consolepanel.h"
-#include "room.h"
-#include "ECS.h"
-using namespace std;
+#include "scene.h"
+#include "ecs.h"
 
 class Game
 {
 public:
 	Game();
-	void PlayRoom();
-	std::string const GetCurrentRoom() { return currentRoom; };
-	void SetCurrentRoom(std::string currentRoom);
+	void PlayScene();
+	short const GetCurrentRoom() { return currentScene; };
+	void SetCurrentScene(short const currentScene);
 
 	void MainMenu();
+	void WorldOne();
 	void Hall();
+
+	enum Scenes
+	{
+		QUIT,
+		MAINMENU,
+		WORLDONE,
+		NUMBER_OF_SCENES
+	};
+
 private:
-	std::string currentRoom;
+	short currentScene;
 
-	ECS theEntityComponentSystem;
-	InventoryPanel* theInventoryPanel;
-	ConsolePanel* theConsolePanel;
+	const enum Entities
+	{
+		PLAYER = 1,
 
-	Entity* player;
-	NearbyComponent* playerNearby;
-	PositionComponent* playerPosition;
-	SpriteComponent* playerSprite;
-	InputComponent* playerInput;
-	MotionComponent* playerMotion;
-	InventoryComponent* playerInventory;
-	LifeComponent* playerLife;
-	CollisionComponent* playerCollision;
-	PlatformRiderComponent* playerPlatformRider;
+		//_________________mainmenu_________________//
+		MAINMENU_DOOR_PLAY,
+		MAINMENU_DOOR_QUIT,
+		MAINMENU_KEY,
+		NUMBER_OF_ENTITIES
+	};
 
-	Entity* checkpoint;
-	PositionComponent* checkpointPosition;
+	const enum BackPackItemTypes
+	{
+		GOLD_KEY = 1,
+		SILVER_KEY,
+		NUMBER_OF_TYPES
+	};
 };

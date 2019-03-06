@@ -3,22 +3,21 @@
 int main(int argc, const char** argv)
 {
 	//Initial system setup
-	Application& app = Application::get_instance();
-	app.SetTitle("Bark Boat Island");
-	app.SetFontSize(16, 16);
-	app.SetConsoleSize(1800, 1000);
-	app.SetConsoleScreenBuffer();
-	app.SetCursorPosition(0, 0);
-	app.ShowConsoleCursor(false);
-	app.StartGlobalTimer();
+	Application::SetTitle("Bark Boat Island");
+	Application::SetFontSize(16, 16);
+	Application::SetConsoleSize(1800, 1000);
+	Application::SetConsoleScreenBuffer();
+	Application::SetCursorPosition(0, 0);
+	Application::ShowConsoleCursor(false);
+	Application::StartGlobalTimer();
 
 	//Start a game
 	Game gameInstance;
-	gameInstance.SetCurrentRoom("Hall");
+	gameInstance.SetCurrentScene(gameInstance.Scenes::MAINMENU);
 
-	while (gameInstance.GetCurrentRoom() != "")
+	while (gameInstance.GetCurrentRoom())
 	{
-		gameInstance.PlayRoom();
+		gameInstance.PlayScene();
 	}
 
 	return 0;

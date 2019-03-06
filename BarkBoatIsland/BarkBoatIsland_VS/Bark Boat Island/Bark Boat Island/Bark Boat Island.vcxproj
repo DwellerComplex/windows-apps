@@ -115,23 +115,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="applicationExtern.cpp" />
     <ClCompile Include="consolepanel.cpp" />
-    <ClCompile Include="ECS.cpp" />
+    <ClCompile Include="ecs.cpp" />
+    <ClCompile Include="ecsExtern.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hall.cpp" />
     <ClCompile Include="inventorypanel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="mainmenu.cpp" />
-    <ClCompile Include="room.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="worldOne.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="consolepanel.h" />
-    <ClInclude Include="ECS.h" />
+    <ClInclude Include="ecs.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="inventorypanel.h" />
-    <ClInclude Include="room.h" />
+    <ClInclude Include="scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
