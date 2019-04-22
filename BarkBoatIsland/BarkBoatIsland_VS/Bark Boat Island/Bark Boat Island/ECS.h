@@ -2,12 +2,33 @@
 #include "application.h"
 #include "scene.h"
 
+enum Entities
+{
+	PLAYER = 1,
+
+	//_________________mainmenu_________________//
+	MAINMENU_DOOR_PLAY,
+	MAINMENU_DOOR_QUIT,
+
+	//_________________worldOne_________________//
+	WORLD_ONE_SILVER_KEY,
+	WORLD_ONE_DOOR_MAINMENU,
+	NUMBER_OF_ENTITIES
+};
+
+const enum BackPackItemTypes
+{
+	GOLD_KEY = 1,
+	SILVER_KEY,
+	NUMBER_OF_TYPES
+};
+
 #pragma region NEARBY
 struct NearbyComponent
 {
 public:
 	NearbyComponent();
-	int nbrUp, nbrDown, nbrLeft, nbrRight;
+	std::array<int, 4> neighbors;
 };
 #pragma endregion
 
@@ -103,7 +124,7 @@ struct BackpackComponent
 {
 public:
 	BackpackComponent() { };
-	std::vector<int> items;
+	std::unordered_map<int,int> items;
 };
 #pragma endregion
 

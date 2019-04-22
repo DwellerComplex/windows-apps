@@ -3,6 +3,8 @@
 int main(int argc, const char** argv)
 {
 	//Initial system setup
+
+	Application::SetFontEncoding(437);
 	Application::SetTitle("Bark Boat Island");
 	Application::SetFontSize(16, 16);
 	Application::SetConsoleSize(1800, 1000);

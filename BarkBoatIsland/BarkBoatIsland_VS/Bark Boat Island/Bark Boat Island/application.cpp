@@ -216,9 +216,9 @@ namespace Application
 
 	float GetGlobalTimer()
 	{
-		auto currentTime = std::chrono::high_resolution_clock::now();
+		//auto currentTime = std::chrono::high_resolution_clock::now();
 
-		return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0f;
+		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count() / 1000.0f;
 	}
 
 	std::unordered_map<char, int> GetFontSize()
@@ -245,6 +245,12 @@ namespace Application
 		lpConsoleCurrentFontEx->FontWeight = FW_NORMAL;
 		wcscpy_s(lpConsoleCurrentFontEx->FaceName, L"Consolas");
 		SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+	}
+
+	void SetFontEncoding(int code)
+	{
+		SetConsoleCP(code);
+		SetConsoleOutputCP(code);
 	}
 }
 //#include <Windows.h>

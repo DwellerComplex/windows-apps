@@ -172,12 +172,21 @@ namespace ECS
 			{
 				if (Application::Input(vKeys[i]))
 				{
-					if (inputComponent->hasClicked == false)
-					{
-						inputComponent->command = toascii(vKeys[i]);
-						inputComponent->hasClicked = true;
-					}
-					break;
+					//if (Application::Input(0x10)) //Controlled walk with SHIFT
+					//{
+						if (inputComponent->hasClicked == false)
+						{
+							inputComponent->command = toascii(vKeys[i]);
+							inputComponent->hasClicked = true;
+						}
+						break;
+					//}
+					//else //Fast walk
+					//{
+					//	inputComponent->command = toascii(vKeys[i]);
+					//	inputComponent->hasClicked = true;
+					//	break;
+					//}
 				}
 			}
 			if (i == vKeys.size() && inputComponent->hasClicked == true)
@@ -213,109 +222,38 @@ namespace ECS
 				{
 					if (BackpackComponent* backpackComponent = Get<BackpackComponent>(ENTITIES[e]))
 					{
-						if (Get<BackpackItemComponent>(nearbyComponent->nbrUp))
+						for (int nbr = 0; nbr < nearbyComponent->neighbors.size(); nbr++)
 						{
-							backpackComponent->items.emplace_back(nearbyComponent->nbrUp);
-							PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->nbrUp);
-							scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-							Destroy<PositionComponent>(nearbyComponent->nbrUp);
-						}
-						else if (Get<BackpackItemComponent>(nearbyComponent->nbrDown))
-						{
-							backpackComponent->items.emplace_back(nearbyComponent->nbrDown);
-							PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->nbrDown);
-							scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-							Destroy<PositionComponent>(nearbyComponent->nbrDown);
-						}
-						else if (Get<BackpackItemComponent>(nearbyComponent->nbrLeft))
-						{
-							backpackComponent->items.emplace_back(nearbyComponent->nbrLeft);
-							PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->nbrLeft);
-							scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-							Destroy<PositionComponent>(nearbyComponent->nbrLeft);
-						}
-						else if (Get<BackpackItemComponent>(nearbyComponent->nbrRight))
-						{
-							backpackComponent->items.emplace_back(nearbyComponent->nbrRight);
-							PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->nbrRight);
-							scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-							Destroy<PositionComponent>(nearbyComponent->nbrRight);
-						}
+							if (BackpackItemComponent* backpackItemComponent = Get<BackpackItemComponent>(nearbyComponent->neighbors[nbr]))
+							{
+								//backpackComponent->items.emplace_back(nearbyComponent->nbrUp);
+								PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->neighbors[nbr]);
+								scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
+								Destroy<PositionComponent>(nearbyComponent->neighbors[nbr]);
 
-						if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->nbrRight))
-						{
-							if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->nbrRight))
+								backpackComponent->items[backpackItemComponent->type]++;
+							}
+
+							if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->neighbors[nbr]))
 							{
-								for (int i = 0; i < backpackComponent->items.size(); i++)
+								if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->neighbors[nbr]))
 								{
-									if (lockComponent->key == ECS::Get<BackpackItemComponent>(backpackComponent->items[i])->type)
+									for (int i = 0; i < backpackComponent->items.size(); i++)
 									{
-										scene->SetNextSceneName(sceneComponent->nextScene);
-										scene->SetIsPlaying(false);
+										if (backpackComponent->items[lockComponent->key])
+										{
+											scene->SetNextSceneName(sceneComponent->nextScene);
+											scene->SetIsPlaying(false);
+											backpackComponent->items[lockComponent->key]--;
+											Destroy<LockComponent>(nearbyComponent->neighbors[nbr]);
+										}
 									}
 								}
-							}
-							else
-							{
-								scene->SetNextSceneName(sceneComponent->nextScene);
-								scene->SetIsPlaying(false);
-							}
-						}
-						if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->nbrLeft))
-						{
-							if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->nbrLeft))
-							{
-								for (int i = 0; i < backpackComponent->items.size(); i++)
+								else
 								{
-									if (lockComponent->key == ECS::Get<BackpackItemComponent>(backpackComponent->items[i])->type)
-									{
-										scene->SetNextSceneName(sceneComponent->nextScene);
-										scene->SetIsPlaying(false);
-									}
+									scene->SetNextSceneName(sceneComponent->nextScene);
+									scene->SetIsPlaying(false);
 								}
-							}
-							else
-							{
-								scene->SetNextSceneName(sceneComponent->nextScene);
-								scene->SetIsPlaying(false);
-							}
-						}
-						if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->nbrDown))
-						{
-							if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->nbrDown))
-							{
-								for (int i = 0; i < backpackComponent->items.size(); i++)
-								{
-									if (lockComponent->key == ECS::Get<BackpackItemComponent>(backpackComponent->items[i])->type)
-									{
-										scene->SetNextSceneName(sceneComponent->nextScene);
-										scene->SetIsPlaying(false);
-									}
-								}
-							}
-							else
-							{
-								scene->SetNextSceneName(sceneComponent->nextScene);
-								scene->SetIsPlaying(false);
-							}
-						}
-						if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->nbrUp))
-						{
-							if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->nbrUp))
-							{
-								for (int i = 0; i < backpackComponent->items.size(); i++)
-								{
-									if (lockComponent->key == ECS::Get<BackpackItemComponent>(backpackComponent->items[i])->type)
-									{
-										scene->SetNextSceneName(sceneComponent->nextScene);
-										scene->SetIsPlaying(false);
-									}
-								}
-							}
-							else
-							{
-								scene->SetNextSceneName(sceneComponent->nextScene);
-								scene->SetIsPlaying(false);
 							}
 						}
 					}
@@ -347,11 +285,12 @@ namespace ECS
 
 			//Define nearby entities
 			//Check world first
-			nearbyComponent->nbrRight = (scene->TryPositionIsFloor(positionComponent->posX + 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->nbrLeft = (scene->TryPositionIsFloor(positionComponent->posX - 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->nbrDown = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY + 1)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->nbrUp = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY - 1)) ? (scene->floorID) : (scene->wallID);
+			nearbyComponent->neighbors[3] = (scene->TryPositionIsFloor(positionComponent->posX + 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
+			nearbyComponent->neighbors[2] = (scene->TryPositionIsFloor(positionComponent->posX - 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
+			nearbyComponent->neighbors[1] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY + 1)) ? (scene->floorID) : (scene->wallID);
+			nearbyComponent->neighbors[0] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY - 1)) ? (scene->floorID) : (scene->wallID);
 
+			
 			//Check other entities
 			PositionComponent* nearbyPositionComponent = nullptr;
 			for (int eN = 0; eN < ENTITIES_NEARBY.size(); eN++)
@@ -364,23 +303,22 @@ namespace ECS
 					{
 						if (positionComponent->posY - 1 == nearbyPositionComponent->posY)
 						{
-							nearbyComponent->nbrUp = ENTITIES_NEARBY[eN];
+							nearbyComponent->neighbors[0] = ENTITIES_NEARBY[eN];
 						}
 						else if (positionComponent->posY + 1 == nearbyPositionComponent->posY)
 						{
-							nearbyComponent->nbrDown = ENTITIES_NEARBY[eN];
+							nearbyComponent->neighbors[1] = ENTITIES_NEARBY[eN];
 						}
 					}
 					else if (positionComponent->posY == nearbyPositionComponent->posY)
 					{
 						if (positionComponent->posX - 1 == nearbyPositionComponent->posX)
 						{
-							nearbyComponent->nbrLeft = ENTITIES_NEARBY[eN];
+							nearbyComponent->neighbors[2] = ENTITIES_NEARBY[eN];
 						}
 						else if (positionComponent->posX + 1 == nearbyPositionComponent->posX)
 						{
-							
-							nearbyComponent->nbrRight = ENTITIES_NEARBY[eN];
+							nearbyComponent->neighbors[3] = ENTITIES_NEARBY[eN];
 						}
 					}
 				}
@@ -391,21 +329,22 @@ namespace ECS
 				if (motionComponent->footprint == char())
 				{
 					motionComponent->footprint = scene->GetFloor();
+					motionComponent->footprintColor = scene->GetFloorColor();
 				}
 
 				if (motionComponent->up != 0)
 				{
-					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->nbrUp);
-					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->nbrUp);
+					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[0]);
+					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[0]);
 
-					if (nearbyComponent->nbrUp == scene->floorID ||
+					if (nearbyComponent->neighbors[0] == scene->floorID ||
 						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
-						(nearbyCollisionComponent == nullptr && nearbyComponent->nbrUp > 0))
+						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[0] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY -= motionComponent->up;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyNearbyComponent->nbrUp == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[0] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY -= motionComponent->up;
@@ -414,17 +353,17 @@ namespace ECS
 				}
 				if (motionComponent->down != 0)
 				{
-					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->nbrDown);
-					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->nbrDown);
+					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[1]);
+					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[1]);
 
-					if (nearbyComponent->nbrDown == scene->floorID ||
+					if (nearbyComponent->neighbors[1] == scene->floorID ||
 						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
-						(nearbyCollisionComponent == nullptr && nearbyComponent->nbrDown > 0))
+						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[1] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY += motionComponent->down;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyNearbyComponent->nbrDown == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[1] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY += motionComponent->down;
@@ -433,17 +372,17 @@ namespace ECS
 				}
 				if (motionComponent->left != 0)
 				{
-					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->nbrLeft);
-					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->nbrLeft);
+					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[2]);
+					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[2]);
 
-					if (nearbyComponent->nbrLeft == scene->floorID ||
+					if (nearbyComponent->neighbors[2] == scene->floorID ||
 						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
-						(nearbyCollisionComponent == nullptr && nearbyComponent->nbrLeft > 0))
+						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[2] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX -= motionComponent->left;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyNearbyComponent->nbrLeft == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[2] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX -= motionComponent->left;
@@ -452,17 +391,17 @@ namespace ECS
 				}
 				if (motionComponent->right != 0)
 				{
-					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->nbrRight);
-					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->nbrRight);
+					CollisionComponent* nearbyCollisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[3]);
+					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[3]);
 					
-					if (nearbyComponent->nbrRight == scene->floorID ||
+					if (nearbyComponent->neighbors[3] == scene->floorID ||
 						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
-						(nearbyCollisionComponent == nullptr && nearbyComponent->nbrRight > 0))
+						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[3] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX += motionComponent->right;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyNearbyComponent->nbrRight == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[3] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX += motionComponent->right;
@@ -484,323 +423,3 @@ namespace ECS
 		}
 	}
 }
-
-
-
-
-//void ECS::Attack(Room &room)
-//{
-//	typedef std::map<int, Entity*>::const_iterator const_map_iter;
-//	const_map_iter entityIterator = theEntityManager.getMap()->begin();
-//	const_map_iter otherIterator = theEntityManager.getMap()->begin();
-//
-//	LifeComponent* lifeComp;
-//	PositionComponent* posComp;
-//
-//	PositionComponent* otherPosComp;
-//	AttackComponent* otherAttackComp;
-//
-//	while (entityIterator != theEntityManager.getMap()->end()) {
-//
-//		lifeComp = theComponentManagers.theLifeManager.getComponent(entityIterator->first);
-//		posComp = theComponentManagers.thePositionManager.getComponent(entityIterator->first);
-//
-//		if (posComp != nullptr &&
-//			lifeComp != nullptr)
-//		{
-//			while (otherIterator != theEntityManager.getMap()->end()) {
-//				otherPosComp = theComponentManagers.thePositionManager.getComponent(otherIterator->first);
-//				otherAttackComp = theComponentManagers.theAttackManager.getComponent(otherIterator->first);
-//
-//				if (otherPosComp != nullptr &&
-//					otherAttackComp != nullptr &&
-//					posComp->posX == otherPosComp->posX &&
-//					posComp->posY == otherPosComp->posY &&
-//					otherIterator->first != entityIterator->first)
-//				{
-//					lifeComp->life -= otherAttackComp->damage;
-//
-//					//special case for player
-//					if (entityIterator->first == 1) 
-//					{
-//						theComponentManagers.thePositionManager.getComponent(1)->posX = theComponentManagers.thePositionManager.getComponent(2)->posX;
-//						theComponentManagers.thePositionManager.getComponent(1)->posY = theComponentManagers.thePositionManager.getComponent(2)->posY;
-//						room.SetNextRoomName(room.GetName());
-//						room.SetIsPlaying(false);
-//					}
-//				}
-//				++otherIterator;
-//			}
-//			otherIterator = theEntityManager.getMap()->begin();
-//
-//			if (lifeComp->life <= 0)
-//			{
-//				room.DrawSprite(char(32), posComp->posX, posComp->posY);
-//				theEntityManager.destroyEntity(theEntityManager.getEntity(entityIterator->first));
-//				entityIterator = theEntityManager.getMap()->begin();
-//			}
-//		}
-//		++entityIterator;
-//	}
-//}
-//
-//
-//void ECS::Platform()
-//{
-//	typedef std::map<int, Entity*>::const_iterator const_map_iter;
-//	const_map_iter entityIterator = theEntityManager.getMap()->begin();
-//	const_map_iter otherIterator = theEntityManager.getMap()->begin();
-//
-//	PlatformComponent* platformComp;
-//	PositionComponent* posComp;
-//	MotionComponent* motionComp;
-//
-//	PositionComponent* otherPosComp;
-//	MotionComponent* otherMotionComp;
-//	PlatformRiderComponent* otherPlatformRiderComp;
-//
-//	while (entityIterator != theEntityManager.getMap()->end()) {
-//		
-//		platformComp = theComponentManagers.thePlatformManager.getComponent(entityIterator->first);
-//		posComp = theComponentManagers.thePositionManager.getComponent(entityIterator->first);
-//		motionComp = theComponentManagers.theMotionManager.getComponent(entityIterator->first);
-//
-//		if (platformComp != nullptr && 
-//			posComp != nullptr &&
-//			motionComp != nullptr)
-//		{
-//			while (otherIterator != theEntityManager.getMap()->end()) { 
-//				otherPosComp = theComponentManagers.thePositionManager.getComponent(otherIterator->first);
-//				otherMotionComp = theComponentManagers.theMotionManager.getComponent(otherIterator->first);
-//				otherPlatformRiderComp = theComponentManagers.thePlatformRiderManager.getComponent(otherIterator->first);
-//
-//				if (otherPosComp != nullptr && entityIterator->first != otherIterator->first)
-//				{
-//					if (otherMotionComp != nullptr && otherPlatformRiderComp != nullptr)
-//					{
-//
-//						if (otherPosComp->posX == posComp->posX &&
-//							otherPosComp->posY == posComp->posY)
-//						{
-//							if (platformComp->occupied == false)
-//							{
-//								platformComp->backupMotionComponent.down = otherMotionComp->down;
-//								platformComp->backupMotionComponent.up = otherMotionComp->up;
-//								platformComp->backupMotionComponent.left = otherMotionComp->left;
-//								platformComp->backupMotionComponent.right = otherMotionComp->right;
-//								platformComp->backupMotionComponent.footprint = otherMotionComp->footprint;
-//								platformComp->backupMotionComponent.movementRate = otherMotionComp->movementRate;
-//								platformComp->backupMotionComponent.timeToMove = otherMotionComp->timeToMove;
-//								platformComp->occupied = true;
-//								otherMotionComp->down = motionComp->down;
-//								otherMotionComp->up = motionComp->up;
-//								otherMotionComp->left = motionComp->left;
-//								otherMotionComp->right = motionComp->right;
-//								otherMotionComp->footprint = motionComp->footprint;
-//								otherMotionComp->movementRate = motionComp->movementRate;
-//								otherMotionComp->timeToMove = motionComp->timeToMove;
-//							}
-//						}
-//						else if(platformComp->occupied == true && 
-//								(motionComp->down	!= otherMotionComp->down	|| 
-//								motionComp->up		!= otherMotionComp->up		|| 
-//								motionComp->left	!= otherMotionComp->left	|| 
-//								motionComp->right	!= otherMotionComp->right))
-//						{
-//							otherMotionComp->down = platformComp->backupMotionComponent.down;
-//							otherMotionComp->up = platformComp->backupMotionComponent.up;
-//							otherMotionComp->left = platformComp->backupMotionComponent.left;
-//							otherMotionComp->right = platformComp->backupMotionComponent.right;
-//							otherMotionComp->footprint = platformComp->backupMotionComponent.footprint;
-//							otherMotionComp->movementRate = platformComp->backupMotionComponent.movementRate;
-//							otherMotionComp->timeToMove = platformComp->backupMotionComponent.timeToMove;
-//							platformComp->occupied = false;
-//						}
-//					}
-//				}
-//
-//				++otherIterator;
-//			}
-//			otherIterator = theEntityManager.getMap()->begin();
-//		}
-//		++entityIterator;
-//	}
-//}
-//
-//void ECS::InteractAction(Room &room, int const entity, int const other, ConsolePanel *consolePanel)
-//{
-//	SceneComponent* otherSceneComp = theComponentManagers.theSceneManager.getComponent(other);
-//	LockComponent* otherLockComp = theComponentManagers.theLockManager.getComponent(other);
-//	InventoryItemComponent* otherInventoryItemComp = theComponentManagers.theInventoryItemManager.getComponent(other);
-//	ConsoleOutputComponent* otherConsoleOutComp = theComponentManagers.theConsoleOutputManager.getComponent(other);
-//
-//	InventoryComponent* inventoryComp = theComponentManagers.theInventoryManager.getComponent(entity);
-//	
-//	if (otherSceneComp != nullptr)
-//	{
-//		if (otherLockComp != nullptr)
-//		{
-//			if (inventoryComp != nullptr)
-//			{
-//				for (int i = 0; i < inventoryComp->size(); i++)
-//				{
-//					if(inventoryComp->getEntity(i)->name == otherLockComp->key)
-//					{
-//						if (otherConsoleOutComp != nullptr)
-//						{
-//							otherConsoleOutComp->setIterator(-1); //setActive(false);
-//						}
-//
-//						room.SetNextRoomName(otherSceneComp->nextName);
-//						room.SetIsPlaying(false);
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-//			room.SetNextRoomName(otherSceneComp->nextName);
-//			room.SetIsPlaying(false);
-//		}
-//	}	
-//	//funkar men ändra kanske iterator - 1 till en bool				OutputDebugStringA(std::to_string(vKeys[i]).c_str());
-//	if (otherConsoleOutComp != nullptr && otherConsoleOutComp->getIterator() >= 0) //otherConsoleOutComp->getActive())
-//	{
-//		consolePanel->enqueue(otherConsoleOutComp->getOutput());
-//		otherConsoleOutComp->iterate();
-//	//sätt iterator - 1 så att sista strängen visas igen om spelaren trycker flera ggr
-//		if (otherConsoleOutComp->getOutputSize() <= otherConsoleOutComp->getIterator())
-//		{	
-//			otherConsoleOutComp->setIterator(otherConsoleOutComp->getOutputSize() - 1);
-//		}
-//	}
-//
-//	if (inventoryComp != nullptr &&
-//		otherInventoryItemComp != nullptr)
-//	{
-//		if (inventoryComp->hasEntity(*theEntityManager.getEntity(other)) == false)
-//		{
-//			inventoryComp->add(*theEntityManager.getEntity(other));
-//			theComponentManagers.theInventoryItemManager.getComponent(other)->isInInventory = true;
-//			theComponentManagers.theSpriteManager.destroyComponent(other);
-//			theComponentManagers.theCollisionManager.destroyComponent(other);
-//			
-//			room.DrawSprite(room.GetFloor(), theComponentManagers.thePositionManager.getComponent(other)->posX, theComponentManagers.thePositionManager.getComponent(other)->posY, room.GetFloorColor());
-//			theComponentManagers.thePositionManager.destroyComponent(other);	
-//		}
-//	}
-//}
-//
-//void ECS::Interact(Room &room, ConsolePanel *consolePanel)//, ConsolePanel* theConsolePanel, InventoryPanel* theInventoryPanel
-//{
-//	typedef std::map<int, Entity*>::const_iterator const_map_iter;
-//	const_map_iter entityIterator = theEntityManager.getMap()->begin();
-//	const_map_iter otherIterator = theEntityManager.getMap()->begin();
-//
-//	NearbyComponent* nearComp;
-//	InputComponent* inputComp;
-//	PositionComponent* posComp;
-//
-//	PositionComponent* otherPosComp;
-//
-//	while (entityIterator != theEntityManager.getMap()->end()) {
-//
-//		nearComp = theComponentManagers.theNearbyManager.getComponent(entityIterator->first);
-//		inputComp = theComponentManagers.theInputManager.getComponent(entityIterator->first);
-//		posComp = theComponentManagers.thePositionManager.getComponent(entityIterator->first);
-//		
-//		if (nearComp != nullptr)
-//		{
-//			if (inputComp != nullptr &&
-//				inputComp->command == 'E')
-//			{
-//				if (nearComp->nbrUp != room.floorID && nearComp->nbrUp != room.wallID)
-//				{
-//					InteractAction(room, entityIterator->first, nearComp->nbrUp, consolePanel);
-//				}
-//				else if (nearComp->nbrDown != room.floorID && nearComp->nbrDown != room.wallID)
-//				{
-//					InteractAction(room, entityIterator->first, nearComp->nbrDown, consolePanel);
-//				}
-//				else if (nearComp->nbrLeft != room.floorID && nearComp->nbrLeft != room.wallID)
-//				{
-//					InteractAction(room, entityIterator->first, nearComp->nbrLeft, consolePanel);
-//				}
-//				else if (nearComp->nbrRight != room.floorID && nearComp->nbrRight != room.wallID)
-//				{
-//					InteractAction(room, entityIterator->first, nearComp->nbrRight, consolePanel);
-//				}
-//			}
-//
-//			if (posComp != nullptr)
-//			{
-//				if (room.TryPositionIsFloor(posComp->posX + 1, posComp->posY))
-//				{
-//					nearComp->nbrRight = room.floorID;
-//				}
-//				else
-//				{
-//					nearComp->nbrRight = room.wallID;
-//				}
-//				if (room.TryPositionIsFloor(posComp->posX - 1, posComp->posY))
-//				{
-//					nearComp->nbrLeft = room.floorID;
-//				}
-//				else
-//				{
-//					nearComp->nbrLeft = room.wallID;
-//				}
-//				if (room.TryPositionIsFloor(posComp->posX, posComp->posY + 1))
-//				{
-//					nearComp->nbrDown = room.floorID;
-//				}
-//				else
-//				{
-//					nearComp->nbrDown = room.wallID;
-//				}
-//				if (room.TryPositionIsFloor(posComp->posX, posComp->posY - 1))
-//				{
-//					nearComp->nbrUp = room.floorID;
-//				}
-//				else
-//				{
-//					nearComp->nbrUp = room.wallID;
-//				}
-//
-//				while (otherIterator != theEntityManager.getMap()->end())
-//				{
-//					otherPosComp = theComponentManagers.thePositionManager.getComponent(otherIterator->first);
-//
-//					if (otherPosComp != nullptr)
-//					{
-//						if (posComp->posX - 1 == otherPosComp->posX &&
-//							posComp->posY == otherPosComp->posY)
-//						{
-//							nearComp->nbrLeft = otherIterator->first;
-//						}
-//						if (posComp->posX + 1 == otherPosComp->posX &&
-//							posComp->posY == otherPosComp->posY)
-//						{
-//							nearComp->nbrRight = otherIterator->first;
-//						}
-//						if (posComp->posX == otherPosComp->posX &&
-//							posComp->posY - 1 == otherPosComp->posY)
-//						{
-//							nearComp->nbrUp = otherIterator->first;
-//						}
-//						if (posComp->posX == otherPosComp->posX &&
-//							posComp->posY + 1 == otherPosComp->posY)
-//						{
-//							nearComp->nbrDown = otherIterator->first;
-//						}
-//					}
-//					++otherIterator;
-//				}
-//				otherIterator = theEntityManager.getMap()->begin();
-//			}
-//		}
-//		++entityIterator;
-//	}
-//}
-//

@@ -8,6 +8,8 @@ void Game::MainMenu()
 	scene.CreateFromVector2D(Application::ReadFileToVector2D("Scenes/mainmenu.txt"));
 	ECS::AssignScene(scene);
 
+
+
 	ECS::Add<SpriteComponent>(PLAYER)->sprite = '#';
 	ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 4));
 	ECS::Add<CollisionComponent>(PLAYER)->collisionSetting = 0;
@@ -15,6 +17,9 @@ void Game::MainMenu()
 	ECS::Add<MotionComponent>(PLAYER);
 	ECS::Add<InputComponent>(PLAYER);
 	ECS::Add<BackpackComponent>(PLAYER);
+
+	ECS::Get<PositionComponent>(PLAYER)->posX = 1;
+	ECS::Get<PositionComponent>(PLAYER)->posY = 4;
 
 	ECS::Add<SpriteComponent>(MAINMENU_DOOR_PLAY)->sprite = char(179);
 	ECS::Add<PositionComponent>(MAINMENU_DOOR_PLAY, PositionComponent(2,4));
@@ -28,9 +33,10 @@ void Game::MainMenu()
 
 
 	double tick = Application::GetGlobalTimer();
+	double newTick;
 	while (scene.GetIsPlaying())
 	{
-		double const newTick = Application::GetGlobalTimer();
+		newTick = Application::GetGlobalTimer();
 		if (tick < newTick)
 		{
 			ECS::Systems::Input();

@@ -1,4 +1,4 @@
-#include "game.h"
+//#include "game.h"
 //using namespace std;
 //
 //void CreateObst(ECS* theEntityComponentSystem, int x, int y, vector<Entity*>* arr, bool left, int footprColor)
@@ -22,8 +22,8 @@
 //	arr->push_back(obst);
 //}
 //
-void Game::Hall()
-{
+//void Game::Hall()
+//{
 //	theInventoryPanel->inventory->BackupLoad();
 //	theConsolePanel->console->BackupLoad();
 //
@@ -200,4 +200,4 @@ void Game::Hall()
 //		playerPosition->posX = 1;
 //		playerPosition->posY = 4;
 //	}
-}
+//}

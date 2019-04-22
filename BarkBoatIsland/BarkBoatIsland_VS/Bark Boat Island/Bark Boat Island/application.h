@@ -35,6 +35,7 @@ namespace Application
 	short Input(int vKey);
 	void SetTextColor(int const color = 15);
 	void SetFontSize(int w, int h);
+	void SetFontEncoding(int code);
 
 	extern std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
 	extern HWND console;

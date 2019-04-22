@@ -15,7 +15,7 @@ public:
 
 	void MainMenu();
 	void WorldOne();
-	void Hall();
+	//void Hall();
 
 	enum Scenes
 	{
@@ -28,21 +28,5 @@ public:
 private:
 	short currentScene;
 
-	const enum Entities
-	{
-		PLAYER = 1,
 
-		//_________________mainmenu_________________//
-		MAINMENU_DOOR_PLAY,
-		MAINMENU_DOOR_QUIT,
-		MAINMENU_KEY,
-		NUMBER_OF_ENTITIES
-	};
-
-	const enum BackPackItemTypes
-	{
-		GOLD_KEY = 1,
-		SILVER_KEY,
-		NUMBER_OF_TYPES
-	};
 };
