@@ -83,7 +83,7 @@ NearbyComponent::NearbyComponent()
 #pragma region COLLISION
 CollisionComponent::CollisionComponent()
 {
-	this->collisionSetting = 0;
+	this->collisionSetting = CollisionTypes::NORMAL;
 }
 
 CollisionComponent::CollisionComponent(int setting)
@@ -119,13 +119,27 @@ namespace ECS
 		{
 			int const id = killQueue[i];
 
-			Destroy<PositionComponent>(id); //killQueue.emplace_back(ENTITIES[x]);
-			Destroy<SpriteComponent>(id);
-			Destroy<InputComponent>(id);
-			Destroy<MotionComponent>(id);
-			Destroy<NearbyComponent>(id);
-			Destroy<BackpackComponent>(id);
-			Destroy<BackpackItemComponent>(id);
+			if (PersistencyComponent* persistencyComponent = Get<PersistencyComponent>(id))
+			{
+				if (PositionComponent* positionComponent = Get<PositionComponent>(id)) { if (!positionComponent->registerPersistancy) { Destroy<PositionComponent>(id); } }; //killQueue.emplace_back(ENTITIES[x]);
+				if (SpriteComponent* spriteComponent = Get<SpriteComponent>(id)) { if (!spriteComponent->registerPersistancy) { Destroy<SpriteComponent>(id); } };
+				if (InputComponent* inputComponent = Get<InputComponent>(id)) { if (!inputComponent->registerPersistancy) { Destroy<InputComponent>(id); } };
+				if (MotionComponent* motionComponent = Get<MotionComponent>(id)) { if (!motionComponent->registerPersistancy) { Destroy<MotionComponent>(id); } };
+				if (NearbyComponent* nearbyComponent = Get<NearbyComponent>(id)) { if (!nearbyComponent->registerPersistancy) { Destroy<NearbyComponent>(id); } };
+				if (BackpackComponent* backpackComponent = Get<BackpackComponent>(id)) { if (!backpackComponent->registerPersistancy) { Destroy<BackpackComponent>(id); } };
+				if (BackpackItemComponent* backpackItemComponent = Get<BackpackItemComponent>(id)) { if (!backpackItemComponent->registerPersistancy) { Destroy<BackpackItemComponent>(id); } };
+			}
+			else
+			{
+				Destroy<PositionComponent>(id);
+				Destroy<SpriteComponent>(id);
+				Destroy<InputComponent>(id);
+				Destroy<MotionComponent>(id);
+				Destroy<NearbyComponent>(id);
+				Destroy<BackpackComponent>(id);
+				Destroy<BackpackItemComponent>(id);
+			}
+
 			killQueue.pop_back();
 		}
 	}
@@ -146,7 +160,7 @@ namespace ECS
 				SpriteComponent* spriteComponent = Get<SpriteComponent>(ENTITIES[e]);
 				PositionComponent* positionComponent = Get<PositionComponent>(ENTITIES[e]);
 
-				if (spriteComponent->drawLayer == drawLayer)
+				if (spriteComponent->drawLayer == drawLayer && spriteComponent->isActive)
 				{
 					scene->DrawSprite(spriteComponent->sprite, positionComponent->posX, positionComponent->posY, spriteComponent->color);
 				}
@@ -229,7 +243,18 @@ namespace ECS
 								//backpackComponent->items.emplace_back(nearbyComponent->nbrUp);
 								PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->neighbors[nbr]);
 								scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-								Destroy<PositionComponent>(nearbyComponent->neighbors[nbr]);
+								//Destroy<PositionComponent>(nearbyComponent->neighbors[nbr]);
+
+								positionComponent->isActive = false;
+
+								if (SpriteComponent* spriteComponent = Get<SpriteComponent>(nearbyComponent->neighbors[nbr]))
+								{
+									spriteComponent->isActive = false;
+								}
+								if (CollisionComponent* collisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[nbr]))
+								{
+									collisionComponent->isActive = false;
+								}
 
 								backpackComponent->items[backpackItemComponent->type]++;
 							}
@@ -238,22 +263,25 @@ namespace ECS
 							{
 								if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->neighbors[nbr]))
 								{
-									for (int i = 0; i < backpackComponent->items.size(); i++)
+									if (lockComponent->isActive)
 									{
-										if (backpackComponent->items[lockComponent->key])
+										for (int i = 0; i < backpackComponent->items.size(); i++)
 										{
-											scene->SetNextSceneName(sceneComponent->nextScene);
-											scene->SetIsPlaying(false);
-											backpackComponent->items[lockComponent->key]--;
-											Destroy<LockComponent>(nearbyComponent->neighbors[nbr]);
+											if (backpackComponent->items[lockComponent->key])
+											{
+												scene->SetNextSceneName(sceneComponent->nextScene);
+												scene->SetIsPlaying(false);
+												backpackComponent->items[lockComponent->key]--;
+												lockComponent->isActive = false;
+												return;
+												//Destroy<LockComponent>(nearbyComponent->neighbors[nbr]);
+											}
 										}
+										return;
 									}
-								}
-								else
-								{
-									scene->SetNextSceneName(sceneComponent->nextScene);
-									scene->SetIsPlaying(false);
-								}
+								}									
+								scene->SetNextSceneName(sceneComponent->nextScene);
+								scene->SetIsPlaying(false);
 							}
 						}
 					}
@@ -285,10 +313,13 @@ namespace ECS
 
 			//Define nearby entities
 			//Check world first
-			nearbyComponent->neighbors[3] = (scene->TryPositionIsFloor(positionComponent->posX + 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->neighbors[2] = (scene->TryPositionIsFloor(positionComponent->posX - 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->neighbors[1] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY + 1)) ? (scene->floorID) : (scene->wallID);
-			nearbyComponent->neighbors[0] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY - 1)) ? (scene->floorID) : (scene->wallID);
+			if (nearbyComponent->isActive)
+			{
+				nearbyComponent->neighbors[3] = (scene->TryPositionIsFloor(positionComponent->posX + 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
+				nearbyComponent->neighbors[2] = (scene->TryPositionIsFloor(positionComponent->posX - 1, positionComponent->posY)) ? (scene->floorID) : (scene->wallID);
+				nearbyComponent->neighbors[1] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY + 1)) ? (scene->floorID) : (scene->wallID);
+				nearbyComponent->neighbors[0] = (scene->TryPositionIsFloor(positionComponent->posX, positionComponent->posY - 1)) ? (scene->floorID) : (scene->wallID);
+			}
 
 			
 			//Check other entities
@@ -299,32 +330,35 @@ namespace ECS
 				{
 					nearbyPositionComponent = Get<PositionComponent>(ENTITIES_NEARBY[eN]);
 
-					if (positionComponent->posX == nearbyPositionComponent->posX)
+					if (nearbyPositionComponent->isActive)
 					{
-						if (positionComponent->posY - 1 == nearbyPositionComponent->posY)
+						if (positionComponent->posX == nearbyPositionComponent->posX)
 						{
-							nearbyComponent->neighbors[0] = ENTITIES_NEARBY[eN];
+							if (positionComponent->posY - 1 == nearbyPositionComponent->posY)
+							{
+								nearbyComponent->neighbors[0] = ENTITIES_NEARBY[eN];
+							}
+							else if (positionComponent->posY + 1 == nearbyPositionComponent->posY)
+							{
+								nearbyComponent->neighbors[1] = ENTITIES_NEARBY[eN];
+							}
 						}
-						else if (positionComponent->posY + 1 == nearbyPositionComponent->posY)
+						else if (positionComponent->posY == nearbyPositionComponent->posY)
 						{
-							nearbyComponent->neighbors[1] = ENTITIES_NEARBY[eN];
-						}
-					}
-					else if (positionComponent->posY == nearbyPositionComponent->posY)
-					{
-						if (positionComponent->posX - 1 == nearbyPositionComponent->posX)
-						{
-							nearbyComponent->neighbors[2] = ENTITIES_NEARBY[eN];
-						}
-						else if (positionComponent->posX + 1 == nearbyPositionComponent->posX)
-						{
-							nearbyComponent->neighbors[3] = ENTITIES_NEARBY[eN];
+							if (positionComponent->posX - 1 == nearbyPositionComponent->posX)
+							{
+								nearbyComponent->neighbors[2] = ENTITIES_NEARBY[eN];
+							}
+							else if (positionComponent->posX + 1 == nearbyPositionComponent->posX)
+							{
+								nearbyComponent->neighbors[3] = ENTITIES_NEARBY[eN];
+							}
 						}
 					}
 				}
 			}
 
-			if (motionComponent->movementRate == 0.0f || motionComponent->timeToMove < timePoint)
+			if (motionComponent->isActive && (motionComponent->movementRate == 0.0f || motionComponent->timeToMove < timePoint))
 			{
 				if (motionComponent->footprint == char())
 				{
@@ -338,13 +372,13 @@ namespace ECS
 					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[0]);
 
 					if (nearbyComponent->neighbors[0] == scene->floorID ||
-						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
+						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != CollisionTypes::SOLID && nearbyCollisionComponent->collisionSetting != CollisionTypes::DYNAMIC && (collisionComponent->collisionSetting == CollisionTypes::KINEMATIC || nearbyCollisionComponent->collisionSetting == CollisionTypes::KINEMATIC)) ||
 						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[0] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY -= motionComponent->up;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[0] == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == CollisionTypes::DYNAMIC && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[0] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY -= motionComponent->up;
@@ -357,13 +391,13 @@ namespace ECS
 					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[1]);
 
 					if (nearbyComponent->neighbors[1] == scene->floorID ||
-						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
+						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != CollisionTypes::SOLID && nearbyCollisionComponent->collisionSetting != CollisionTypes::DYNAMIC && (collisionComponent->collisionSetting == CollisionTypes::KINEMATIC || nearbyCollisionComponent->collisionSetting == CollisionTypes::KINEMATIC)) ||
 						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[1] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY += motionComponent->down;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[1] == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == CollisionTypes::DYNAMIC && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[1] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posY += motionComponent->down;
@@ -376,13 +410,13 @@ namespace ECS
 					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[2]);
 
 					if (nearbyComponent->neighbors[2] == scene->floorID ||
-						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
+						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != CollisionTypes::SOLID && nearbyCollisionComponent->collisionSetting != CollisionTypes::DYNAMIC && (collisionComponent->collisionSetting == CollisionTypes::KINEMATIC || nearbyCollisionComponent->collisionSetting == CollisionTypes::KINEMATIC)) ||
 						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[2] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX -= motionComponent->left;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[2] == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == CollisionTypes::DYNAMIC && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[2] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX -= motionComponent->left;
@@ -395,13 +429,13 @@ namespace ECS
 					NearbyComponent* nearbyNearbyComponent = Get<NearbyComponent>(nearbyComponent->neighbors[3]);
 					
 					if (nearbyComponent->neighbors[3] == scene->floorID ||
-						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != 2 && nearbyCollisionComponent->collisionSetting != 3 && (collisionComponent->collisionSetting == 1 || nearbyCollisionComponent->collisionSetting == 1)) ||
+						(nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting != CollisionTypes::SOLID && nearbyCollisionComponent->collisionSetting != CollisionTypes::DYNAMIC && (collisionComponent->collisionSetting == CollisionTypes::KINEMATIC || nearbyCollisionComponent->collisionSetting == CollisionTypes::KINEMATIC)) ||
 						(nearbyCollisionComponent == nullptr && nearbyComponent->neighbors[3] > 0))
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX += motionComponent->right;
 					}
-					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == 3 && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[3] == scene->floorID)
+					else if (nearbyCollisionComponent != nullptr && nearbyCollisionComponent->collisionSetting == CollisionTypes::DYNAMIC && nearbyPositionComponent != nullptr && nearbyNearbyComponent != nullptr && nearbyComponent->neighbors[3] == scene->floorID)
 					{
 						scene->DrawSprite(motionComponent->footprint, positionComponent->posX, positionComponent->posY, motionComponent->footprintColor);
 						positionComponent->posX += motionComponent->right;

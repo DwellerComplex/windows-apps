@@ -1,5 +1,25 @@
 #include "game.h"
 
+//template <typename T, typename U>
+//struct AttributesComponent
+//{
+//
+//	void Add(T attr, U val) { AttributesTemplate::attribute<T, U>[attr] = val; };
+//
+//
+//	U* Get(T attr) { return &AttributesTemplate::attribute<T, U>[attr]; };
+//
+//	std::unordered_map<T,U> attribute;
+//};
+
+	//AttributesComponent plyr;
+	//plyr.Add("money", 10);
+
+	//ECS::Add<AttributesComponent<std::string, int>>(PLAYER, plyr);
+
+	//auto e = ECS::Get<AttributesComponent<std::string, int>>(PLAYER)->Get("money");
+	//auto r = ECS::Get<AttributesComponent<std::string, int>>(PLAYER)->Get("name");
+
 void Game::WorldOne()
 {
 	//Create room
@@ -23,14 +43,11 @@ void Game::WorldOne()
 	Scene Console("Console", char(32), char(248), char(248), char(248), char(248), char(248), char(248), Application::GetConsoleWidth(), 7, 0, Application::GetConsoleHeight() - 7, 15, 3);
 	Console.CreateAsSquare();
 
-	//Keep key-components between scenes
-	if (!ECS::Get<BackpackItemComponent>(WORLD_ONE_SILVER_KEY))
-	{
-		ECS::Add<SpriteComponent>(WORLD_ONE_SILVER_KEY, SpriteComponent(char(235), 14));
-		ECS::Add<PositionComponent>(WORLD_ONE_SILVER_KEY, PositionComponent(15, 2));
-		ECS::Add<CollisionComponent>(WORLD_ONE_SILVER_KEY)->collisionSetting = 2;
-		ECS::Add<BackpackItemComponent>(WORLD_ONE_SILVER_KEY)->type = SILVER_KEY;
-	}
+	ECS::Add<PersistencyComponent>(WORLD_ONE_SILVER_KEY);
+	ECS::Add<SpriteComponent>(WORLD_ONE_SILVER_KEY, SpriteComponent(char(235), 14))->registerPersistancy = true;
+	ECS::Add<PositionComponent>(WORLD_ONE_SILVER_KEY, PositionComponent(15, 2))->registerPersistancy = true;
+	ECS::Add<CollisionComponent>(WORLD_ONE_SILVER_KEY, CollisionComponent(2))->registerPersistancy = true;
+	ECS::Add<BackpackItemComponent>(WORLD_ONE_SILVER_KEY, BackpackItemComponent(SILVER_KEY))->registerPersistancy = true;
 
 	ECS::Add<SpriteComponent>(100, SpriteComponent('X', 123));
 	ECS::Add<PositionComponent>(100, PositionComponent(15, 3));
@@ -38,14 +55,13 @@ void Game::WorldOne()
 	ECS::Add<NearbyComponent>(100);
 	ECS::Add<MotionComponent>(100, MotionComponent(0, 1, 0, 0, 1));
 
-
+	ECS::Add<PersistencyComponent>(WORLD_ONE_DOOR_MAINMENU);
 	ECS::Add<SpriteComponent>(WORLD_ONE_DOOR_MAINMENU)->sprite = char(179);
 	ECS::Add<PositionComponent>(WORLD_ONE_DOOR_MAINMENU, PositionComponent(8, 2));
 	ECS::Add<SceneComponent>(WORLD_ONE_DOOR_MAINMENU)->nextScene = Scenes::MAINMENU;
 	ECS::Add<CollisionComponent>(WORLD_ONE_DOOR_MAINMENU)->collisionSetting = 2;
+	ECS::Add<LockComponent>(WORLD_ONE_DOOR_MAINMENU, LockComponent(SILVER_KEY))->registerPersistancy = true;
 
-	//if(keepAliveComp) keepalcomp not in killqueue
-	ECS::Add<LockComponent>(WORLD_ONE_DOOR_MAINMENU)->key = SILVER_KEY;
 
 
 	double tick = Application::GetGlobalTimer();
@@ -60,7 +76,6 @@ void Game::WorldOne()
 			ECS::Systems::Draw();
 			scene.Draw();
 			
-
 			PlayerBackpack.DrawSprite('0' + ECS::Get<BackpackComponent>(PLAYER)->items[SILVER_KEY], 14, 3);
 			PlayerBackpack.DrawSprite('0' + ECS::Get<BackpackComponent>(PLAYER)->items[GOLD_KEY], 14, 4);
 

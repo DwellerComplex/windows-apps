@@ -2,7 +2,7 @@
 #include "application.h"
 #include "scene.h"
 
-enum Entities
+const enum Entities
 {
 	PLAYER = 1,
 
@@ -23,8 +23,14 @@ const enum BackPackItemTypes
 	NUMBER_OF_TYPES
 };
 
+struct BaseComponent
+{
+	bool registerPersistancy = false;
+	bool isActive = true;
+};
+
 #pragma region NEARBY
-struct NearbyComponent
+struct NearbyComponent : public BaseComponent
 {
 public:
 	NearbyComponent();
@@ -33,21 +39,31 @@ public:
 #pragma endregion
 
 #pragma region COLLISION
-struct CollisionComponent
+const enum CollisionTypes
+{
+	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
+	NORMAL,
+	//1: kinetic (ignore normal and kinetic items) 
+	KINEMATIC,
+	//2: solid (ignore no items, block all) 
+	SOLID,
+	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
+	DYNAMIC,
+	NUMBER_OF_COLLISION_TYPES
+};
+
+struct CollisionComponent : public BaseComponent
 {
 public:
 	CollisionComponent();
 	CollisionComponent(int setting);
-	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
-	//1: kinetic (ignore normal and kinetic items) 
-	//2: solid (ignore no items, block all) 
-	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
+
 	short int collisionSetting;
 };
 #pragma endregion
 
 #pragma region POSITION
-struct PositionComponent
+struct PositionComponent : public BaseComponent
 {
 public:
 	PositionComponent() {};
@@ -58,7 +74,7 @@ public:
 #pragma endregion
 
 #pragma region SPRITE
-struct SpriteComponent
+struct SpriteComponent : public BaseComponent
 {
 public:
 	SpriteComponent();
@@ -71,7 +87,7 @@ public:
 #pragma endregion
 
 #pragma region INPUT
-struct InputComponent
+struct InputComponent : public BaseComponent
 {
 public:
 	InputComponent();
@@ -82,7 +98,7 @@ public:
 #pragma endregion
 
 #pragma region MOTION
-struct MotionComponent
+struct MotionComponent : public BaseComponent
 {
 public:
 	MotionComponent();
@@ -97,7 +113,7 @@ public:
 #pragma endregion
 
 #pragma region SCENE
-struct SceneComponent
+struct SceneComponent : public BaseComponent
 {
 public:
 	SceneComponent() { };
@@ -108,7 +124,7 @@ public:
 #pragma endregion
 
 #pragma region LOCK
-struct LockComponent
+struct LockComponent : public BaseComponent
 {
 public:
 	LockComponent() { };
@@ -120,7 +136,7 @@ public:
 
 //Contains ids of backpack items
 #pragma region BACKPACK
-struct BackpackComponent
+struct BackpackComponent : public BaseComponent
 {
 public:
 	BackpackComponent() { };
@@ -130,7 +146,7 @@ public:
 
 //"type" specifies item type. Types are counted as ints in backpack, same type icreases same int.
 #pragma region BACKPACKITEM
-struct BackpackItemComponent
+struct BackpackItemComponent : public BaseComponent
 {
 public:
 	BackpackItemComponent() { type = 0; };
@@ -141,7 +157,7 @@ public:
 
 #pragma region LIFE
 
-struct LifeComponent
+struct LifeComponent : public BaseComponent
 {
 public:
 	LifeComponent() {};
@@ -153,7 +169,7 @@ public:
 
 #pragma region ATTACK
 
-struct AttackComponent
+struct AttackComponent : public BaseComponent
 {
 public:
 	AttackComponent() {};
@@ -163,9 +179,19 @@ public:
 
 #pragma endregion
 
+#pragma region PERSISTENT
+
+struct PersistencyComponent : public BaseComponent
+{
+public:
+	PersistencyComponent() {};
+};
+
+#pragma endregion
+
 #pragma region PLATFORM
 
-struct PlatformComponent
+struct PlatformComponent : public BaseComponent
 {
 public:
 	PlatformComponent() {};
@@ -178,7 +204,7 @@ public:
 };
 
 
-struct PlatformRiderComponent
+struct PlatformRiderComponent : public BaseComponent
 {
 	PlatformRiderComponent() {};
 };
