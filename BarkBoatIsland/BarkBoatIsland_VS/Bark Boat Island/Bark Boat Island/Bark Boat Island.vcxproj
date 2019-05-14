@@ -126,6 +126,9 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="scenemanager.cpp" />
+    <ClCompile Include="scenetemplate.cpp" />
+    <ClCompile Include="startup.cpp" />
     <ClCompile Include="worldOne.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +138,10 @@
     <ClInclude Include="application.h" />
     <ClInclude Include="inventorypanel.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="scenebase.h" />
+    <ClInclude Include="scenemanager.h" />
+    <ClInclude Include="scenetemplate.h" />
+    <ClInclude Include="startup.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

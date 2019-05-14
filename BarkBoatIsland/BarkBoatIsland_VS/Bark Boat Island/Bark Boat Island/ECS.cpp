@@ -106,6 +106,48 @@ AttackComponent::AttackComponent(int damage)
 }
 #pragma endregion
 
+#pragma region CONSOLEOUTPUT
+ConsoleOutputComponent::ConsoleOutputComponent()
+{
+}
+
+ConsoleOutputComponent::ConsoleOutputComponent(std::string const output)
+{
+	this->output.resize(1);
+	this->output[0] = output;
+}
+
+ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const output)
+{
+	this->output = output;
+}
+
+void ConsoleOutputComponent::setIterator(int iter)
+{
+	this->iterator = iter;
+}
+
+void ConsoleOutputComponent::iterate()
+{
+	this->iterator++;
+}
+
+int ConsoleOutputComponent::getIterator()
+{
+	return this->iterator;
+}
+
+std::string ConsoleOutputComponent::getOutput()
+{
+	return this->output[this->iterator];
+}
+
+int ConsoleOutputComponent::getOutputSize()
+{
+	return (int)this->output.size();
+}
+#pragma endregion
+
 namespace ECS
 {
 	void AssignScene(Scene& sceneToAssign)
@@ -206,86 +248,6 @@ namespace ECS
 			if (i == vKeys.size() && inputComponent->hasClicked == true)
 			{
 				inputComponent->hasClicked = false;
-			}
-
-			//Process input
-			
-			if(MotionComponent* motionComponent = Get<MotionComponent>(ENTITIES[e]))
-			{
-				if (inputComponent->command == 'W')
-				{
-					motionComponent->up = 1;
-				}
-				if (inputComponent->command == 'A')
-				{
-					motionComponent->left = 1;
-				}
-				if (inputComponent->command == 'S')
-				{
-					motionComponent->down = 1;
-				}
-				if (inputComponent->command == 'D')
-				{
-					motionComponent->right = 1;
-				}
-			}
-
-			if (NearbyComponent* nearbyComponent = Get<NearbyComponent>(ENTITIES[e]))
-			{
-				if (inputComponent->command == 'E')
-				{
-					if (BackpackComponent* backpackComponent = Get<BackpackComponent>(ENTITIES[e]))
-					{
-						for (int nbr = 0; nbr < nearbyComponent->neighbors.size(); nbr++)
-						{
-							if (BackpackItemComponent* backpackItemComponent = Get<BackpackItemComponent>(nearbyComponent->neighbors[nbr]))
-							{
-								//backpackComponent->items.emplace_back(nearbyComponent->nbrUp);
-								PositionComponent* positionComponent = Get<PositionComponent>(nearbyComponent->neighbors[nbr]);
-								scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
-								//Destroy<PositionComponent>(nearbyComponent->neighbors[nbr]);
-
-								positionComponent->isActive = false;
-
-								if (SpriteComponent* spriteComponent = Get<SpriteComponent>(nearbyComponent->neighbors[nbr]))
-								{
-									spriteComponent->isActive = false;
-								}
-								if (CollisionComponent* collisionComponent = Get<CollisionComponent>(nearbyComponent->neighbors[nbr]))
-								{
-									collisionComponent->isActive = false;
-								}
-
-								backpackComponent->items[backpackItemComponent->type]++;
-							}
-
-							if (SceneComponent* sceneComponent = Get<SceneComponent>(nearbyComponent->neighbors[nbr]))
-							{
-								if (LockComponent* lockComponent = Get<LockComponent>(nearbyComponent->neighbors[nbr]))
-								{
-									if (lockComponent->isActive)
-									{
-										for (int i = 0; i < backpackComponent->items.size(); i++)
-										{
-											if (backpackComponent->items[lockComponent->key])
-											{
-												scene->SetNextSceneName(sceneComponent->nextScene);
-												scene->SetIsPlaying(false);
-												backpackComponent->items[lockComponent->key]--;
-												lockComponent->isActive = false;
-												return;
-												//Destroy<LockComponent>(nearbyComponent->neighbors[nbr]);
-											}
-										}
-										return;
-									}
-								}									
-								scene->SetNextSceneName(sceneComponent->nextScene);
-								scene->SetIsPlaying(false);
-							}
-						}
-					}
-				}
 			}
 		}
 	}

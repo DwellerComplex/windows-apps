@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Scenes\World\WorldOne">
       <UniqueIdentifier>{d5b4812a-019b-4f67-b516-7f72d815c2f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Templates">
+      <UniqueIdentifier>{c739d10c-f011-480c-b3ee-6c56628477c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +72,15 @@
     <ClCompile Include="worldOne.cpp">
       <Filter>Source Files\Scenes\World\WorldOne</Filter>
     </ClCompile>
+    <ClCompile Include="startup.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="scenetemplate.cpp">
+      <Filter>Templates</Filter>
+    </ClCompile>
+    <ClCompile Include="scenemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -88,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="scene.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="startup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenebase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenetemplate.h">
+      <Filter>Templates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

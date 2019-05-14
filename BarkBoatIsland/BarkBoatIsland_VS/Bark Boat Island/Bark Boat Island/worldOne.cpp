@@ -1,24 +1,90 @@
 #include "game.h"
 
-//template <typename T, typename U>
-//struct AttributesComponent
-//{
-//
-//	void Add(T attr, U val) { AttributesTemplate::attribute<T, U>[attr] = val; };
-//
-//
-//	U* Get(T attr) { return &AttributesTemplate::attribute<T, U>[attr]; };
-//
-//	std::unordered_map<T,U> attribute;
-//};
+//Process input
+void ProcessPlayerInput(Scene* scene)
+{
+	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	{
+		if (MotionComponent* motionComponent = ECS::Get<MotionComponent>(Entities::PLAYER))
+		{
+			if (inputComponent->command == 'W')
+			{
+				motionComponent->up = 1;
+			}
+			if (inputComponent->command == 'A')
+			{
+				motionComponent->left = 1;
+			}
+			if (inputComponent->command == 'S')
+			{
+				motionComponent->down = 1;
+			}
+			if (inputComponent->command == 'D')
+			{
+				motionComponent->right = 1;
+			}
+		}
 
-	//AttributesComponent plyr;
-	//plyr.Add("money", 10);
+		if (NearbyComponent* nearbyComponent = ECS::Get<NearbyComponent>(Entities::PLAYER))
+		{
+			if (inputComponent->command == 'E')
+			{
+				if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+				{
+					for (int nbr = 0; nbr < nearbyComponent->neighbors.size(); nbr++)
+					{
+						if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(nearbyComponent->neighbors[nbr]))
+						{
+							//backpackComponent->items.emplace_back(nearbyComponent->nbrUp);
+							PositionComponent* positionComponent = ECS::Get<PositionComponent>(nearbyComponent->neighbors[nbr]);
+							scene->DrawSprite(scene->GetFloor(), positionComponent->posX, positionComponent->posY, scene->GetFloorColor());
+							//Destroy<PositionComponent>(nearbyComponent->neighbors[nbr]);
 
-	//ECS::Add<AttributesComponent<std::string, int>>(PLAYER, plyr);
+							positionComponent->isActive = false;
 
-	//auto e = ECS::Get<AttributesComponent<std::string, int>>(PLAYER)->Get("money");
-	//auto r = ECS::Get<AttributesComponent<std::string, int>>(PLAYER)->Get("name");
+							if (SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(nearbyComponent->neighbors[nbr]))
+							{
+								spriteComponent->isActive = false;
+							}
+							if (CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(nearbyComponent->neighbors[nbr]))
+							{
+								collisionComponent->isActive = false;
+							}
+
+							backpackComponent->items[backpackItemComponent->type]++;
+						}
+
+						if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(nearbyComponent->neighbors[nbr]))
+						{
+							if (LockComponent* lockComponent = ECS::Get<LockComponent>(nearbyComponent->neighbors[nbr]))
+							{
+								if (lockComponent->isActive)
+								{
+									for (int i = 0; i < backpackComponent->items.size(); i++)
+									{
+										if (backpackComponent->items[lockComponent->key])
+										{
+											scene->SetNextSceneName(sceneComponent->nextScene);
+											scene->SetIsPlaying(false);
+											backpackComponent->items[lockComponent->key]--;
+											lockComponent->isActive = false;
+											return;
+											//Destroy<LockComponent>(nearbyComponent->neighbors[nbr]);
+										}
+									}
+									return;
+								}
+							}
+							scene->SetNextSceneName(sceneComponent->nextScene);
+							scene->SetIsPlaying(false);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 void Game::WorldOne()
 {
@@ -43,11 +109,12 @@ void Game::WorldOne()
 	Scene Console("Console", char(32), char(248), char(248), char(248), char(248), char(248), char(248), Application::GetConsoleWidth(), 7, 0, Application::GetConsoleHeight() - 7, 15, 3);
 	Console.CreateAsSquare();
 
-	ECS::Add<PersistencyComponent>(WORLD_ONE_SILVER_KEY);
-	ECS::Add<SpriteComponent>(WORLD_ONE_SILVER_KEY, SpriteComponent(char(235), 14))->registerPersistancy = true;
-	ECS::Add<PositionComponent>(WORLD_ONE_SILVER_KEY, PositionComponent(15, 2))->registerPersistancy = true;
-	ECS::Add<CollisionComponent>(WORLD_ONE_SILVER_KEY, CollisionComponent(2))->registerPersistancy = true;
-	ECS::Add<BackpackItemComponent>(WORLD_ONE_SILVER_KEY, BackpackItemComponent(SILVER_KEY))->registerPersistancy = true;
+	Console.DrawString("(Entered Backyard.)", 1, 1);
+
+	ECS::Add<SpriteComponent>(WORLD_ONE_SILVER_KEY, SpriteComponent(char(235), 14));
+	ECS::Add<PositionComponent>(WORLD_ONE_SILVER_KEY, PositionComponent(15, 2));
+	ECS::Add<CollisionComponent>(WORLD_ONE_SILVER_KEY, CollisionComponent(2));
+	ECS::Add<BackpackItemComponent>(WORLD_ONE_SILVER_KEY, BackpackItemComponent(SILVER_KEY));
 
 	ECS::Add<SpriteComponent>(100, SpriteComponent('X', 123));
 	ECS::Add<PositionComponent>(100, PositionComponent(15, 3));
@@ -70,6 +137,7 @@ void Game::WorldOne()
 		double const newTick = Application::GetGlobalTimer();
 		if (tick < newTick)
 		{
+			ProcessPlayerInput(&scene);
 			ECS::Systems::Input();
 			ECS::Systems::Movement();
 			ECS::Systems::ExecuteOrder66();

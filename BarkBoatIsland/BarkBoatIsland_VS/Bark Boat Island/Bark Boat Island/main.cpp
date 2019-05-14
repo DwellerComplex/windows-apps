@@ -1,4 +1,5 @@
 #include "game.h"
+#include "startup.h"
 
 int main(int argc, const char** argv)
 {
@@ -13,13 +14,11 @@ int main(int argc, const char** argv)
 	Application::ShowConsoleCursor(false);
 	Application::StartGlobalTimer();
 
-	//Start a game
-	Game gameInstance;
-	gameInstance.SetCurrentScene(gameInstance.Scenes::MAINMENU);
+	SceneManager::RegisterScene(new Startup());
 
-	while (gameInstance.GetCurrentRoom())
+	while (SceneManager::IsRunning())
 	{
-		gameInstance.PlayScene();
+		SceneManager::ExecuteScene();
 	}
 
 	return 0;

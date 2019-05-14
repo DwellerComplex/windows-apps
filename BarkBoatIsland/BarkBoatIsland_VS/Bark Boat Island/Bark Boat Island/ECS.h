@@ -211,6 +211,25 @@ struct PlatformRiderComponent : public BaseComponent
 
 #pragma endregion
 
+#pragma region CONSOLEOUTPUT
+struct ConsoleOutputComponent : public BaseComponent
+{
+	public:
+		ConsoleOutputComponent();
+		ConsoleOutputComponent(std::string const output);
+		ConsoleOutputComponent(std::vector<std::string> const output);
+
+		void setIterator(int iter);
+		void iterate();
+		int getOutputSize();
+		int getIterator();
+		std::string getOutput();
+
+	private:
+		std::vector<std::string> output;
+		int iterator = 0;
+};
+#pragma endregion
 
 namespace ECS
 {
