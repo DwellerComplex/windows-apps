@@ -3,5 +3,5 @@
 namespace ECS
 {
 	std::vector<int> killQueue;
-	Scene* scene;
+	Canvas* scene;
 }

@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(std::string const sceneName,
+Canvas::Canvas(std::string const sceneName,
 	char const floor, char const wallX, char const wallY,
 	char const wall00, char const wallX0, char const wallXY, char const wall0Y,  int const w, int const h, int const topLeftX, int const topLeftY, short const floorColor, short const wallColor)
 {
@@ -8,8 +8,6 @@ Scene::Scene(std::string const sceneName,
 	this->topLeftY = topLeftY;
 	width = w;
 	height = h;
-	name = sceneName;
-	nextName = 0;
 
 	this->Floor = floor;
 	this->WallX = wallX;
@@ -23,162 +21,194 @@ Scene::Scene(std::string const sceneName,
 	this->wallsColor = wallColor;
 }
 
-void Scene::CreateAsSquare()
+void Canvas::CreateAsSquare()
 {
 	this->Resize();
 
-	//Paint charBuffer
+	//Paint frontBuffer
 	for (int x = 0; x < width; x++)
 	{
 		for (int y = 0; y < height; y++)
 		{
 			if (x == 0 || x == width - 1)
 			{
-				charBuffer[x][y] = this->WallX;
-				colorBuffer[x][y] = this->wallsColor;
+				backBuffer[x][y] = this->WallX;
+				backColorBuffer[x][y] = this->wallsColor;
 			}
 			else
 			{
 				if (y == 0 || y == height - 1)
 				{
-					charBuffer[x][y] = this->WallY;
-					colorBuffer[x][y] = this->wallsColor;
+					backBuffer[x][y] = this->WallY;
+					backColorBuffer[x][y] = this->wallsColor;
 				}
 				else
 				{
-					charBuffer[x][y] = this->Floor;
-					colorBuffer[x][y] = this->floorColor;
+					backBuffer[x][y] = this->Floor;
+					backColorBuffer[x][y] = this->floorColor;
 				}
 			}
 			if (x == 0 && y == 0)
 			{
-				charBuffer[x][y] = this->WallCorner00;
+				backBuffer[x][y] = this->WallCorner00;
 			}
 			else if (x == width - 1 && y == 0)
 			{
-				charBuffer[x][y] = this->WallCornerX0;
+				backBuffer[x][y] = this->WallCornerX0;
 			}
 			else if (x == width - 1 && y == height - 1)
 			{
-				charBuffer[x][y] = this->WallCornerXY;
+				backBuffer[x][y] = this->WallCornerXY;
 			}
 			else if (x == 0 && y == height - 1)
 			{
-				charBuffer[x][y] = this->WallCorner0Y;
+				backBuffer[x][y] = this->WallCorner0Y;
 			}
 		}
 	}
-	//Draw();
 }
 
-void Scene::Draw()
+void Canvas::Draw()
 {
 	for (int y = 0; y != height; ++y)
 	{
 		for (int x = 0; x != width; ++x)
 		{
-			if (charBuffer[x][y] == prevCharBuffer[x][y] && colorBuffer[x][y] == prevColorBuffer[x][y]) {
+			if (frontBuffer[x][y] == showBuffer[x][y] && frontColorBuffer[x][y] == showColorBuffer[x][y]) {
 				continue;
 			}
 
-			Application::SetTextColor(this->colorBuffer[x][y]);
+			Application::SetTextColor(this->frontColorBuffer[x][y]);
 
 			Application::SetCursorPosition(x + topLeftX, y + topLeftY);
-			std::cout << charBuffer[x][y];
+			std::cout << frontBuffer[x][y];
 		}
 	}
 
 	std::cout.flush();
 
-	//Copy charBuffer to prevCharBuffer
-	prevCharBuffer = charBuffer;
-	prevColorBuffer = colorBuffer;
+	//Copy frontBuffer to showBuffer
+	showBuffer = frontBuffer;
+	showColorBuffer = frontColorBuffer;
 }
 
-void Scene::DrawSprite(char const body, int const x, int const y, int const color)
+void Canvas::DrawSprite(char const body, int const x, int const y, int const color)
 {
-	this->charBuffer[x][y] = body;
-
-	this->colorBuffer[x][y] = color;
+	if (x < width &&
+		x >= 0 &&
+		y < height &&
+		y >= 0)
+	{
+		this->frontBuffer[x][y] = body;
+		this->frontColorBuffer[x][y] = color;
+	}
 }
 
-void Scene::DrawString(std::string const str, int const x, int const y, int const color, bool const autoFit, char const bgSprite, int const bgColor)
+void Canvas::DrawString(std::string const str, int const x, int const y, int const color, bool const autoFit, char const bgSprite, int const bgColor)
 {
 	if (autoFit)
 	{
 		for (int bg = x; bg < this->width - 1; bg++)
 		{
-			this->charBuffer[bg][y] = bgSprite;
-			this->colorBuffer[bg][y] = bgColor;
+			this->frontBuffer[bg][y] = bgSprite;
+			this->frontColorBuffer[bg][y] = bgColor;
 		}
 		for (int i = 0; i < str.size(); i++)
 		{
-			this->charBuffer[x + ((this->width) / str.size()) * i][y] = str.at(i);
+			this->frontBuffer[x + ((this->width) / str.size()) * i][y] = str.at(i);
 
-			this->colorBuffer[x + ((this->width) / str.size()) * i][y] = color;
+			this->frontColorBuffer[x + ((this->width) / str.size()) * i][y] = color;
 		}
 	}
 	else
 	{
 		for (int i = 0; i < str.size(); i++)
 		{
-			this->charBuffer[x + i][y] = str.at(i);
+			this->frontBuffer[x + i][y] = str.at(i);
 
-			this->colorBuffer[x + i][y] = color;
+			this->frontColorBuffer[x + i][y] = color;
 		}
 	}
 }
 
-bool Scene::GetIsPlaying()
-{
-	return isPlaying;
-}
-
-void Scene::SetIsPlaying(bool set)
-{
-	this->isPlaying = set;
-}
-
-void Scene::SetNextSceneName(short const next)
-{
-	this->nextName = next;
-}
-
-void Scene::Erase()
+void Canvas::Erase()
 {
 	for (int y = 0; y != height; ++y)
 	{
 		for (int x = 0; x != width; ++x)
 		{
-			charBuffer[x][y] = char(32);
-			colorBuffer[x][y] = 0;
+			frontBuffer[x][y] = char(32);
+			frontColorBuffer[x][y] = 0;
 		}
 	}
 	Draw();
 }
 
-bool Scene::TryPositionIsFloor(int const x, int const y)
+bool Canvas::TryPositionIsFloor(int const x, int const y)
 {
-	if (charBuffer[x][y] == Floor)
+	if (x < width &&
+		x >= 0 &&
+		y < height &&
+		y >= 0 && 
+		frontBuffer[x][y] == Floor)
 	{
 		return true;
 	}
 	return false;
 }
 
-char& Scene::GetFloor()
+bool Canvas::TryPositionIsWall(int const x, int const y)
+{
+	if (x < width && 
+		x >= 0 && 
+		y < height && 
+		y >= 0)
+	{
+		if (frontBuffer[x][y] == WallX ||
+			frontBuffer[x][y] == WallY ||
+			frontBuffer[x][y] == WallCorner00 ||
+			frontBuffer[x][y] == WallCornerX0 ||
+			frontBuffer[x][y] == WallCorner0Y ||
+			frontBuffer[x][y] == WallCornerXY)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+char& Canvas::GetFloor()
 {
 	return this->Floor;
 }
 
-short Scene::GetFloorColor()
+char& Canvas::GetChar(int const x, int const y)
+{
+	if (x < width &&
+		x >= 0 &&
+		y < height &&
+		y >= 0)
+	{
+		return this->backBuffer[x][y];
+	}
+	return this->Floor;
+}
+
+short Canvas::GetFloorColor()
 {
 	return this->floorColor;
 }
 
-short Scene::GetWallsColor()
+short Canvas::GetWallsColor()
 {
 	return this->wallsColor;
+}
+
+void Canvas::ClearFront()
+{
+	frontBuffer = backBuffer;
+	frontColorBuffer = backColorBuffer;
 }
 
 //1 = WallX
@@ -189,7 +219,7 @@ short Scene::GetWallsColor()
 //6 = WallCornerXY
 //7 = Floor
 //8 = Space
-void Scene::CreateFromVector2D(std::vector<std::vector <char>> vector2D)
+void Canvas::CreateFromVector2D(std::vector<std::vector <char>> vector2D)
 {
 	Application::TransformVector2D(vector2D);
 
@@ -202,11 +232,11 @@ void Scene::CreateFromVector2D(std::vector<std::vector <char>> vector2D)
 	{
 		for (int x = 0; x != width; ++x)
 		{
-			this->colorBuffer[x][y] = this->wallsColor;
+			this->backColorBuffer[x][y] = this->wallsColor;
 			
 			if (vector2D[x][y] == '7')
 			{
-				this->colorBuffer[x][y] = this->floorColor;
+				this->backColorBuffer[x][y] = this->floorColor;
 				vector2D[x][y] = Floor;
 			}
 			else if (vector2D[x][y] == '1')
@@ -238,44 +268,40 @@ void Scene::CreateFromVector2D(std::vector<std::vector <char>> vector2D)
 				vector2D[x][y] = ' ';
 			}
 
-			charBuffer[x][y] = vector2D[x][y];
+			backBuffer[x][y] = vector2D[x][y];
 		}
 	}
 }
 
-void Scene::Resize()
+void Canvas::Resize()
 {
-	//Resize prevCharBuffer and then charBuffer 
-	prevCharBuffer.resize(width);
+	showBuffer.resize(width);
 	for (int i = 0; i < width; i++)
 	{
-		prevCharBuffer[i].resize(height);
+		showBuffer[i].resize(height);
 	}
 
-	charBuffer = prevCharBuffer;
+	frontBuffer = showBuffer;
+	backBuffer = showBuffer;
 	
 	//resize colorbuffer
-	colorBuffer.resize(width);
+	frontColorBuffer.resize(width);
 	for (int i = 0; i < width; i++)
 	{
-		colorBuffer[i].resize(height);
+		frontColorBuffer[i].resize(height);
 	}
-	prevColorBuffer = colorBuffer;
+	showColorBuffer = frontColorBuffer;
+	backColorBuffer = frontColorBuffer;
 }
 
-void Scene::SetName(std::string const name)
+void Canvas::BackupCreate()
 {
-	this->name = name;
+	this->backupCharBuffer = this->frontBuffer;
+	this->backupColorBuffer = this->frontColorBuffer;
 }
 
-void Scene::BackupCreate()
+void Canvas::BackupLoad()
 {
-	this->backupCharBuffer = this->charBuffer;
-	this->backupColorBuffer = this->colorBuffer;
-}
-
-void Scene::BackupLoad()
-{
-	this->charBuffer = this->backupCharBuffer;
-	this->colorBuffer = this->backupColorBuffer;
+	this->frontBuffer = this->backupCharBuffer;
+	this->frontColorBuffer = this->backupColorBuffer;
 }

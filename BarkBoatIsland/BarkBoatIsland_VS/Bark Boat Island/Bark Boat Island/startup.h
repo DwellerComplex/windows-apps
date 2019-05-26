@@ -14,5 +14,16 @@ public:
 private:
 	void ProcessPlayerInput();
 
-	class Scene* scene;
+	void ExecuteOrder66();
+
+	void Draw();
+
+	void Input();
+
+	bool TryPosition(int const posX, int const posY, int const id, struct CollisionComponent * collisionComponent);
+
+	void Movement();
+
+	std::vector<int> killQueue;
+	class Canvas* canvas;
 };

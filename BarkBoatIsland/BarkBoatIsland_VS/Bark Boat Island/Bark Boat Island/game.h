@@ -13,8 +13,8 @@ public:
 	short const GetCurrentRoom() { return currentScene; };
 	void SetCurrentScene(short const currentScene);
 
-	void MainMenu();
-	void WorldOne();
+	//void MainMenu();
+	//void WorldOne();
 	//void Hall();
 
 	enum Scenes

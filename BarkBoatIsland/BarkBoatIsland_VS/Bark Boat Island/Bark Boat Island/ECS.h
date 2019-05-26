@@ -44,7 +44,7 @@ const enum CollisionTypes
 	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
 	NORMAL,
 	//1: kinetic (ignore normal and kinetic items) 
-	KINEMATIC,
+	KINETIC,
 	//2: solid (ignore no items, block all) 
 	SOLID,
 	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
@@ -59,6 +59,7 @@ public:
 	CollisionComponent(int setting);
 
 	short int collisionSetting;
+	std::vector<std::vector<bool>> collisionBuffer;
 };
 #pragma endregion
 
@@ -74,13 +75,24 @@ public:
 #pragma endregion
 
 #pragma region SPRITE
+//struct Sprite
+//{
+//	Sprite(char const body, int const color = 15)
+//	{
+//		this->sprite = body;
+//		this->color = color;
+//	};
+//
+//	char sprite;
+//	int color;
+//};
+
 struct SpriteComponent : public BaseComponent
 {
 public:
-	SpriteComponent();
-	SpriteComponent(char const body, int const color = 15, short const drawLayer = 0);
-	char sprite;
-	int color;
+	SpriteComponent() {};
+	std::vector<std::vector<char>> frontBuffer;
+	std::vector<std::vector<short>> frontColorBuffer;
 	short drawLayer;
 };
 
@@ -233,19 +245,6 @@ struct ConsoleOutputComponent : public BaseComponent
 
 namespace ECS
 {
-	namespace Systems
-	{
-		void ExecuteOrder66();
-		void Draw();
-		void Input();
-		void Movement();
-	};
-
-	extern std::vector<int> killQueue;
-	extern Scene* scene;
-
-	void AssignScene(Scene& scene);
-
 	template <typename T>
 	std::vector<int> entities;
 
