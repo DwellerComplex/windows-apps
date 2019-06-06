@@ -13,23 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\ExtraScripts">
-      <UniqueIdentifier>{e98613e5-f122-40f0-b24a-de7c1acd555b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Panels">
-      <UniqueIdentifier>{6b2b9f91-541b-4cb3-b6dd-855cc7bbaf1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Externs">
       <UniqueIdentifier>{c3a2a5b8-7efb-4a80-bc93-0c2a6c7367f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{055eeacb-f039-48c9-a2c6-87b881ce56e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scenes\World">
-      <UniqueIdentifier>{2cbec96d-899c-4d27-8104-0b2ff897a913}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scenes\World\WorldOne">
-      <UniqueIdentifier>{d5b4812a-019b-4f67-b516-7f72d815c2f0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Templates">
       <UniqueIdentifier>{c739d10c-f011-480c-b3ee-6c56628477c9}</UniqueIdentifier>
@@ -39,23 +27,8 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="application.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainmenu.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="inventorypanel.cpp">
-      <Filter>Source Files\Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="consolepanel.cpp">
-      <Filter>Source Files\Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="hall.cpp">
-      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="applicationExtern.cpp">
       <Filter>Source Files\Externs</Filter>
@@ -69,9 +42,6 @@
     <ClCompile Include="scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="worldOne.cpp">
-      <Filter>Source Files\Scenes\World\WorldOne</Filter>
-    </ClCompile>
     <ClCompile Include="startup.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
@@ -83,17 +53,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="application.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inventorypanel.h">
-      <Filter>Header Files\ExtraScripts</Filter>
-    </ClInclude>
-    <ClInclude Include="consolepanel.h">
-      <Filter>Header Files\ExtraScripts</Filter>
     </ClInclude>
     <ClInclude Include="ecs.h">
       <Filter>Header Files</Filter>

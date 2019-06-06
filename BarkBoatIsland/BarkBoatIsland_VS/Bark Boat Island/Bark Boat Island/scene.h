@@ -13,12 +13,15 @@ public:
 	void CreateFromVector2D(std::vector<std::vector <char>> vector2D);
 	void DrawSprite(char const sprite, int const x, int const y, int const color = 15);
 	void DrawString(std::string const str, int const x, int const y, int const color = 15, bool const autoFit = false, char const bgSprite = ' ', int const bgColor = 15);
+	void DrawStringToBack(std::string const str, int const x, int const y, int const color = 15, bool const autoFit = false, char const bgSprite = ' ', int const bgColor = 15);
+	void PutToBack();
 	bool TryPositionIsFloor(int const x, int const y);
 	bool TryPositionIsWall(int const x, int const y);
 	void Erase();
 	void Resize();
 	char& GetFloor();
 	char& GetChar(int const x, int const y);
+	short GetColor(int const x, int const y);
 	short GetFloorColor();
 	short GetWallsColor();
 	int GetWidth() { return width; };
@@ -28,7 +31,7 @@ public:
 
 	int const floorID = -1;
 	int const wallID = -2;
-	short const NUMBER_OF_DRAW_LAYERS = 1;
+	short const NUMBER_OF_DRAW_LAYERS = 2;
 private:
 	char Floor;
 	char WallX;

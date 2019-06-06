@@ -116,27 +116,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="applicationExtern.cpp" />
-    <ClCompile Include="consolepanel.cpp" />
     <ClCompile Include="ecs.cpp" />
     <ClCompile Include="ecsExtern.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="hall.cpp" />
-    <ClCompile Include="inventorypanel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="scenetemplate.cpp" />
     <ClCompile Include="startup.cpp" />
-    <ClCompile Include="worldOne.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="consolepanel.h" />
     <ClInclude Include="ecs.h" />
-    <ClInclude Include="game.h" />
     <ClInclude Include="application.h" />
-    <ClInclude Include="inventorypanel.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebase.h" />
     <ClInclude Include="scenemanager.h" />

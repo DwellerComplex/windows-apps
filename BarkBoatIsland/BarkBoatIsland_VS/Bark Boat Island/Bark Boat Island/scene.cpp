@@ -131,6 +131,38 @@ void Canvas::DrawString(std::string const str, int const x, int const y, int con
 	}
 }
 
+void Canvas::DrawStringToBack(std::string const str, int const x, int const y, int const color, bool const autoFit, char const bgSprite, int const bgColor)
+{
+	if (autoFit)
+	{
+		for (int bg = x; bg < this->width - 1; bg++)
+		{
+			this->backBuffer[bg][y] = bgSprite;
+			this->backColorBuffer[bg][y] = bgColor;
+		}
+		for (int i = 0; i < str.size(); i++)
+		{
+			this->backBuffer[x + ((this->width) / str.size()) * i][y] = str.at(i);
+
+			this->backColorBuffer[x + ((this->width) / str.size()) * i][y] = color;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < str.size(); i++)
+		{
+			this->backBuffer[x + i][y] = str.at(i);
+
+			this->backColorBuffer[x + i][y] = color;
+		}
+	}
+}
+
+void Canvas::PutToBack()
+{
+	this->backBuffer = this->frontBuffer;
+}
+
 void Canvas::Erase()
 {
 	for (int y = 0; y != height; ++y)
@@ -193,6 +225,18 @@ char& Canvas::GetChar(int const x, int const y)
 		return this->backBuffer[x][y];
 	}
 	return this->Floor;
+}
+
+short Canvas::GetColor(int const x, int const y)
+{
+	if (x < width &&
+		x >= 0 &&
+		y < height &&
+		y >= 0)
+	{
+		return this->backColorBuffer[x][y];
+	}
+	return this->floorColor;
 }
 
 short Canvas::GetFloorColor()

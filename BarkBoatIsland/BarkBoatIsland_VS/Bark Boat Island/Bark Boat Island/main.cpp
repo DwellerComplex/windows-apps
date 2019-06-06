@@ -1,4 +1,3 @@
-#include "game.h"
 #include "startup.h"
 
 int main(int argc, const char** argv)

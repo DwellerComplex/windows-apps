@@ -131,12 +131,12 @@ namespace Application
 
 			if (c == '\n' && temp.size() != 0)
 			{
-				output.push_back(temp);
+				output.emplace_back(temp);
 				temp.clear();
 			}
 			else
 			{
-				temp.push_back(c);
+				temp.emplace_back(c);
 			}
 		}
 
@@ -163,11 +163,14 @@ namespace Application
 	const std::vector<int> ExtractSameInts(const std::vector<int>& a, const std::vector<int>& b)
 	{
 		std::vector<int> out;
+
+		out.reserve(a.size());
+
 		for (std::vector<int>::const_iterator i = a.begin(); i != a.end(); ++i)
 		{
 			if (std::find(b.begin(), b.end(), *i) != b.end())
 			{
-				out.push_back(*i);
+				out.emplace_back(*i);
 			}
 		}
 		return ((a.size() && b.size()) ? (out) : (std::vector<int>()));
@@ -176,6 +179,8 @@ namespace Application
 	const std::vector<int> ExtractSameInts(const std::vector<std::vector<int>>& v)
 	{
 		std::vector<int> out;
+
+		out.reserve(v.size());
 
 		if (v.size() != 1)
 		{

@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include <vector>
+#include <string>
 #include "application.h"
 
 namespace SceneManager

@@ -91,8 +91,8 @@ struct SpriteComponent : public BaseComponent
 {
 public:
 	SpriteComponent() {};
-	std::vector<std::vector<char>> frontBuffer;
-	std::vector<std::vector<short>> frontColorBuffer;
+	std::vector<std::vector<char>> sprite;
+	std::vector<std::vector<short>> color;
 	short drawLayer;
 };
 
