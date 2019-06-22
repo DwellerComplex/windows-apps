@@ -11,10 +11,10 @@ public:
 	virtual void Update() override;
 	virtual void End() override;
 
+	void DrawLight(struct PositionComponent * positionComponent, const int radius, const float angleRadStepSize);
+
 private:
 	void ProcessPlayerInput();
-	void DrawLight(struct SpriteComponent * spriteComponent, struct PositionComponent * positionComponent, const int radius, const float angleRadStepSize, const int idOwner);
-	void ExecuteOrder66();
 
 	void Draw();
 
@@ -27,6 +27,22 @@ private:
 	void Movement();
 
 	std::vector<int> killQueue;
-	class Canvas* canvas;
-	class Canvas* playerBackpack;
+	class Canvas* backgroundCanvas;
+	class Canvas* mainCanvas;
+	class Canvas* fogOfWarCanvas;
+
+	const enum drawLayers {
+		NONE,
+		ONE,
+		TWO,
+		THREE,
+		NUMBER_OF_DRAW_LAYERS
+	};
+	
+	const enum canvases {
+		BACKGROUND = 1,
+		FOG_OF_WAR,
+		MAIN,
+		NUMBER_OF_CANVASES
+	};
 };

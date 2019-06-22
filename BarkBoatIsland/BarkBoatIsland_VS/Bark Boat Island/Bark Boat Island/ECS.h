@@ -1,6 +1,5 @@
 #pragma once
 #include "application.h"
-#include "scene.h"
 
 const enum Entities
 {
@@ -41,13 +40,14 @@ public:
 #pragma region COLLISION
 const enum CollisionTypes
 {
-	//0: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
-	NORMAL,
-	//1: kinetic (ignore normal and kinetic items) 
+	NONE,
+	////1: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
+	//NORMAL,
+	//2: kinetic (ignore normal and kinetic items) 
 	KINETIC,
-	//2: solid (ignore no items, block all) 
+	//3: solid (ignore no items, block all) 
 	SOLID,
-	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
+	//4: dynamic (ignore kinetic, interact with normal and solid, "pushable")
 	DYNAMIC,
 	NUMBER_OF_COLLISION_TYPES
 };
@@ -93,6 +93,8 @@ public:
 	SpriteComponent() {};
 	std::vector<std::vector<char>> sprite;
 	std::vector<std::vector<short>> color;
+	short canvasToDrawOn = 0;
+	short colorKey;
 	short drawLayer;
 };
 

@@ -22,6 +22,9 @@
     <Filter Include="Templates">
       <UniqueIdentifier>{c739d10c-f011-480c-b3ee-6c56628477c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes\Startup">
+      <UniqueIdentifier>{977a1ad3-1ed1-497f-a634-5329539e634d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,17 +42,17 @@
     <ClCompile Include="ecsExtern.cpp">
       <Filter>Source Files\Externs</Filter>
     </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="startup.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="scenetemplate.cpp">
       <Filter>Templates</Filter>
     </ClCompile>
     <ClCompile Include="scenemanager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="startup.cpp">
+      <Filter>Source Files\Scenes\Startup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ecs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scenemanager.h">
@@ -73,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="scenetemplate.h">
       <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="canvas.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

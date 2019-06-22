@@ -83,7 +83,7 @@ NearbyComponent::NearbyComponent()
 #pragma region COLLISION
 CollisionComponent::CollisionComponent()
 {
-	this->collisionSetting = CollisionTypes::NORMAL;
+	//this->collisionSetting = CollisionTypes::NORMAL;
 }
 
 CollisionComponent::CollisionComponent(int setting)

@@ -28,7 +28,9 @@ namespace Application
 	float GetGlobalTimer();
 	std::unordered_map<char, int> GetFontSize();
 	void TransformVector2D(std::vector<std::vector <char>>& vector2D);
-	std::vector<std::vector <char>> ReadFileToVector2D(std::string fileName);
+	void TransformVector2D(std::vector<std::vector <short>>& vector2D);
+	std::vector<std::vector <char>> ReadFileChar(std::string const fileName);
+	std::vector<std::vector <short>> ReadFileShort(std::string const fileName);
 	const std::vector<int> ExtractSameInts(const std::vector<std::vector<int>>& v);
 	const std::vector<int> ExtractSameInts(const std::vector<int>& a, const std::vector<int>& b);
 	std::string GetWindowsUserName();

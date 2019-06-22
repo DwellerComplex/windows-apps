@@ -116,7 +116,7 @@ namespace Application
 		SetConsoleCursorPosition(out, coord);
 	}
 
-	std::vector<std::vector <char>> ReadFileToVector2D(std::string fileName)
+	std::vector<std::vector <char>> ReadFileChar(std::string const fileName)
 	{
 		std::vector<std::vector <char>> output;
 
@@ -145,9 +145,53 @@ namespace Application
 		return output;
 	}
 
+	std::vector<std::vector <short>> ReadFileShort(std::string const fileName)
+	{
+		std::vector<std::vector <short>> output;
+
+		std::ifstream file(fileName);
+
+		std::vector<short> temp;
+
+		char c = ' ';
+
+		while (file.get(c))
+		{
+
+			if (c == '\n' && temp.size() != 0)
+			{
+				output.emplace_back(temp);
+				temp.clear();
+			}
+			else
+			{
+				temp.emplace_back((SHORT)c);
+			}
+		}
+
+		file.close();
+
+		return output;
+	}
+
 	void TransformVector2D(std::vector<std::vector <char>>& vector2D)
 	{
 		std::vector<std::vector<char>> vector2DTrans(vector2D[0].size(), std::vector<char>(vector2D.size()));
+
+		for (size_t i = 0; i < vector2D.size(); ++i)
+		{
+			for (size_t j = 0; j < vector2D[0].size(); ++j)
+			{
+				vector2DTrans[j][i] = vector2D[i][j];
+			}
+		}
+
+		vector2D = vector2DTrans;
+	}
+
+	void TransformVector2D(std::vector<std::vector <short>>& vector2D)
+	{
+		std::vector<std::vector<short>> vector2DTrans(vector2D[0].size(), std::vector<short>(vector2D.size()));
 
 		for (size_t i = 0; i < vector2D.size(); ++i)
 		{
