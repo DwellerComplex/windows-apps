@@ -185,9 +185,12 @@ void Startup::Start()
 	fogOfWarCanvas->SetBuffersToZero();
 	fogOfWarCanvas->SetColorkey(15);
 
-	RectangleBuffers playerBackpackBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 20, 40, 8, 3);
+	RectangleBuffers playerBackpackBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 20, 30, 8, 3);
 	playerBackpack = new Canvas(Application::GetConsoleWidth() - 20, 0, 0, *playerBackpackBuffers.GetCharBuffer(), *playerBackpackBuffers.GetColorBuffer());
 	playerBackpack->PutString("BACKPACK", 1, 1, 95, true, ' ', 95);
+
+	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
+	console = new Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
 
 	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
 	playerSprite->sprite = { { '#' } };
@@ -238,11 +241,13 @@ void Startup::End()
 	fogOfWarCanvas->Erase();
 	mainCanvas->Erase();
 	playerBackpack->Erase();
+	console->Erase();
 
 	delete backgroundCanvas;
 	delete fogOfWarCanvas;
 	delete mainCanvas;
 	delete playerBackpack;
+	delete console;
 
 	if (nextScene == STARTUP)
 	{
@@ -308,60 +313,71 @@ void Startup::ProcessPlayerInput()
 		{
 			if (PositionComponent* positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
 			{
-				if (int const item = GetEntityAt(positionComponent->posX - 1, positionComponent->posY, Entities::PLAYER))
+				for (short x = -1; x != 2; x++)
 				{
-					if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+					for (short y = -1; y != 2; y++)
 					{
-						if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(item))
+						if (abs(x) * abs(y))
 						{
-							PositionComponent* positionComponent = ECS::Get<PositionComponent>(item);
-							positionComponent->isActive = false;
-
-							if (SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(item))
-							{
-								spriteComponent->isActive = false;
-							}
-							if (CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(item))
-							{
-								collisionComponent->isActive = false;
-							}
-
-							backpackComponent->items[backpackItemComponent->type]++;
-							playerBackpack->SetDrawThisTick(true);
+							continue;
 						}
-					}
 
-					if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(item))
-					{
-						if (LockComponent* lockComponent = ECS::Get<LockComponent>(item))
+						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
 						{
-							if (lockComponent->isActive)
+							if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 							{
-								if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+								if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
 								{
-									for (int i = 0; i < backpackComponent->items.size(); i++)
+									PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
+									positionComponent->isActive = false;
+
+									if (SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(other))
 									{
-										if (backpackComponent->items[lockComponent->key])
-										{
-											backpackComponent->items[lockComponent->key]--;
-											lockComponent->isActive = false;
-											nextScene = sceneComponent->nextScene;
-											update = false;
-											break;
-										}
+										spriteComponent->isActive = false;
 									}
+									if (CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(other))
+									{
+										collisionComponent->isActive = false;
+									}
+
+									backpackComponent->items[backpackItemComponent->type]++;
+									playerBackpack->SetDrawThisTick(true);
 								}
 							}
-							else
+
+							if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
 							{
-								nextScene = sceneComponent->nextScene;
-								update = false;
+								if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
+								{
+									if (lockComponent->isActive)
+									{
+										if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+										{
+											for (int i = 0; i < backpackComponent->items.size(); i++)
+											{
+												if (backpackComponent->items[lockComponent->key])
+												{
+													backpackComponent->items[lockComponent->key]--;
+													lockComponent->isActive = false;
+													nextScene = sceneComponent->nextScene;
+													update = false;
+													break;
+												}
+											}
+										}
+									}
+									else
+									{
+										nextScene = sceneComponent->nextScene;
+										update = false;
+									}
+								}
+								else
+								{
+									nextScene = sceneComponent->nextScene;
+									update = false;
+								}
 							}
-						}
-						else
-						{
-							nextScene = sceneComponent->nextScene;
-							update = false;
 						}
 					}
 				}
@@ -425,6 +441,13 @@ void Startup::Draw()
 		}
 		playerBackpack->Draw();
 		playerBackpack->SetDrawThisTick(false);
+	}
+
+	//console
+	if (console->GetDrawThisTick() == true)
+	{
+		console->Draw();
+		console->SetDrawThisTick(false);
 	}
 
 	//canvas

@@ -36,6 +36,7 @@ private:
 	class Canvas* mainCanvas;
 	class Canvas* fogOfWarCanvas;
 	class Canvas* playerBackpack;
+	class Canvas* console;
 
 	const enum drawLayers {
 		NONE,
