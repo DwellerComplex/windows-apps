@@ -28,7 +28,10 @@ private:
 
 	void Movement();
 
+	short nextScene;
+
 	std::vector<int> killQueue;
+
 	class Canvas* backgroundCanvas;
 	class Canvas* mainCanvas;
 	class Canvas* fogOfWarCanvas;

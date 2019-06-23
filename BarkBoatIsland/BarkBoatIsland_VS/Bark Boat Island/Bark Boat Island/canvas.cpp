@@ -251,22 +251,6 @@ void Canvas::Copy(Canvas * canvas)
 	backCollisionBuffer = canvas->backCollisionBuffer;
 }
 
-void Canvas::EraseBuffersContents()
-{
-	int const oldW = width;
-	int const oldH = height;
-
-	width = 0;
-	height = 0;
-
-	Resize();
-
-	width = oldW;
-	height = oldH;
-
-	Resize();
-}
-
 void Canvas::SetBuffersToZero()
 {
 	for (int y = 0; y != height; ++y)
@@ -288,6 +272,9 @@ void Canvas::SetBuffersToZero()
 
 void Canvas::Erase()
 {
+	SetBuffersToZero();
+	Draw();
+
 	width = 0;
 	height = 0;
 	topLeftX = 0;

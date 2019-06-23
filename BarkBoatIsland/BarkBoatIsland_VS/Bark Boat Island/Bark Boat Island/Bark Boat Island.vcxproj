@@ -130,6 +130,7 @@
     <ClInclude Include="ecs.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="globalenums.h" />
     <ClInclude Include="rectanglebuffers.h" />
     <ClInclude Include="scenebase.h" />
     <ClInclude Include="scenemanager.h" />

@@ -73,12 +73,12 @@ LockComponent::LockComponent(int const key)
 }
 #pragma endregion
 
-#pragma region NEARBY
-NearbyComponent::NearbyComponent()
-{
-
-}
-#pragma endregion
+//#pragma region NEARBY
+//NearbyComponent::NearbyComponent()
+//{
+//
+//}
+//#pragma endregion
 
 #pragma region COLLISION
 CollisionComponent::CollisionComponent()

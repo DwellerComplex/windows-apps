@@ -1,53 +1,21 @@
 #pragma once
 #include "application.h"
 
-const enum Entities
-{
-	PLAYER = 1,
-	FLASHLIGHT,
-
-	//_________________mainmenu_________________//
-	MAINMENU_DOOR_PLAY,
-	MAINMENU_DOOR_QUIT,
-
-	//_________________worldOne_________________//
-	STARTUP_SILVER_KEY,
-	NUMBER_OF_ENTITIES
-};
-
-const enum BackPackItemTypes
-{
-	GOLD_KEY = 1,
-	SILVER_KEY,
-	NUMBER_OF_TYPES
-};
-
 struct BaseComponent
 {
 	bool registerPersistancy = false;
 	bool isActive = true;
 };
 
-#pragma region NEARBY
-struct NearbyComponent : public BaseComponent
-{
-public:
-	NearbyComponent();
-	std::array<int, 4> neighbors;
-};
-#pragma endregion
-
 #pragma region COLLISION
 const enum CollisionTypes
 {
 	NONE,
-	////1: normal (ignore kinetic, interact with dynamic and solid, semi static, "move at own will") 
-	//NORMAL,
-	//2: kinetic (ignore normal and kinetic items) 
+	//1: kinetic (ignore normal and kinetic items) 
 	KINETIC,
-	//3: solid (ignore no items, block all) 
+	//2: solid (ignore no items, block all) 
 	SOLID,
-	//4: dynamic (ignore kinetic, interact with normal and solid, "pushable")
+	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
 	DYNAMIC,
 	NUMBER_OF_COLLISION_TYPES
 };

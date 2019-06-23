@@ -2,6 +2,7 @@
 #include "canvas.h"
 #include "rectanglebuffers.h"
 #include "ecs.h"
+#include "globalenums.h"
 
 Startup::Startup()
 {
@@ -114,7 +115,7 @@ void Startup::Start()
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,15,15,15,15,15,15,15,15,15,15,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} 
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	};
 
 	std::vector<std::vector<short>> mapCollisions = {
@@ -167,7 +168,7 @@ void Startup::Start()
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} 
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	};
 
 	Application::TransformVector2D(mapChars);
@@ -177,7 +178,7 @@ void Startup::Start()
 
 	mainCanvas = new Canvas();
 	mainCanvas->Copy(backgroundCanvas);
-	mainCanvas->EraseBuffersContents();
+	mainCanvas->SetBuffersToZero();
 
 	fogOfWarCanvas = new Canvas();
 	fogOfWarCanvas->Copy(backgroundCanvas);
@@ -206,16 +207,20 @@ void Startup::Start()
 
 	SpriteComponent* keySprite = ECS::Add<SpriteComponent>(STARTUP_SILVER_KEY);
 	keySprite->sprite = { { char(235) } };
-	keySprite->sprite.shrink_to_fit();
-
 	keySprite->color = { {0x0F} };
-	keySprite->color.shrink_to_fit();
-
 	keySprite->drawLayer = 1;
-
 	ECS::Add<PositionComponent>(STARTUP_SILVER_KEY, PositionComponent(18, 10));
 	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY, BackpackItemComponent(SILVER_KEY));
+
+	SpriteComponent* doorMainmenuSprite = ECS::Add<SpriteComponent>(STARTUP_DOOR_MAINMENU);
+	doorMainmenuSprite->sprite = { { char(179) } };
+	doorMainmenuSprite->color = { {15} };
+	doorMainmenuSprite->drawLayer = 1;
+	ECS::Add<PositionComponent>(STARTUP_DOOR_MAINMENU, PositionComponent(7, 3));
+	ECS::Add<SceneComponent>(STARTUP_DOOR_MAINMENU)->nextScene = STARTUP;
+	ECS::Add<LockComponent>(STARTUP_DOOR_MAINMENU)->key = SILVER_KEY;
+	ECS::Add<CollisionComponent>(STARTUP_DOOR_MAINMENU)->collisionSetting = CollisionTypes::SOLID;
 }
 
 void Startup::Update()
@@ -229,10 +234,20 @@ void Startup::Update()
 
 void Startup::End()
 {
+	backgroundCanvas->Erase();
+	fogOfWarCanvas->Erase();
+	mainCanvas->Erase();
+	playerBackpack->Erase();
+
 	delete backgroundCanvas;
 	delete fogOfWarCanvas;
 	delete mainCanvas;
-	SceneManager::RegisterScene(new Startup());
+	delete playerBackpack;
+
+	if (nextScene == STARTUP)
+	{
+		SceneManager::RegisterScene(new Startup());
+	}
 }
 
 void Startup::DrawLight(PositionComponent* positionComponent, const int radius, const float angleRadStepSize)
@@ -291,12 +306,11 @@ void Startup::ProcessPlayerInput()
 
 		if (inputComponent->command == 'E')
 		{
-			if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+			if (PositionComponent* positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
 			{
-				if (PositionComponent* positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
+				if (int const item = GetEntityAt(positionComponent->posX - 1, positionComponent->posY, Entities::PLAYER))
 				{
-					//kolla alla
-					if (int const item = GetEntityAt(positionComponent->posX + 1, positionComponent->posY, Entities::PLAYER))
+					if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 					{
 						if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(item))
 						{
@@ -314,6 +328,40 @@ void Startup::ProcessPlayerInput()
 
 							backpackComponent->items[backpackItemComponent->type]++;
 							playerBackpack->SetDrawThisTick(true);
+						}
+					}
+
+					if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(item))
+					{
+						if (LockComponent* lockComponent = ECS::Get<LockComponent>(item))
+						{
+							if (lockComponent->isActive)
+							{
+								if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+								{
+									for (int i = 0; i < backpackComponent->items.size(); i++)
+									{
+										if (backpackComponent->items[lockComponent->key])
+										{
+											backpackComponent->items[lockComponent->key]--;
+											lockComponent->isActive = false;
+											nextScene = sceneComponent->nextScene;
+											update = false;
+											break;
+										}
+									}
+								}
+							}
+							else
+							{
+								nextScene = sceneComponent->nextScene;
+								update = false;
+							}
+						}
+						else
+						{
+							nextScene = sceneComponent->nextScene;
+							update = false;
 						}
 					}
 				}

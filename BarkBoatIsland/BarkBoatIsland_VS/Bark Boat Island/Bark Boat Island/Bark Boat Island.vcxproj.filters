@@ -83,5 +83,8 @@
     <ClInclude Include="rectanglebuffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="globalenums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

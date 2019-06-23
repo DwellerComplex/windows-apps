@@ -32,7 +32,6 @@ public:
 	bool const GetDrawThisTick();
 	void Resize();
 	void Copy(Canvas* canvas);
-	void EraseBuffersContents();
 	void SetBuffersToZero();
 	void Erase();
 private:
