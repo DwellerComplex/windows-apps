@@ -20,6 +20,8 @@ private:
 
 	void Input();
 
+	void Collision();
+
 	int GetEntityAt(int const posX, int const posY, int const id);
 
 	bool IsPositionFree(int const posX, int const posY, int const id, struct CollisionComponent * collisionComponent);
@@ -30,6 +32,7 @@ private:
 	class Canvas* backgroundCanvas;
 	class Canvas* mainCanvas;
 	class Canvas* fogOfWarCanvas;
+	class Canvas* playerBackpack;
 
 	const enum drawLayers {
 		NONE,

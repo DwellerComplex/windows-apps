@@ -123,12 +123,14 @@
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="scenetemplate.cpp" />
+    <ClCompile Include="rectanglebuffers.cpp" />
     <ClCompile Include="startup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ecs.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="rectanglebuffers.h" />
     <ClInclude Include="scenebase.h" />
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="scenetemplate.h" />

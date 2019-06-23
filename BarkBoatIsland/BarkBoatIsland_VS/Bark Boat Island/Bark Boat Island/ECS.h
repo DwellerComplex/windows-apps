@@ -4,14 +4,14 @@
 const enum Entities
 {
 	PLAYER = 1,
+	FLASHLIGHT,
 
 	//_________________mainmenu_________________//
 	MAINMENU_DOOR_PLAY,
 	MAINMENU_DOOR_QUIT,
 
 	//_________________worldOne_________________//
-	WORLD_ONE_SILVER_KEY,
-	WORLD_ONE_DOOR_MAINMENU,
+	STARTUP_SILVER_KEY,
 	NUMBER_OF_ENTITIES
 };
 

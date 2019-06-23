@@ -7,29 +7,23 @@ Canvas::Canvas(int const width, int const height, int const topLeftX, int const 
 	this->topLeftX = topLeftX;
 	this->topLeftY = topLeftY;
 	this->colorKey = colorKey;
+	this->drawThisTick = true;
 
-	this->frontCharBuffer = charBuffer;
-	this->backCharBuffer = charBuffer;
-	this->frontColorBuffer = colorBuffer;
-	this->backColorBuffer = colorBuffer;
-	this->frontCollisionBuffer = collisionBuffer;
-	this->backCollisionBuffer = collisionBuffer;
+	SetCharBuffer(charBuffer);
+	SetColorBuffer(colorBuffer);
+	SetCollisionBuffer(collisionBuffer);
 }
 
 Canvas::Canvas(int const topLeftX, int const topLeftY, short const colorKey, std::vector<std::vector<char>> const charBuffer, std::vector<std::vector<short>> const colorBuffer, std::vector<std::vector<short>> const collisionBuffer)
 {
-	this->width = charBuffer.size();
-	if (charBuffer.size() != 0) { this->height = charBuffer[0].size(); } else { this->height = 0; };
 	this->topLeftX = topLeftX;
 	this->topLeftY = topLeftY;
 	this->colorKey = colorKey;
+	this->drawThisTick = true;
 
-	this->frontCharBuffer = charBuffer;
-	this->backCharBuffer = charBuffer;
-	this->frontColorBuffer = colorBuffer;
-	this->backColorBuffer = colorBuffer;
-	this->frontCollisionBuffer = collisionBuffer;
-	this->backCollisionBuffer = collisionBuffer;
+	SetCharBuffer(charBuffer);
+	SetColorBuffer(colorBuffer);
+	SetCollisionBuffer(collisionBuffer);
 }
 
 void Canvas::Draw()
@@ -91,20 +85,38 @@ void Canvas::SetColorkey(short const color)
 
 void Canvas::SetCharBuffer(std::vector<std::vector<char>> const buffer)
 {
-	frontCharBuffer = buffer;
-	backCharBuffer = buffer;
+	if (buffer.size() && buffer[0].size())
+	{
+		width = buffer.size();
+		height = buffer[0].size();
+
+		Resize();
+		frontCharBuffer = buffer;
+	}
 }
 
 void Canvas::SetColorBuffer(std::vector<std::vector<short>> const buffer)
 {
-	frontColorBuffer = buffer;
-	backColorBuffer = buffer;
+	if (buffer.size() && buffer[0].size())
+	{
+		width = buffer.size();
+		height = buffer[0].size();
+
+		Resize();
+		frontColorBuffer = buffer;
+	}
 }
 
 void Canvas::SetCollisionBuffer(std::vector<std::vector<short>> const buffer)
 {
-	frontCollisionBuffer = buffer;
-	backCollisionBuffer = buffer;
+	if (buffer.size() && buffer[0].size())
+	{
+		width = buffer.size();
+		height = buffer[0].size();
+
+		Resize();
+		frontCollisionBuffer = buffer;
+	}
 }
 
 void Canvas::SetWidth(int const width)
@@ -117,7 +129,12 @@ void Canvas::SetHeight(int const height)
 	this->height = height;
 }
 
-void Canvas::PutChar(char const character, int const x, int const y, short const color, short const collision)
+void Canvas::SetDrawThisTick(bool const dTT)
+{
+	this->drawThisTick = dTT;
+}
+
+void Canvas::PutChar(char const character, int const x, int const y, short const color)
 {
 	if (x >= width || x < 0 ||
 		y >= height || y < 0)
@@ -127,7 +144,44 @@ void Canvas::PutChar(char const character, int const x, int const y, short const
 
 	frontCharBuffer[x][y] = character;
 	frontColorBuffer[x][y] = color;
+}
+
+void Canvas::PutCollision(int const x, int const y, short const collision)
+{
+	if (x >= width || x < 0 ||
+		y >= height || y < 0)
+	{
+		return;
+	}
+
 	frontCollisionBuffer[x][y] = collision;
+}
+
+void Canvas::PutString(std::string const str, int const x, int const y, int const color, bool const autoFit, char const bgSprite, int const bgColor)
+{
+	if (autoFit)
+	{
+		for (int bg = x; bg < this->width - 1; bg++)
+		{
+			this->frontCharBuffer[bg][y] = bgSprite;
+			this->frontColorBuffer[bg][y] = bgColor;
+		}
+		for (int i = 0; i < str.size(); i++)
+		{
+			this->frontCharBuffer[x + ((this->width) / str.size()) * i][y] = str.at(i);
+
+			this->frontColorBuffer[x + ((this->width) / str.size()) * i][y] = color;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < str.size(); i++)
+		{
+			this->frontCharBuffer[x + i][y] = str.at(i);
+
+			this->frontColorBuffer[x + i][y] = color;
+		}
+	}
 }
 
 short const Canvas::GetCollisionAt(int const x, int const y)
@@ -154,6 +208,11 @@ int const Canvas::GetWidth()
 int const Canvas::GetHeight()
 {
 	return height;
+}
+
+bool const Canvas::GetDrawThisTick()
+{
+	return this->drawThisTick;
 }
 
 void Canvas::Resize()
