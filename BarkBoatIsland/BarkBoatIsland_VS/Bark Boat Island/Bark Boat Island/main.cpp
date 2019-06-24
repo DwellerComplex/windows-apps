@@ -1,4 +1,4 @@
-#include "startup.h"
+#include "mainmenu.h"
 
 int main(int argc, const char** argv)
 {
@@ -13,7 +13,7 @@ int main(int argc, const char** argv)
 	Application::ShowConsoleCursor(false);
 	Application::StartGlobalTimer();
 
-	SceneManager::RegisterScene(new Startup());
+	SceneManager::RegisterScene(new Mainmenu());
 
 	while (SceneManager::IsRunning())
 	{

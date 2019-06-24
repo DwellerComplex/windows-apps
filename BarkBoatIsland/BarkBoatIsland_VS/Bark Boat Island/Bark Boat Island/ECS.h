@@ -63,6 +63,7 @@ public:
 	InputComponent();
 	char command;
 	bool hasClicked;
+	bool isHoldingKey;
 };
 
 #pragma endregion

@@ -203,7 +203,7 @@ void Startup::Start()
 	playerCollision->collisionBuffer = { {true} };
 
 	PositionComponent* playerPosition = ECS::Add<PositionComponent>(PLAYER, PositionComponent(9, 3));
-	ECS::Add<MotionComponent>(PLAYER);
+	ECS::Add<MotionComponent>(PLAYER)->movementRate = 5.0f;;
 	ECS::Add<InputComponent>(PLAYER);
 	ECS::Add<BackpackComponent>(PLAYER);
 
@@ -330,6 +330,23 @@ void Startup::ProcessPlayerInput()
 	{
 		if (MotionComponent* motionComponent = ECS::Get<MotionComponent>(Entities::PLAYER))
 		{
+			motionComponent->up = 0;
+			motionComponent->down = 0;
+			motionComponent->left = 0;
+			motionComponent->right = 0;
+
+			if (inputComponent->command == ' ')
+			{
+				inputComponent->isHoldingKey = false;
+			}
+			else
+			{
+				if (inputComponent->isHoldingKey == false)
+				{
+					motionComponent->timeToMove = 0;
+					inputComponent->isHoldingKey = true;
+				}
+			}
 			if (inputComponent->command == 'W')
 			{
 				motionComponent->up = 1;
@@ -534,24 +551,19 @@ void Startup::Input()
 
 	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
-		inputComponent->command = ' ';
 		int i = 0;
 
 		for (i; i < vKeys.size(); i++)
 		{
 			if (Application::Input(vKeys[i]))
 			{
-				if (inputComponent->hasClicked == false)
-				{
-					inputComponent->command = toascii(vKeys[i]);
-					inputComponent->hasClicked = true;
-				}
-				break;
+				inputComponent->command = toascii(vKeys[i]);
+				return;
 			}
 		}
-		if (i == vKeys.size() && inputComponent->hasClicked == true)
+		if (i == vKeys.size())
 		{
-			inputComponent->hasClicked = false;
+			inputComponent->command = ' ';
 		}
 	}
 }
@@ -633,8 +645,6 @@ bool Startup::IsPositionFree(int const posX, int const posY, int const id, Colli
 void Startup::Movement()
 {
 	float timePoint = Application::GetGlobalTimer();
-
-	const std::vector<int> ENTITIES_NEARBY = ECS::GetAllIDFrom<PositionComponent>();
 
 	const std::vector<int> ENTITIES = Application::ExtractSameInts(
 		{
