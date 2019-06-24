@@ -273,6 +273,7 @@ void Canvas::SetBuffersToZero()
 void Canvas::Erase()
 {
 	SetBuffersToZero();
+	SetColorkey(15);
 	Draw();
 
 	width = 0;

@@ -8,18 +8,6 @@ struct BaseComponent
 };
 
 #pragma region COLLISION
-const enum CollisionTypes
-{
-	NONE,
-	//1: kinetic (ignore normal and kinetic items) 
-	KINETIC,
-	//2: solid (ignore no items, block all) 
-	SOLID,
-	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
-	DYNAMIC,
-	NUMBER_OF_COLLISION_TYPES
-};
-
 struct CollisionComponent : public BaseComponent
 {
 public:

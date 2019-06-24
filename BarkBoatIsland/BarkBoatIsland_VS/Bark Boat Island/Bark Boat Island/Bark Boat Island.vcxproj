@@ -121,6 +121,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="scenetemplate.cpp" />
     <ClCompile Include="rectanglebuffers.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="application.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="globalenums.h" />
+    <ClInclude Include="mainmenu.h" />
     <ClInclude Include="rectanglebuffers.h" />
     <ClInclude Include="scenebase.h" />
     <ClInclude Include="scenemanager.h" />

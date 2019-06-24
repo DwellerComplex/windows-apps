@@ -19,7 +19,9 @@ public:
 
 	std::vector<std::vector<char>>* GetCharBuffer();
 	std::vector<std::vector<short>>* GetColorBuffer();
+	std::vector<std::vector<short>>* GetCollisionBuffer();
 private:
 	std::vector<std::vector<char>> charBuffer;
 	std::vector<std::vector<short>> colorBuffer;
+	std::vector<std::vector<short>> collisionBuffer;
 };

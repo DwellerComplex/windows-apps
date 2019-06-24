@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Scenes\Startup">
       <UniqueIdentifier>{977a1ad3-1ed1-497f-a634-5329539e634d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes\Mainmenu">
+      <UniqueIdentifier>{623913e3-e369-4e82-9128-3e63b387e1c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,6 +60,9 @@
     <ClCompile Include="rectanglebuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainmenu.cpp">
+      <Filter>Source Files\Scenes\Mainmenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -84,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="globalenums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

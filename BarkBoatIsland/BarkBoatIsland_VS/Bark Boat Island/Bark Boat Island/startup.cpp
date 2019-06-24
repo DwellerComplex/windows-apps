@@ -3,6 +3,7 @@
 #include "rectanglebuffers.h"
 #include "ecs.h"
 #include "globalenums.h"
+#include "mainmenu.h"
 
 Startup::Startup()
 {
@@ -218,12 +219,24 @@ void Startup::Start()
 	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY, BackpackItemComponent(SILVER_KEY));
 
+
+	SpriteComponent* key2Sprite = ECS::Add<SpriteComponent>(STARTUP_SILVER_KEY2);
+	key2Sprite->sprite = { { char(235) } };
+	key2Sprite->color = { {0x0F} };
+	key2Sprite->drawLayer = 1;
+	ConsoleOutputComponent* key2Console = ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY2);
+	key2Console->output = { "Picked up Silver Key." };
+	ECS::Add<PositionComponent>(STARTUP_SILVER_KEY2, PositionComponent(18, 15));
+	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY2, CollisionComponent(CollisionTypes::SOLID));
+	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY2, BackpackItemComponent(SILVER_KEY));
+
+
 	SpriteComponent* doorMainmenuSprite = ECS::Add<SpriteComponent>(STARTUP_DOOR_MAINMENU);
 	doorMainmenuSprite->sprite = { { char(179) } };
 	doorMainmenuSprite->color = { {15} };
 	doorMainmenuSprite->drawLayer = 1;
 	ECS::Add<PositionComponent>(STARTUP_DOOR_MAINMENU, PositionComponent(7, 3));
-	ECS::Add<SceneComponent>(STARTUP_DOOR_MAINMENU)->nextScene = STARTUP;
+	ECS::Add<SceneComponent>(STARTUP_DOOR_MAINMENU)->nextScene = MAINMENU;
 	ECS::Add<LockComponent>(STARTUP_DOOR_MAINMENU)->key = SILVER_KEY;
 	ECS::Add<CollisionComponent>(STARTUP_DOOR_MAINMENU)->collisionSetting = CollisionTypes::SOLID;
 }
@@ -244,7 +257,7 @@ void Startup::End()
 	fogOfWarCanvas->Erase();
 	mainCanvas->Erase();
 	playerBackpack->Erase();
-	//console->Erase();
+	console->Erase();
 
 	delete backgroundCanvas;
 	delete fogOfWarCanvas;
@@ -255,6 +268,12 @@ void Startup::End()
 	if (nextScene == STARTUP)
 	{
 		SceneManager::RegisterScene(new Startup());
+	}
+	else if (nextScene == MAINMENU)
+	{
+		SceneManager::RegisterScene(new Mainmenu());
+		ECS::Get<PositionComponent>(PLAYER)->posX = 1;
+		ECS::Get<PositionComponent>(PLAYER)->posY = 1;
 	}
 }
 
@@ -487,7 +506,15 @@ void Startup::Draw()
 		for (int i = 0; i != consoleQueue.size(); i++)
 		{
 			console->PutString(std::string(console->GetWidth() - 2, ' '), 1, 1 + i, 0x0A, false);
-			console->PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
+
+			if (i == 0)
+			{
+				console->PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
+			}
+			else
+			{
+				console->PutString(consoleQueue[i], 1, 1 + i, 8, false);
+			}
 		}
 
 		console->Draw();

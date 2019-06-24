@@ -10,6 +10,7 @@ const enum Entities
 
 	//_________________startup_________________//
 	STARTUP_SILVER_KEY,
+	STARTUP_SILVER_KEY2,
 	STARTUP_DOOR_MAINMENU,
 	NUMBER_OF_ENTITIES
 };
@@ -23,7 +24,20 @@ const enum BackPackItemTypes
 
 const enum Scenes
 {
-	MAINMENU = 1,
+	QUIT = 1,
+	MAINMENU,
 	STARTUP,
 	NUMBER_OF_SCENES
+};
+
+const enum CollisionTypes
+{
+	NONE,
+	//1: kinetic (ignore normal and kinetic items) 
+	KINETIC,
+	//2: solid (ignore no items, block all) 
+	SOLID,
+	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
+	DYNAMIC,
+	NUMBER_OF_COLLISION_TYPES
 };
