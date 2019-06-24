@@ -185,7 +185,7 @@ void Startup::Start()
 	fogOfWarCanvas->SetBuffersToZero();
 	fogOfWarCanvas->SetColorkey(15);
 
-	RectangleBuffers playerBackpackBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 20, 30, 8, 3);
+	RectangleBuffers playerBackpackBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 20, Application::GetConsoleHeight() - 8, 8, 3);
 	playerBackpack = new Canvas(Application::GetConsoleWidth() - 20, 0, 0, *playerBackpackBuffers.GetCharBuffer(), *playerBackpackBuffers.GetColorBuffer());
 	playerBackpack->PutString("BACKPACK", 1, 1, 95, true, ' ', 95);
 
@@ -212,6 +212,8 @@ void Startup::Start()
 	keySprite->sprite = { { char(235) } };
 	keySprite->color = { {0x0F} };
 	keySprite->drawLayer = 1;
+	ConsoleOutputComponent* keyConsole = ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY);
+	keyConsole->output = { "Picked up Silver Key." };
 	ECS::Add<PositionComponent>(STARTUP_SILVER_KEY, PositionComponent(18, 10));
 	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY, BackpackItemComponent(SILVER_KEY));
@@ -232,6 +234,7 @@ void Startup::Update()
 	Input();
 	ProcessPlayerInput();
 	Movement();
+	ExecuteOrder66();
 	Draw();
 }
 
@@ -241,7 +244,7 @@ void Startup::End()
 	fogOfWarCanvas->Erase();
 	mainCanvas->Erase();
 	playerBackpack->Erase();
-	console->Erase();
+	//console->Erase();
 
 	delete backgroundCanvas;
 	delete fogOfWarCanvas;
@@ -284,6 +287,23 @@ void Startup::DrawLight(PositionComponent* positionComponent, const int radius, 
 	}
 }
 
+void Startup::ExecuteOrder66()
+{
+	for (int i = killQueue.size() - 1; !killQueue.empty(); i--)
+	{
+		int const id = killQueue[i];
+
+		ECS::Destroy<PositionComponent>(id);
+		ECS::Destroy<SpriteComponent>(id);
+		ECS::Destroy<InputComponent>(id);
+		ECS::Destroy<MotionComponent>(id);
+		ECS::Destroy<BackpackComponent>(id);
+		ECS::Destroy<BackpackItemComponent>(id);
+		ECS::Destroy<LockComponent>(id);
+		
+		killQueue.pop_back();
+	}
+}
 
 void Startup::ProcessPlayerInput()
 {
@@ -324,6 +344,7 @@ void Startup::ProcessPlayerInput()
 
 						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
 						{
+							//Backpack items
 							if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 							{
 								if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
@@ -345,6 +366,7 @@ void Startup::ProcessPlayerInput()
 								}
 							}
 
+							//doors
 							if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
 							{
 								if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
@@ -376,6 +398,22 @@ void Startup::ProcessPlayerInput()
 								{
 									nextScene = sceneComponent->nextScene;
 									update = false;
+								}
+							}
+
+							if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
+							{
+								consoleQueue.insert(consoleQueue.begin(),consoleOutputComponent->output[consoleOutputComponent->iterator]);
+								console->SetDrawThisTick(true);
+
+								if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
+								{
+									consoleOutputComponent->iterator++;
+								}
+
+								if (consoleQueue.size() == console->GetHeight() - 1)
+								{
+									consoleQueue.pop_back();
 								}
 							}
 						}
@@ -446,6 +484,12 @@ void Startup::Draw()
 	//console
 	if (console->GetDrawThisTick() == true)
 	{
+		for (int i = 0; i != consoleQueue.size(); i++)
+		{
+			console->PutString(std::string(console->GetWidth() - 2, ' '), 1, 1 + i, 0x0A, false);
+			console->PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
+		}
+
 		console->Draw();
 		console->SetDrawThisTick(false);
 	}
@@ -556,36 +600,6 @@ bool Startup::IsPositionFree(int const posX, int const posY, int const id, Colli
 		return false;
 	}
 
-
-	//if (mainCanvas->GetCollisionAt(posX, posY) == CollisionTypes::DYNAMIC)
-	//{
-	//	return false;
-	//}
-
-	//if (int const other = GetEntityAt(posX, posY, id))
-	//{
-	//	if (CollisionComponent* collisionComponentOther = ECS::Get<CollisionComponent>(other))
-	//	{
-	//		if (collisionComponent != nullptr && 
-	//			collisionComponentOther->isActive == true)
-	//		{
-	//			if (collisionComponent->collisionSetting == CollisionTypes::SOLID &&
-	//				(collisionComponentOther->collisionSetting == CollisionTypes::SOLID || 
-	//				collisionComponentOther->collisionSetting == CollisionTypes::DYNAMIC ||
-	//				collisionComponentOther->collisionSetting == CollisionTypes::KINETIC))
-	//			{
-	//				return false;
-	//			}
-	//			
-	//			if (collisionComponent->collisionSetting == CollisionTypes::DYNAMIC &&
-	//				(collisionComponentOther->collisionSetting == CollisionTypes::SOLID))
-	//			{
-	//				return false;
-	//			}
-	//		}
-	//	}
-	//}
-	
 	return true;
 }
 

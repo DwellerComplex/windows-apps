@@ -3,7 +3,7 @@
 
 struct BaseComponent
 {
-	bool registerPersistancy = false;
+	//bool registerPersistancy = false;
 	bool isActive = true;
 };
 
@@ -161,15 +161,15 @@ public:
 
 #pragma endregion
 
-#pragma region PERSISTENT
-
-struct PersistencyComponent : public BaseComponent
-{
-public:
-	PersistencyComponent() {};
-};
-
-#pragma endregion
+//#pragma region PERSISTENT
+//
+//struct PersistencyComponent : public BaseComponent
+//{
+//public:
+//	PersistencyComponent() {};
+//};
+//
+//#pragma endregion
 
 #pragma region PLATFORM
 
@@ -201,13 +201,6 @@ struct ConsoleOutputComponent : public BaseComponent
 		ConsoleOutputComponent(std::string const output);
 		ConsoleOutputComponent(std::vector<std::string> const output);
 
-		void setIterator(int iter);
-		void iterate();
-		int getOutputSize();
-		int getIterator();
-		std::string getOutput();
-
-	private:
 		std::vector<std::string> output;
 		int iterator = 0;
 };

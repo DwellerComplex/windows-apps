@@ -11,10 +11,12 @@ public:
 	virtual void Update() override;
 	virtual void End() override;
 
-	void DrawLight(struct PositionComponent * positionComponent, const int radius, const float angleRadStepSize);
-
 private:
 	void ProcessPlayerInput();
+
+	void DrawLight(struct PositionComponent * positionComponent, const int radius, const float angleRadStepSize);
+
+	void ExecuteOrder66();
 
 	void Draw();
 
@@ -31,6 +33,7 @@ private:
 	short nextScene;
 
 	std::vector<int> killQueue;
+	std::vector<std::string> consoleQueue;
 
 	class Canvas* backgroundCanvas;
 	class Canvas* mainCanvas;

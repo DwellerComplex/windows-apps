@@ -113,8 +113,7 @@ ConsoleOutputComponent::ConsoleOutputComponent()
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::string const output)
 {
-	this->output.resize(1);
-	this->output[0] = output;
+	this->output.emplace_back(output);
 }
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const output)
@@ -122,28 +121,4 @@ ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const ou
 	this->output = output;
 }
 
-void ConsoleOutputComponent::setIterator(int iter)
-{
-	this->iterator = iter;
-}
-
-void ConsoleOutputComponent::iterate()
-{
-	this->iterator++;
-}
-
-int ConsoleOutputComponent::getIterator()
-{
-	return this->iterator;
-}
-
-std::string ConsoleOutputComponent::getOutput()
-{
-	return this->output[this->iterator];
-}
-
-int ConsoleOutputComponent::getOutputSize()
-{
-	return (int)this->output.size();
-}
 #pragma endregion
