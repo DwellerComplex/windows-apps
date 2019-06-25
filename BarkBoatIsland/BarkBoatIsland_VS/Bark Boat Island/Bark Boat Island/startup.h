@@ -30,6 +30,10 @@ private:
 
 	void Movement();
 
+	void UpdateSpikeTraps();
+
+	void PlayerRespawn();
+
 	short nextScene;
 
 	std::vector<int> killQueue;
@@ -40,14 +44,6 @@ private:
 	class Canvas* fogOfWarCanvas;
 	class Canvas* playerBackpack;
 	class Canvas* console;
-
-	const enum drawLayers {
-		NONE,
-		ONE,
-		TWO,
-		THREE,
-		NUMBER_OF_DRAW_LAYERS
-	};
 	
 	const enum canvases {
 		BACKGROUND = 1,

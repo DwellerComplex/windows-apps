@@ -20,25 +20,30 @@ void Mainmenu::Start()
 	mainCanvas->Copy(backgroundCanvas);
 	mainCanvas->SetBuffersToZero();
 
-	RectangleBuffers textBoxBuffers = RectangleBuffers(char(32), '*', '*', '*', '*', '*', '*', 30, 5, 0, 3);
+	RectangleBuffers textBoxBuffers = RectangleBuffers(char(32), '*', '*', '*', '*', '*', '*', 50, 5, 0, 3);
 	textBox = new Canvas(3, 0, 0, *textBoxBuffers.GetCharBuffer(), *textBoxBuffers.GetColorBuffer());
 	textBox->PutString("PLAY", 1, 1, 0x0A, false);
 	textBox->PutString("QUIT", 1, 3, 0x0A, false);
+
+	textBox->PutString("WASD Move", 10, 1, 0x02, false);
+	textBox->PutString("E    Interact", 10, 2, 0x02, false);
 	textBox->PutString("Made by Crumblebit", textBox->GetWidth() - 19, 3, 0x0E, false);
 
 	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
 	playerSprite->sprite = { { '#' } };
 	playerSprite->color = { {13} };
-	playerSprite->drawLayer = 1;
+	playerSprite->drawLayer = DrawLayers::TWO;
 
 	CollisionComponent* playerCollision = ECS::Add<CollisionComponent>(PLAYER);
 	playerCollision->collisionSetting = CollisionTypes::DYNAMIC;
 	playerCollision->collisionBuffer = { {true} };
 
 	PositionComponent* playerPosition = ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 1));
-	ECS::Add<MotionComponent>(PLAYER)->movementRate = 5.0f;
-	ECS::Add<InputComponent>(PLAYER);
+	ECS::Add<MotionComponent>(PLAYER)->movementRate = 10.0f;
+	ECS::Add<InputComponent>(PLAYER)->command = ' ';
 	ECS::Add<BackpackComponent>(PLAYER);
+	ECS::Add<LifeComponent>(PLAYER)->life = 5;
+	ECS::Add<LifeComponent>(PLAYER)->maxLife = 5;
 
 	SpriteComponent* doorPlaySprite = ECS::Add<SpriteComponent>(MAINMENU_DOOR_PLAY);
 	doorPlaySprite->sprite = { { char(179) } };

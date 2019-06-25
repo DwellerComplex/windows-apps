@@ -12,6 +12,8 @@ const enum Entities
 	STARTUP_SILVER_KEY,
 	STARTUP_SILVER_KEY2,
 	STARTUP_DOOR_MAINMENU,
+	STARTUP_PLAYER_SPAWNPOINT,
+	STARTUP_SPIKETRAP,
 	NUMBER_OF_ENTITIES
 };
 
@@ -40,4 +42,12 @@ const enum CollisionTypes
 	//3: dynamic (ignore kinetic, interact with normal and solid, "pushable")
 	DYNAMIC,
 	NUMBER_OF_COLLISION_TYPES
+};
+
+const enum DrawLayers 
+{
+	ONE,
+	TWO,
+	THREE,
+	NUMBER_OF_DRAW_LAYERS
 };

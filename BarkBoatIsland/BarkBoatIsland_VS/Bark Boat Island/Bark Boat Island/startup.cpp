@@ -193,28 +193,22 @@ void Startup::Start()
 	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
 	console = new Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
 
-	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
-	playerSprite->sprite = { { '#' } };
-	playerSprite->color = { {13} };
-	playerSprite->drawLayer = drawLayers::TWO;
+	SpriteComponent* playerSpawnpointSprite = ECS::Add<SpriteComponent>(STARTUP_PLAYER_SPAWNPOINT);
+	playerSpawnpointSprite->sprite = { { '#' } };
+	playerSpawnpointSprite->color = { {0x09} };
+	playerSpawnpointSprite->drawLayer = DrawLayers::ONE;
+	PositionComponent* playerSpawnpointPosition = ECS::Add<PositionComponent>(STARTUP_PLAYER_SPAWNPOINT);
+	ECS::Add<ConsoleOutputComponent>(STARTUP_PLAYER_SPAWNPOINT)->output = { "You respawned at spawnpoint." };
 
-	CollisionComponent* playerCollision = ECS::Add<CollisionComponent>(PLAYER);
-	playerCollision->collisionSetting = CollisionTypes::DYNAMIC;
-	playerCollision->collisionBuffer = { {true} };
-
-	PositionComponent* playerPosition = ECS::Add<PositionComponent>(PLAYER, PositionComponent(9, 3));
-	ECS::Add<MotionComponent>(PLAYER)->movementRate = 5.0f;;
-	ECS::Add<InputComponent>(PLAYER);
-	ECS::Add<BackpackComponent>(PLAYER);
-
+	playerSpawnpointPosition->posX = ECS::Get<PositionComponent>(PLAYER)->posX;
+	playerSpawnpointPosition->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 	ECS::Add<PositionComponent>(FLASHLIGHT, PositionComponent(0, 0));
 
 	SpriteComponent* keySprite = ECS::Add<SpriteComponent>(STARTUP_SILVER_KEY);
 	keySprite->sprite = { { char(235) } };
 	keySprite->color = { {0x0F} };
-	keySprite->drawLayer = 1;
-	ConsoleOutputComponent* keyConsole = ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY);
-	keyConsole->output = { "Picked up Silver Key." };
+	keySprite->drawLayer = DrawLayers::ONE;
+	ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY)->output = { "Picked up Silver Key." };
 	ECS::Add<PositionComponent>(STARTUP_SILVER_KEY, PositionComponent(18, 10));
 	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY, BackpackItemComponent(SILVER_KEY));
@@ -223,9 +217,8 @@ void Startup::Start()
 	SpriteComponent* key2Sprite = ECS::Add<SpriteComponent>(STARTUP_SILVER_KEY2);
 	key2Sprite->sprite = { { char(235) } };
 	key2Sprite->color = { {0x0F} };
-	key2Sprite->drawLayer = 1;
-	ConsoleOutputComponent* key2Console = ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY2);
-	key2Console->output = { "Picked up Silver Key." };
+	key2Sprite->drawLayer = DrawLayers::ONE;
+	ECS::Add<ConsoleOutputComponent>(STARTUP_SILVER_KEY2)->output = { "Picked up Silver Key." };
 	ECS::Add<PositionComponent>(STARTUP_SILVER_KEY2, PositionComponent(18, 15));
 	ECS::Add<CollisionComponent>(STARTUP_SILVER_KEY2, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(STARTUP_SILVER_KEY2, BackpackItemComponent(SILVER_KEY));
@@ -234,19 +227,33 @@ void Startup::Start()
 	SpriteComponent* doorMainmenuSprite = ECS::Add<SpriteComponent>(STARTUP_DOOR_MAINMENU);
 	doorMainmenuSprite->sprite = { { char(179) } };
 	doorMainmenuSprite->color = { {15} };
-	doorMainmenuSprite->drawLayer = 1;
+	doorMainmenuSprite->drawLayer = DrawLayers::ONE;
 	ECS::Add<PositionComponent>(STARTUP_DOOR_MAINMENU, PositionComponent(7, 3));
 	ECS::Add<SceneComponent>(STARTUP_DOOR_MAINMENU)->nextScene = MAINMENU;
 	ECS::Add<LockComponent>(STARTUP_DOOR_MAINMENU)->key = SILVER_KEY;
 	ECS::Add<CollisionComponent>(STARTUP_DOOR_MAINMENU)->collisionSetting = CollisionTypes::SOLID;
+
+	SpriteComponent* spikeTrapSprite = ECS::Add<SpriteComponent>(STARTUP_SPIKETRAP);
+	spikeTrapSprite->sprite = { { 'O' } };
+	spikeTrapSprite->color = { {8} };
+	spikeTrapSprite->drawLayer = DrawLayers::ONE;
+	ECS::Add<PositionComponent>(STARTUP_SPIKETRAP, PositionComponent(10, 10));
+	SpikeTrapComponent* spikeTrapComponent = ECS::Add<SpikeTrapComponent>(STARTUP_SPIKETRAP);
+	spikeTrapComponent->attackDelay = 0.5f;
+	spikeTrapComponent->activeTime = 2.0f;
+	ECS::Add<AttackComponent>(STARTUP_SPIKETRAP)->damage = 1;
+	ECS::Add<CollisionComponent>(STARTUP_SPIKETRAP)->collisionSetting = CollisionTypes::NONE;
+	ECS::Add<ConsoleOutputComponent>(STARTUP_SPIKETRAP)->output = { "You took 1 damage!" };
 }
 
 void Startup::Update()
 {
 	Collision();
+	UpdateSpikeTraps();
 	Input();
 	ProcessPlayerInput();
 	Movement();
+	PlayerRespawn();
 	ExecuteOrder66();
 	Draw();
 }
@@ -373,7 +380,7 @@ void Startup::ProcessPlayerInput()
 				{
 					for (short y = -1; y != 2; y++)
 					{
-						if (abs(x) * abs(y))
+						if (abs(x) * abs(y) || x + y == 0)
 						{
 							continue;
 						}
@@ -399,6 +406,17 @@ void Startup::ProcessPlayerInput()
 
 									backpackComponent->items[backpackItemComponent->type]++;
 									playerBackpack->SetDrawThisTick(true);
+
+									if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
+									{
+										consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+										console->SetDrawThisTick(true);
+
+										if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
+										{
+											consoleOutputComponent->iterator++;
+										}
+									}
 								}
 							}
 
@@ -436,22 +454,6 @@ void Startup::ProcessPlayerInput()
 									update = false;
 								}
 							}
-
-							if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
-							{
-								consoleQueue.insert(consoleQueue.begin(),consoleOutputComponent->output[consoleOutputComponent->iterator]);
-								console->SetDrawThisTick(true);
-
-								if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
-								{
-									consoleOutputComponent->iterator++;
-								}
-
-								if (consoleQueue.size() == console->GetHeight() - 1)
-								{
-									consoleQueue.pop_back();
-								}
-							}
 						}
 					}
 				}
@@ -468,7 +470,7 @@ void Startup::Draw()
 			ECS::GetAllIDFrom<SpriteComponent>()
 		});
 
-	for (short drawLayer = 0; drawLayer < drawLayers::NUMBER_OF_DRAW_LAYERS; drawLayer++)
+	for (short drawLayer = 0; drawLayer < DrawLayers::NUMBER_OF_DRAW_LAYERS; drawLayer++)
 	{
 		for (int e = 0; e < ENTITIES.size(); e++)
 		{
@@ -520,6 +522,11 @@ void Startup::Draw()
 	//console
 	if (console->GetDrawThisTick() == true)
 	{
+		while(consoleQueue.size() > console->GetHeight() - 2)
+		{
+			consoleQueue.pop_back();
+		}
+
 		for (int i = 0; i != consoleQueue.size(); i++)
 		{
 			console->PutString(std::string(console->GetWidth() - 2, ' '), 1, 1 + i, 0x0A, false);
@@ -767,5 +774,106 @@ void Startup::Movement()
 				motionComponent->timeToMove = timePoint + (1.0f / motionComponent->movementRate);
 			}
 		}
+	}
+}
+
+void Startup::UpdateSpikeTraps()
+{
+	float timePoint = Application::GetGlobalTimer();
+
+	const std::vector<int> ENTITIES = Application::ExtractSameInts(
+		{
+			ECS::GetAllIDFrom<SpikeTrapComponent>(),
+			ECS::GetAllIDFrom<PositionComponent>(),
+			ECS::GetAllIDFrom<SpriteComponent>(),
+			ECS::GetAllIDFrom<CollisionComponent>(),
+			ECS::GetAllIDFrom<ConsoleOutputComponent>()
+		});
+
+	for (int e = 0; e < ENTITIES.size(); e++)
+	{
+		SpikeTrapComponent* spikeTrapComponent = ECS::Get<SpikeTrapComponent>(ENTITIES[e]);
+		PositionComponent* positionComponent = ECS::Get<PositionComponent>(ENTITIES[e]);
+		SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(ENTITIES[e]);
+		CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(ENTITIES[e]);
+		ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(ENTITIES[e]);
+
+		PositionComponent* playerPositionComponent = ECS::Get<PositionComponent>(PLAYER);
+		LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
+
+		if (spikeTrapComponent &&
+			spikeTrapComponent->isActive &&
+			positionComponent && 
+			positionComponent->isActive &&
+			playerPositionComponent &&
+			playerPositionComponent->isActive &&
+			spriteComponent &&
+			spriteComponent->isActive &&
+			collisionComponent &&
+			collisionComponent->isActive 
+			)
+		{
+			if (playerPositionComponent->posX == positionComponent->posX &&
+				playerPositionComponent->posY == positionComponent->posY)
+			{
+				if (spikeTrapComponent->activated == false)
+				{
+					spikeTrapComponent->activated = true;
+					spikeTrapComponent->timeToAttack = timePoint + spikeTrapComponent->attackDelay;
+				}
+			}			
+			if (spikeTrapComponent->timeToAttack < timePoint)
+			{
+				if (spikeTrapComponent->activated == false)
+				{
+					collisionComponent->collisionSetting = CollisionTypes::NONE;
+					spriteComponent->sprite[0] = { 'O' };
+				}
+				else
+				{
+					collisionComponent->collisionSetting = CollisionTypes::SOLID;
+					spriteComponent->sprite[0] = { '^' };
+
+					if (playerPositionComponent->posX == positionComponent->posX &&
+						playerPositionComponent->posY == positionComponent->posY &&
+						playerLifeComponent && playerLifeComponent->isActive)
+					{
+						if (consoleOutputComponent && consoleOutputComponent->isActive)
+						{
+							consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+							console->SetDrawThisTick(true);
+						}
+
+						playerLifeComponent->life--;
+					}
+					spikeTrapComponent->activated = false;
+				}	
+
+				spikeTrapComponent->timeToAttack = timePoint + spikeTrapComponent->activeTime;
+			}
+		}
+	}
+}
+
+void Startup::PlayerRespawn()
+{
+	LifeComponent* lifeComponent = ECS::Get<LifeComponent>(PLAYER);
+
+	if (lifeComponent && lifeComponent->isActive && lifeComponent->life < 1)
+	{
+		if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(STARTUP_PLAYER_SPAWNPOINT))
+		{
+			consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+			console->SetDrawThisTick(true);
+
+			if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
+			{
+				consoleOutputComponent->iterator++;
+			}
+		}
+
+		lifeComponent->life = lifeComponent->maxLife;
+		ECS::Get<PositionComponent>(PLAYER)->posX = ECS::Get<PositionComponent>(STARTUP_PLAYER_SPAWNPOINT)->posX;
+		ECS::Get<PositionComponent>(PLAYER)->posY = ECS::Get<PositionComponent>(STARTUP_PLAYER_SPAWNPOINT)->posY;
 	}
 }

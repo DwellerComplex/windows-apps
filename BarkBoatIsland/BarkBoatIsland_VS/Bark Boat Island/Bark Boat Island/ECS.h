@@ -134,6 +134,22 @@ public:
 	LifeComponent() {};
 	LifeComponent(int life);
 	int life;
+	int maxLife;
+};
+
+#pragma endregion
+
+
+#pragma region SPIKETRAP
+
+struct SpikeTrapComponent : public BaseComponent
+{
+public:
+	SpikeTrapComponent() {};
+	float attackDelay;
+	float activeTime;
+	bool activated;
+	float timeToAttack;
 };
 
 #pragma endregion
