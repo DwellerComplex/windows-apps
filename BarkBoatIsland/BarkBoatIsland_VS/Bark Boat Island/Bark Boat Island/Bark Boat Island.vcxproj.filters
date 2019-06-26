@@ -28,6 +28,12 @@
     <Filter Include="Source Files\Scenes\Mainmenu">
       <UniqueIdentifier>{623913e3-e369-4e82-9128-3e63b387e1c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes\AmberStrand">
+      <UniqueIdentifier>{44882ef9-d61e-4263-b569-61c608838777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes\SmallHouse">
+      <UniqueIdentifier>{3983685d-0db8-405c-b222-3dba86f07c51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,14 +60,23 @@
     <ClCompile Include="canvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="startup.cpp">
-      <Filter>Source Files\Scenes\Startup</Filter>
-    </ClCompile>
     <ClCompile Include="rectanglebuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainmenu.cpp">
+    <ClCompile Include="Scenes\mainmenu.cpp">
       <Filter>Source Files\Scenes\Mainmenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\startup.cpp">
+      <Filter>Source Files\Scenes\Startup</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\amberstrand.cpp">
+      <Filter>Source Files\Scenes\AmberStrand</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\smallhouse.cpp">
+      <Filter>Source Files\Scenes\SmallHouse</Filter>
+    </ClCompile>
+    <ClCompile Include="scenedefaults.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scenemanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="startup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scenebase.h">
@@ -92,7 +104,19 @@
     <ClInclude Include="globalenums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mainmenu.h">
+    <ClInclude Include="Scenes\mainmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\startup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\amberstrand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\smallhouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenedefaults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

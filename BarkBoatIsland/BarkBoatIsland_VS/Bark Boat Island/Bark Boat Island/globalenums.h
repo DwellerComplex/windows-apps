@@ -3,17 +3,20 @@ const enum Entities
 {
 	PLAYER = 1,
 	FLASHLIGHT,
+	PLAYER_SPAWNPOINT,
 
 	//_________________mainmenu_________________//
 	MAINMENU_DOOR_PLAY,
 	MAINMENU_DOOR_QUIT,
 
 	//_________________startup_________________//
-	STARTUP_SILVER_KEY,
-	STARTUP_SILVER_KEY2,
-	STARTUP_DOOR_MAINMENU,
-	STARTUP_PLAYER_SPAWNPOINT,
+	STARTUP_DOOR_SMALLHOUSE,
 	STARTUP_SPIKETRAP,
+
+	//_________________startup_________________//
+	SMALLHOUSE_DOOR_STARTUP,
+	SMALLHOUSE_SILVER_KEY,
+
 	NUMBER_OF_ENTITIES
 };
 
@@ -29,6 +32,7 @@ const enum Scenes
 	QUIT = 1,
 	MAINMENU,
 	STARTUP,
+	SMALLHOUSE,
 	NUMBER_OF_SCENES
 };
 

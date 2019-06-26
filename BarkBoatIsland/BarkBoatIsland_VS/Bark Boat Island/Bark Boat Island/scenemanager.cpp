@@ -25,7 +25,7 @@ namespace SceneManager
 				{
 					currentRunnningScene->Update();
 
-					tick = newTick + 1 / 30;
+					tick = newTick + 1 / 60;
 				}
 			}
 

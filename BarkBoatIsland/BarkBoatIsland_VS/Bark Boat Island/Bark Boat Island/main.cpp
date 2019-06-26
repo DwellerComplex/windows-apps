@@ -1,4 +1,4 @@
-#include "mainmenu.h"
+#include "Scenes/mainmenu.h"
 
 int main(int argc, const char** argv)
 {

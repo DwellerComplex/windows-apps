@@ -115,29 +115,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="scenedefaults.cpp" />
+    <ClCompile Include="Scenes\amberstrand.cpp" />
     <ClCompile Include="applicationExtern.cpp" />
     <ClCompile Include="ecs.cpp" />
     <ClCompile Include="ecsExtern.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="application.cpp" />
     <ClCompile Include="canvas.cpp" />
-    <ClCompile Include="mainmenu.cpp" />
+    <ClCompile Include="Scenes\mainmenu.cpp" />
     <ClCompile Include="scenemanager.cpp" />
+    <ClCompile Include="Scenes\smallhouse.cpp" />
     <ClCompile Include="scenetemplate.cpp" />
     <ClCompile Include="rectanglebuffers.cpp" />
-    <ClCompile Include="startup.cpp" />
+    <ClCompile Include="Scenes\startup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scenedefaults.h" />
+    <ClInclude Include="Scenes\amberstrand.h" />
     <ClInclude Include="ecs.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="globalenums.h" />
-    <ClInclude Include="mainmenu.h" />
+    <ClInclude Include="Scenes\mainmenu.h" />
     <ClInclude Include="rectanglebuffers.h" />
     <ClInclude Include="scenebase.h" />
     <ClInclude Include="scenemanager.h" />
+    <ClInclude Include="Scenes\smallhouse.h" />
     <ClInclude Include="scenetemplate.h" />
-    <ClInclude Include="startup.h" />
+    <ClInclude Include="Scenes\startup.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
