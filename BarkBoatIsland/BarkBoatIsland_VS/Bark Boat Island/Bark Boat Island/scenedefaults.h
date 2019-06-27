@@ -11,10 +11,11 @@ public:
 	void PlayerInputEscape();
 	void ExecuteOrder66();
 	void DrawEntities(class Canvas* mainCanvas);
-	void DrawMainCanvas(class Canvas* mainCanvas);
-	void DrawCanvasOnMain(class Canvas * mainCanvas, class Canvas * otherCanvas);
+	void DrawCanvas(class Canvas* canvas);
+	void DrawCanvasOnCanvas(class Canvas * mainCanvas, class Canvas * otherCanvas);
 	void DrawPlayerBackpack(class Canvas* playerBackpack);
 	void DrawConsole(class Canvas* console);
+	void ZeroCanvasBuffers(class Canvas* canvas);
 
 	void Input();
 	void Collision(class Canvas* mainCanvas);

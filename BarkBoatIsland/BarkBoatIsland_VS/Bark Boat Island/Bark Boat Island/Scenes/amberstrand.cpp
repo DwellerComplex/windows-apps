@@ -205,6 +205,9 @@ void Amberstrand::Update()
 	update = continueUpdate;
 
 	Collision(mainCanvas);
+
+	DrawLight(ECS::Get<PositionComponent>(PLAYER), 12, 0.05f);
+
 	Input();
 	PlayerInputEscape();
 	PlayerInputMovement();
@@ -214,15 +217,12 @@ void Amberstrand::Update()
 	Movement(mainCanvas);
 	ExecuteOrder66();
 	DrawEntities(mainCanvas);
-
-	DrawLight(ECS::Get<PositionComponent>(PLAYER), 12, 0.05f);
-
-	DrawCanvasOnMain(mainCanvas, fogOfWarCanvas);
+	DrawCanvasOnCanvas(mainCanvas, fogOfWarCanvas);
 	DrawConsole(console);
 	DrawPlayerBackpack(playerBackpack);
-	DrawMainCanvas(mainCanvas);
-	DrawCanvasOnMain(mainCanvas, backgroundCanvas);
-	fogOfWarCanvas->SetBuffersToZero();
+	DrawCanvas(mainCanvas);
+	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
+	ZeroCanvasBuffers(fogOfWarCanvas);
 
 	if (ECS::Get<PositionComponent>(PLAYER)->posX == -1)
 	{

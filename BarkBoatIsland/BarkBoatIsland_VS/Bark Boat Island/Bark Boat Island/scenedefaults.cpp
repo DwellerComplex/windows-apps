@@ -234,12 +234,12 @@ void SceneDefaults::DrawEntities(Canvas * mainCanvas)
 	}
 }
 
-void SceneDefaults::DrawMainCanvas(Canvas * mainCanvas)
+void SceneDefaults::DrawCanvas(Canvas * canvas)
 {
-	mainCanvas->Draw();
+	canvas->Draw();
 }
 
-void SceneDefaults::DrawCanvasOnMain(Canvas * mainCanvas, Canvas * otherCanvas)
+void SceneDefaults::DrawCanvasOnCanvas(Canvas * mainCanvas, Canvas * otherCanvas)
 {
 	mainCanvas->CombineWith(otherCanvas);
 }
@@ -284,6 +284,11 @@ void SceneDefaults::DrawConsole(Canvas * console)
 		console->Draw();
 		console->SetDrawThisTick(false);
 	}
+}
+
+void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
+{
+	canvas->SetBuffersToZero();
 }
 
 void SceneDefaults::Input()

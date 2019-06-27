@@ -84,8 +84,8 @@ void Mainmenu::Update()
 	ExecuteOrder66();
 
 	DrawEntities(mainCanvas);
-	DrawMainCanvas(mainCanvas);
-	DrawCanvasOnMain(mainCanvas, backgroundCanvas);
+	DrawCanvas(mainCanvas);
+	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
 	textBox->Draw();
 }
 
@@ -105,8 +105,8 @@ void Mainmenu::End()
 
 	if (nextScene == AMBERSTRAND)
 	{
-		ECS::Get<PositionComponent>(PLAYER)->posX = 1;
-		ECS::Get<PositionComponent>(PLAYER)->posY = 1;
+		ECS::Get<PositionComponent>(PLAYER)->posX = 8;
+		ECS::Get<PositionComponent>(PLAYER)->posY = 40;
 		SceneManager::RegisterScene(new Amberstrand());
 	}
 	else if (nextScene == QUIT)

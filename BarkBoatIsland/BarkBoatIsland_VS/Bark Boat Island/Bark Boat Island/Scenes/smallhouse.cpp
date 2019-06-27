@@ -14,31 +14,31 @@ void SmallHouse::Start()
 {
 	std::vector<std::vector<char>> mapChars = {
 		{char(201), char(205), char(205), char(205), char(205), char(205), char(187)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(200), char(187), char(32), char(32), char(32), char(32), char(186)},
-		{char(32), char(186), char(32), char(32), char(32), char(32), char(186)},
-		{char(201), char(188), char(32), char(32), char(32), char(32), char(186)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(186), char(32), char(32), char(32), char(32), char(32), char(186)},
-		{char(200), char(205), char(205), char(187), char(32), char(32), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(200), char(187), char(46), char(46), char(46), char(46), char(186)},
+		{char(32), char(186), char(46), char(46), char(46), char(46), char(186)},
+		{char(201), char(188), char(46), char(46), char(46), char(46), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(186), char(46), char(46), char(46), char(46), char(46), char(186)},
+		{char(200), char(205), char(205), char(187), char(46), char(46), char(186)},
 		{char(32), char(32), char(32), char(200), char(205), char(205), char(188)}
 	};
 
 	std::vector<std::vector<short>> mapColors = {
 		{15, 15, 15, 15, 15, 15, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 15, 0, 0, 0, 0, 15},
-		{0, 15, 0, 0, 0, 0, 15},
-		{15, 15, 0, 0, 0, 0, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 0, 0, 0, 0, 0, 15},
-		{15, 15, 15, 15, 0, 0, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 15, 6, 6, 6, 6, 15},
+		{0, 15, 6, 6, 6, 6, 15},
+		{15, 15, 6, 6, 6, 6, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 6, 6, 6, 6, 6, 15},
+		{15, 15, 15, 15, 6, 6, 15},
 		{0, 0, 0, 15, 15, 15, 15}
 	};
 	std::vector<std::vector<short>> mapCollisions = {
@@ -114,8 +114,8 @@ void SmallHouse::Update()
 	DrawEntities(mainCanvas);
 	DrawConsole(console);
 	DrawPlayerBackpack(playerBackpack);
-	DrawMainCanvas(mainCanvas);
-	DrawCanvasOnMain(mainCanvas, backgroundCanvas);
+	DrawCanvas(mainCanvas);
+	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
 }
 
 void SmallHouse::End()
