@@ -5,6 +5,7 @@
 #include "../globalenums.h"
 #include "smallhouse.h"
 #include "mainmenu.h"
+#include "amberstrand.h"
 //background: East Sea Dokdo
 Startup::Startup()
 {
@@ -196,8 +197,6 @@ void Startup::Start()
 	ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posX = ECS::Get<PositionComponent>(PLAYER)->posX;
 	ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 
-	ECS::Add<PositionComponent>(FLASHLIGHT, PositionComponent(0, 0));
-
 	SpriteComponent* doorSmallHouseSprite = ECS::Add<SpriteComponent>(STARTUP_DOOR_SMALLHOUSE);
 	doorSmallHouseSprite->sprite = { { char(179) } };
 	doorSmallHouseSprite->color = { {15} };
@@ -239,9 +238,7 @@ void Startup::Update()
 	ExecuteOrder66();
 	DrawEntities(mainCanvas);
 
-	DrawLight(ECS::Get<PositionComponent>(FLASHLIGHT), 12, 0.05f);
-	ECS::Get<PositionComponent>(FLASHLIGHT)->posX = ECS::Get<PositionComponent>(PLAYER)->posX - 12;
-	ECS::Get<PositionComponent>(FLASHLIGHT)->posY = ECS::Get<PositionComponent>(PLAYER)->posY - 12;
+	DrawLight(ECS::Get<PositionComponent>(PLAYER), 12, 0.05f);
 
 	DrawCanvasOnMain(mainCanvas, fogOfWarCanvas);
 	DrawConsole(console);
@@ -249,10 +246,20 @@ void Startup::Update()
 	DrawMainCanvas(mainCanvas);
 	DrawCanvasOnMain(mainCanvas, backgroundCanvas);
 	fogOfWarCanvas->SetBuffersToZero();
+
+	if (ECS::Get<PositionComponent>(PLAYER)->posX == 55)
+	{
+		nextScene = AMBERSTRAND;
+		update = false;
+	}
 }
 
 void Startup::End()
 {
+	killQueue.emplace_back(STARTUP_DOOR_SMALLHOUSE);
+	killQueue.emplace_back(STARTUP_SPIKETRAP);
+	ExecuteOrder66();
+
 	backgroundCanvas->Erase();
 	fogOfWarCanvas->Erase();
 	mainCanvas->Erase();
@@ -277,6 +284,11 @@ void Startup::End()
 		ECS::Get<PositionComponent>(PLAYER)->posX = 5;
 		ECS::Get<PositionComponent>(PLAYER)->posY = 2;
 	}
+	else if (nextScene == AMBERSTRAND)
+	{
+		SceneManager::RegisterScene(new Amberstrand());
+		ECS::Get<PositionComponent>(PLAYER)->posX = 0;
+	}
 }
 
 void Startup::DrawLight(PositionComponent* positionComponent, const int radius, const float angleRadStepSize)
@@ -284,8 +296,8 @@ void Startup::DrawLight(PositionComponent* positionComponent, const int radius, 
 	const float twoPi = 2.0f * (atanf(1) * 4);
 	float angleRad = 0.0f;
 
-	const int entityPosX = positionComponent->posX;
-	const int entityPosY = positionComponent->posY;
+	const int entityPosX = positionComponent->posX - radius;
+	const int entityPosY = positionComponent->posY - radius;
 
 	for (angleRad; angleRad < twoPi; angleRad += angleRadStepSize)
 	{

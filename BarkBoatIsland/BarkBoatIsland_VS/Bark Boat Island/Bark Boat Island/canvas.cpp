@@ -64,10 +64,7 @@ void Canvas::CombineWith(Canvas * canvas)
 				continue;
 			}
 
-			if (frontCharBuffer[x][y] == canvas->frontCharBuffer[x][y] &&
-				frontColorBuffer[x][y] == canvas->frontCharBuffer[x][y] &&
-				frontCollisionBuffer[x][y] == canvas->frontCollisionBuffer[x][y] ||
-				canvas->frontColorBuffer[x][y] == canvas->GetColorKey()) {
+			if(canvas->frontColorBuffer[x][y] == canvas->GetColorKey()) {
 				continue;
 			}
 

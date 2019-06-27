@@ -3,7 +3,7 @@
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"
-#include "smallhouse.h"
+#include "amberstrand.h"
 
 Mainmenu::Mainmenu()
 {
@@ -28,7 +28,7 @@ void Mainmenu::Start()
 	textBox->PutString("Made by Crumblebit", textBox->GetWidth() - 19, 3, 0x0E, false);
 
 	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
-	playerSprite->sprite = { { '#' } };
+	playerSprite->sprite = { { char(219) } };
 	playerSprite->color = { {13} };
 	playerSprite->drawLayer = DrawLayers::TWO;
 
@@ -48,7 +48,7 @@ void Mainmenu::Start()
 	doorPlaySprite->color = { {15} };
 	doorPlaySprite->drawLayer = 1;
 	ECS::Add<PositionComponent>(MAINMENU_DOOR_PLAY, PositionComponent(2, 1));
-	ECS::Add<SceneComponent>(MAINMENU_DOOR_PLAY)->nextScene = SMALLHOUSE;
+	ECS::Add<SceneComponent>(MAINMENU_DOOR_PLAY)->nextScene = AMBERSTRAND;
 	ECS::Add<CollisionComponent>(MAINMENU_DOOR_PLAY)->collisionSetting = CollisionTypes::SOLID;
 
 	SpriteComponent* doorQuitSprite = ECS::Add<SpriteComponent>(MAINMENU_DOOR_QUIT);
@@ -103,11 +103,11 @@ void Mainmenu::End()
 	delete backgroundCanvas;
 	delete textBox;
 
-	if (nextScene == SMALLHOUSE)
+	if (nextScene == AMBERSTRAND)
 	{
 		ECS::Get<PositionComponent>(PLAYER)->posX = 1;
 		ECS::Get<PositionComponent>(PLAYER)->posY = 1;
-		SceneManager::RegisterScene(new SmallHouse());
+		SceneManager::RegisterScene(new Amberstrand());
 	}
 	else if (nextScene == QUIT)
 	{

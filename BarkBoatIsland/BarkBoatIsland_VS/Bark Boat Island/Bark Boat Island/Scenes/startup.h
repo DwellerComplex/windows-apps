@@ -20,11 +20,4 @@ private:
 	class Canvas* fogOfWarCanvas;
 	class Canvas* playerBackpack;
 	class Canvas* console;
-	
-	const enum canvases {
-		BACKGROUND = 1,
-		FOG_OF_WAR,
-		MAIN,
-		NUMBER_OF_CANVASES
-	};
 };

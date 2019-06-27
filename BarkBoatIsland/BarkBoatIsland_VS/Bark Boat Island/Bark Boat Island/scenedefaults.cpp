@@ -185,7 +185,7 @@ void SceneDefaults::PlayerInputEscape()
 
 void SceneDefaults::ExecuteOrder66()
 {
-	for (int i = killQueue.size() - 1; !killQueue.empty(); i--)
+	for (int i = (int)killQueue.size() - 1; !killQueue.empty(); i--)
 	{
 		int const id = killQueue[i];
 
@@ -196,6 +196,7 @@ void SceneDefaults::ExecuteOrder66()
 		ECS::Destroy<BackpackComponent>(id);
 		ECS::Destroy<BackpackItemComponent>(id);
 		ECS::Destroy<LockComponent>(id);
+		ECS::Destroy<SpikeTrapComponent>(id);
 
 		killQueue.pop_back();
 	}
