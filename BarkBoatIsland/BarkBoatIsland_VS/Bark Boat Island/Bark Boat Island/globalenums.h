@@ -9,13 +9,11 @@ const enum Entities
 	MAINMENU_DOOR_PLAY,
 	MAINMENU_DOOR_QUIT,
 
-	//_________________startup_________________//
-	STARTUP_DOOR_SMALLHOUSE,
-	STARTUP_SPIKETRAP,
+	WORLD1_1_DOOR1,
 
-	//_________________startup_________________//
-	SMALLHOUSE_DOOR_STARTUP,
-	SMALLHOUSE_SILVER_KEY,
+	WORLD1_2_OBSTACLE1,
+
+	WORLD1_3_KEY,
 
 	NUMBER_OF_ENTITIES
 };
@@ -31,9 +29,9 @@ const enum Scenes
 {
 	QUIT = 1,
 	MAINMENU,
-	STARTUP,
-	SMALLHOUSE,
-	AMBERSTRAND,
+	WORLD1_1,
+	WORLD1_2,
+	WORLD1_3,
 	NUMBER_OF_SCENES
 };
 

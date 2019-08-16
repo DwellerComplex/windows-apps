@@ -22,17 +22,17 @@
     <Filter Include="Templates">
       <UniqueIdentifier>{c739d10c-f011-480c-b3ee-6c56628477c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\Startup">
-      <UniqueIdentifier>{977a1ad3-1ed1-497f-a634-5329539e634d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Scenes\Mainmenu">
       <UniqueIdentifier>{623913e3-e369-4e82-9128-3e63b387e1c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\AmberStrand">
-      <UniqueIdentifier>{44882ef9-d61e-4263-b569-61c608838777}</UniqueIdentifier>
+    <Filter Include="Source Files\Scenes\World1">
+      <UniqueIdentifier>{903722d0-f5b2-451b-840c-de0017bd1bc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\SmallHouse">
-      <UniqueIdentifier>{3983685d-0db8-405c-b222-3dba86f07c51}</UniqueIdentifier>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{a60dcd9c-d437-47c4-9ebc-545e4e57580a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\World1">
+      <UniqueIdentifier>{1e605c27-a1f0-40ff-9f23-2ddfb71a12e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,17 +66,17 @@
     <ClCompile Include="Scenes\mainmenu.cpp">
       <Filter>Source Files\Scenes\Mainmenu</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\startup.cpp">
-      <Filter>Source Files\Scenes\Startup</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\amberstrand.cpp">
-      <Filter>Source Files\Scenes\AmberStrand</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes\smallhouse.cpp">
-      <Filter>Source Files\Scenes\SmallHouse</Filter>
-    </ClCompile>
     <ClCompile Include="scenedefaults.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\World1_1.cpp">
+      <Filter>Source Files\Scenes\World1</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\World1_2.cpp">
+      <Filter>Source Files\Scenes\World1</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\World1_3.cpp">
+      <Filter>Source Files\Scenes\World1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,17 +107,17 @@
     <ClInclude Include="Scenes\mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\startup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\amberstrand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\smallhouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="scenedefaults.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\World1_1.h">
+      <Filter>Header Files\Scenes\World1</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\World1_2.h">
+      <Filter>Header Files\Scenes\World1</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\World1_3.h">
+      <Filter>Header Files\Scenes\World1</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

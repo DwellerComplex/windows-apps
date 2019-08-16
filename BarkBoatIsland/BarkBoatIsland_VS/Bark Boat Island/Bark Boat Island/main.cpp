@@ -7,8 +7,8 @@ int main(int argc, const char** argv)
 	Application::SetFontEncoding(437);
 	Application::SetTitle("Bark Boat Island");
 	Application::SetFontSize(16, 16);
-	Application::SetConsoleSize(1800, 1000);
 	Application::SetConsoleScreenBuffer();
+	Application::SetConsoleSize(528, 570); //32 x 32
 	Application::SetCursorPosition(0, 0);
 	Application::ShowConsoleCursor(false);
 	Application::StartGlobalTimer();

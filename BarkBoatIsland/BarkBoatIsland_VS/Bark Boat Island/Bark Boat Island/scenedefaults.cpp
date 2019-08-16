@@ -52,7 +52,7 @@ void SceneDefaults::PlayerInputMovement()
 	}
 }
 
-void SceneDefaults::PlayerInteractBackpack(Canvas * playerBackpack, Canvas * console)
+void SceneDefaults::PlayerInteractBackpack()
 {
 	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
@@ -76,6 +76,8 @@ void SceneDefaults::PlayerInteractBackpack(Canvas * playerBackpack, Canvas * con
 							{
 								if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
 								{
+									backpackItemComponent->isInBackpack = true;
+
 									PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
 									positionComponent->isActive = false;
 
@@ -89,18 +91,6 @@ void SceneDefaults::PlayerInteractBackpack(Canvas * playerBackpack, Canvas * con
 									}
 
 									backpackComponent->items[backpackItemComponent->type]++;
-									playerBackpack->SetDrawThisTick(true);
-
-									if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
-									{
-										consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-										console->SetDrawThisTick(true);
-
-										if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
-										{
-											consoleOutputComponent->iterator++;
-										}
-									}
 								}
 							}
 						}
@@ -291,7 +281,7 @@ void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
 	canvas->SetBuffersToZero();
 }
 
-void SceneDefaults::Input()
+void SceneDefaults::ReadInput()
 {
 	const std::array<int, 6> vKeys{ 0x41, 0x57, 0x53, 0x44, 0x45, VK_ESCAPE };
 
@@ -592,7 +582,7 @@ void SceneDefaults::UpdateSpikeTraps(Canvas * console)
 	}
 }
 
-void SceneDefaults::PlayerRespawn(Canvas * console)
+void SceneDefaults::PlayerRespawn() 
 {
 	SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(PLAYER_SPAWNPOINT);
 	LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
@@ -604,21 +594,89 @@ void SceneDefaults::PlayerRespawn(Canvas * console)
 
 	if (playerLifeComponent && playerLifeComponent->isActive && playerLifeComponent->life < 1 && spriteComponent)
 	{
-		if (ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(PLAYER_SPAWNPOINT))
-		{
-			consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-			console->SetDrawThisTick(true);
-
-			if (consoleOutputComponent->iterator != consoleOutputComponent->output.size() - 1)
-			{
-				consoleOutputComponent->iterator++;
-			}
-		}
-
 		playerLifeComponent->life = playerLifeComponent->maxLife;
 		ECS::Get<PositionComponent>(PLAYER)->posX = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posX;
 		ECS::Get<PositionComponent>(PLAYER)->posY = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posY;
 		playerSpawnTime = Application::GetGlobalTimer();
 		spriteComponent->isActive = true;
+	}
+}
+
+void SceneDefaults::UpdateEnemyPatrols()
+{
+	float timePoint = Application::GetGlobalTimer();
+
+	const std::vector<int> ENTITIES = Application::ExtractSameInts(
+		{
+			ECS::GetAllIDFrom<EnemyPatrolComponent>(),
+			ECS::GetAllIDFrom<PositionComponent>(),
+			ECS::GetAllIDFrom<SpriteComponent>(),
+			ECS::GetAllIDFrom<CollisionComponent>(),
+			ECS::GetAllIDFrom<MotionComponent>()
+		});
+
+	for (int e = 0; e < ENTITIES.size(); e++)
+	{
+		EnemyPatrolComponent* enemyPatrolComponent = ECS::Get<EnemyPatrolComponent>(ENTITIES[e]);
+		PositionComponent* positionComponent = ECS::Get<PositionComponent>(ENTITIES[e]);
+		SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(ENTITIES[e]);
+		CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(ENTITIES[e]);
+		MotionComponent* motionComponent = ECS::Get<MotionComponent>(ENTITIES[e]);
+
+		PositionComponent* playerPositionComponent = ECS::Get<PositionComponent>(PLAYER);
+		LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
+
+		if (enemyPatrolComponent &&
+			enemyPatrolComponent->isActive &&
+			positionComponent &&
+			positionComponent->isActive &&
+			playerPositionComponent &&
+			playerPositionComponent->isActive &&
+			spriteComponent &&
+			spriteComponent->isActive &&
+			collisionComponent &&
+			collisionComponent->isActive &&
+			motionComponent &&
+			motionComponent->isActive
+			)
+		{
+			if (enemyPatrolComponent->aY - enemyPatrolComponent->bY != 0)
+			{
+				if (positionComponent->posY == enemyPatrolComponent->aY)
+				{
+					motionComponent->down = 1;
+					motionComponent->up = 0;
+				}
+				else if (positionComponent->posY == enemyPatrolComponent->bY)
+				{
+					motionComponent->down = 0;
+					motionComponent->up = 1;
+				}
+			}
+			else if(enemyPatrolComponent->aX - enemyPatrolComponent->bX != 0)
+			{
+				if (positionComponent->posX == enemyPatrolComponent->aX)
+				{
+					motionComponent->right = 1;
+					motionComponent->left = 0;
+				}
+				else if (positionComponent->posX == enemyPatrolComponent->bX)
+				{
+					motionComponent->right = 0;
+					motionComponent->left = 1;
+				}
+			}
+
+
+			if (enemyPatrolComponent->timeToAttack < timePoint)
+			{
+				if (playerPositionComponent->posX == positionComponent->posX &&
+					playerPositionComponent->posY == positionComponent->posY)
+				{
+					playerLifeComponent->life--;
+					enemyPatrolComponent->timeToAttack = timePoint + enemyPatrolComponent->attackInterval;
+				}
+			}
+		}
 	}
 }

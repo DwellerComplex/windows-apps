@@ -6,7 +6,7 @@ class SceneDefaults
 public:
 	SceneDefaults();
 	void PlayerInputMovement();
-	void PlayerInteractBackpack(class Canvas* playerBackpack, class Canvas* console);
+	void PlayerInteractBackpack();
 	void PlayerInteractDoors();
 	void PlayerInputEscape();
 	void ExecuteOrder66();
@@ -17,13 +17,14 @@ public:
 	void DrawConsole(class Canvas* console);
 	void ZeroCanvasBuffers(class Canvas* canvas);
 
-	void Input();
+	void ReadInput();
 	void Collision(class Canvas* mainCanvas);
 	void Movement(class Canvas* mainCanvas);
 
 	void UpdateSpikeTraps(class Canvas * console);
 
-	void PlayerRespawn(class Canvas * console);
+	void PlayerRespawn();
+	void UpdateEnemyPatrols();
 
 	int GetEntityAt(int const posX, int const posY, int const id);
 

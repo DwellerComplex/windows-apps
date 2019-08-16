@@ -47,6 +47,7 @@ struct SpriteComponent : public BaseComponent
 {
 public:
 	SpriteComponent() {};
+	SpriteComponent(std::vector<std::vector<char>> sprite, std::vector<std::vector<short>> color, short canvasToDrawOn, short colorKey, short drawLayer);
 	std::vector<std::vector<char>> sprite;
 	std::vector<std::vector<short>> color;
 	short canvasToDrawOn = 0;
@@ -123,6 +124,7 @@ public:
 	BackpackItemComponent() { type = 0; };
 	BackpackItemComponent(int type) { this->type = type; };
 	int type;
+	bool isInBackpack = false;
 };
 #pragma endregion
 
@@ -153,6 +155,17 @@ public:
 };
 
 #pragma endregion
+
+struct EnemyPatrolComponent : public BaseComponent
+{
+public:
+	EnemyPatrolComponent() {};
+	EnemyPatrolComponent(short aX, short aY, short bX, short bY, float attackInterval, float timeToAttack);
+	short aX, aY;
+	short bX, bY;
+	float attackInterval;
+	float timeToAttack;
+};
 
 #pragma region ATTACK
 

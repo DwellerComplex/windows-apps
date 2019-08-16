@@ -122,3 +122,22 @@ ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const ou
 }
 
 #pragma endregion
+
+EnemyPatrolComponent::EnemyPatrolComponent(short aX, short aY, short bX, short bY, float attackInterval, float timeToAttack)
+{
+	this->aX = aX;
+	this->aY = aY;
+	this->bX = bX;
+	this->bY = bY;
+	this->attackInterval = attackInterval;
+	this->timeToAttack = timeToAttack;
+}
+
+SpriteComponent::SpriteComponent(std::vector<std::vector<char>> sprite, std::vector<std::vector<short>> color, short canvasToDrawOn, short colorKey, short drawLayer)
+{
+	this->sprite = sprite;
+	this->color = color;
+	this->canvasToDrawOn = canvasToDrawOn;
+	this->colorKey = colorKey;
+	this->drawLayer = drawLayer;
+}
