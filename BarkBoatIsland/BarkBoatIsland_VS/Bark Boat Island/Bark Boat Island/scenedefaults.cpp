@@ -54,45 +54,170 @@ void SceneDefaults::PlayerInputMovement()
 
 void SceneDefaults::PlayerInteractBackpack()
 {
-	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	if (int const other = PlayerNearInteractable())
 	{
-		if (inputComponent->command == 'E')
+		//Backpack items
+		if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 		{
-			if (PositionComponent* positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
+			if (BackpackItemComponent * backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
 			{
-				for (short x = -1; x != 2; x++)
+				backpackItemComponent->isInBackpack = true;
+
+				PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
+				positionComponent->isActive = false;
+
+				if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
 				{
-					for (short y = -1; y != 2; y++)
+					spriteComponent->isActive = false;
+				}
+				if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
+				{
+					collisionComponent->isActive = false;
+				}
+
+				backpackComponent->items[backpackItemComponent->type]++;
+			}
+		}
+	}
+}
+
+void SceneDefaults::PlayerInteractDoors()
+{
+	if (int const other = PlayerNearInteractable())
+	{
+		if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
+		{
+			if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
+			{
+				if (lockComponent->isActive)
+				{
+					if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 					{
-						if (abs(x) * abs(y) || x + y == 0)
+						for (int i = 0; i < backpackComponent->items.size(); i++)
 						{
-							continue;
-						}
-
-						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
-						{
-							//Backpack items
-							if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+							if (backpackComponent->items[lockComponent->key])
 							{
-								if (BackpackItemComponent* backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
+								backpackComponent->items[lockComponent->key]--;
+								lockComponent->isActive = false;
+								nextScene = sceneComponent->nextScene;
+								continueUpdate = false;
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					nextScene = sceneComponent->nextScene;
+					continueUpdate = false;
+				}
+			}
+			else
+			{
+				nextScene = sceneComponent->nextScene;
+				continueUpdate = false;
+			}
+		}
+	}
+}
+
+void SceneDefaults::PlayerInteractTrees(Canvas* console)
+{
+	float timePoint = Application::GetGlobalTimer();
+
+	if (int const other = PlayerNearInteractable())
+	{
+		if (TreeComponent * treeComponent = ECS::Get<TreeComponent>(other))
+		{
+
+			if (treeComponent->timeToChop > timePoint)
+			{
+				return;
+			}
+			
+			if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+			{
+				for (int i = 0; i < backpackComponent->items.size(); i++)
+				{
+					if (backpackComponent->items[AXE])
+					{
+						treeComponent->timeToChop = timePoint + treeComponent->chopInterval;
+
+						switch (treeComponent->chops)
+						{
+						case 0:
+							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+							{
+								spriteComponent->isActive = false;
+							}
+							if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
+							{
+								collisionComponent->isActive = false;
+							}
+							if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(other))
+							{
+								positionComponent->isActive = false;
+							}
+
+							consoleQueue.insert(consoleQueue.begin(), "Take logs.");
+							console->SetDrawThisTick(true);
+
+							treeComponent->chops--;
+							//place nrLogs in inv
+							return;
+						case 1:
+							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+							{
+								spriteComponent->sprite = { { '#' } };
+							}
+
+							consoleQueue.insert(consoleQueue.begin(), "(chop)");
+							console->SetDrawThisTick(true);
+
+							treeComponent->chops--;
+							return;
+						case 2:
+							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+							{
+								spriteComponent->sprite = { { '.' } };
+
+								if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(other))
 								{
-									backpackItemComponent->isInBackpack = true;
-
-									PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
-									positionComponent->isActive = false;
-
-									if (SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(other))
-									{
-										spriteComponent->isActive = false;
-									}
-									if (CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(other))
-									{
-										collisionComponent->isActive = false;
-									}
-
-									backpackComponent->items[backpackItemComponent->type]++;
+									positionComponent->posY++;
 								}
 							}
+
+							consoleQueue.insert(consoleQueue.begin(), "Take logs.");
+							console->SetDrawThisTick(true);
+
+							treeComponent->chops--;
+							//place nrLogs in inv
+							return;
+						case 3:
+							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+							{
+								spriteComponent->sprite[0][0] = '#';
+
+								spriteComponent->color[0][0] = 0x06;
+							}
+
+							consoleQueue.insert(consoleQueue.begin(), "(chop)");
+							console->SetDrawThisTick(true);
+
+							treeComponent->chops--;
+							return;
+						case 4:
+							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+							{
+								spriteComponent->sprite[0][0] = char(240);
+								spriteComponent->sprite[0][1] = '.';
+							}
+
+							consoleQueue.insert(consoleQueue.begin(),"(chop)");
+							console->SetDrawThisTick(true);
+
+							treeComponent->chops--;
+							return;
 						}
 					}
 				}
@@ -101,64 +226,34 @@ void SceneDefaults::PlayerInteractBackpack()
 	}
 }
 
-void SceneDefaults::PlayerInteractDoors()
+int SceneDefaults::PlayerNearInteractable()
 {
-	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	if (InputComponent * inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
 		if (inputComponent->command == 'E' && playerSpawnTime + 1 < Application::GetGlobalTimer())
 		{
-			if (PositionComponent* positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
+			if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
 			{
 				for (short x = -1; x != 2; x++)
 				{
 					for (short y = -1; y != 2; y++)
 					{
-						if (abs(x) * abs(y) || x + y == 0)
+						if (x == 0 && y == 0)//abs(x) * abs(y) || 
 						{
 							continue;
 						}
 
 						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
 						{
-							if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
-							{
-								if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
-								{
-									if (lockComponent->isActive)
-									{
-										if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
-										{
-											for (int i = 0; i < backpackComponent->items.size(); i++)
-											{
-												if (backpackComponent->items[lockComponent->key])
-												{
-													backpackComponent->items[lockComponent->key]--;
-													lockComponent->isActive = false;
-													nextScene = sceneComponent->nextScene;
-													continueUpdate = false;
-													break;
-												}
-											}
-										}
-									}
-									else
-									{
-										nextScene = sceneComponent->nextScene;
-										continueUpdate = false;
-									}
-								}
-								else
-								{
-									nextScene = sceneComponent->nextScene;
-									continueUpdate = false;
-								}
-							}
+							return other;
 						}
 					}
 				}
 			}
 		}
 	}
+
+	return 0;
 }
 
 void SceneDefaults::PlayerInputEscape()
@@ -666,7 +761,6 @@ void SceneDefaults::UpdateEnemyPatrols()
 					motionComponent->left = 1;
 				}
 			}
-
 
 			if (enemyPatrolComponent->timeToAttack < timePoint)
 			{

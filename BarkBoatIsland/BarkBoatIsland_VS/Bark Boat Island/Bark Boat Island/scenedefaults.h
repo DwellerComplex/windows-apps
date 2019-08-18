@@ -8,6 +8,8 @@ public:
 	void PlayerInputMovement();
 	void PlayerInteractBackpack();
 	void PlayerInteractDoors();
+	void PlayerInteractTrees(class Canvas* console);
+	int PlayerNearInteractable();
 	void PlayerInputEscape();
 	void ExecuteOrder66();
 	void DrawEntities(class Canvas* mainCanvas);

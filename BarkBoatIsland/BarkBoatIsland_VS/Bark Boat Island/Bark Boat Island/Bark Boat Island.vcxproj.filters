@@ -78,6 +78,9 @@
     <ClCompile Include="Scenes\World1_3.cpp">
       <Filter>Source Files\Scenes\World1</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\World1_4.cpp">
+      <Filter>Source Files\Scenes\World1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files\Scenes\World1</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\World1_3.h">
+      <Filter>Header Files\Scenes\World1</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\World1_4.h">
       <Filter>Header Files\Scenes\World1</Filter>
     </ClInclude>
   </ItemGroup>

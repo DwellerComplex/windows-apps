@@ -136,7 +136,7 @@ void World1_3::Start()
 
 
 	ECS::Add<SpriteComponent>(WORLD1_3_KEY, SpriteComponent({ { char(235) } },{ {0x03} },0,0,DrawLayers::ONE));
-	ECS::Add<PositionComponent>(WORLD1_3_KEY, PositionComponent(5, 18));
+	ECS::Add<PositionComponent>(WORLD1_3_KEY, PositionComponent(5, 19));
 	ECS::Add<CollisionComponent>(WORLD1_3_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(WORLD1_3_KEY, BackpackItemComponent(SILVER_KEY));
 

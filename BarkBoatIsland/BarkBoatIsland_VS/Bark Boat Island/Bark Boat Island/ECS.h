@@ -106,6 +106,26 @@ public:
 
 #pragma endregion
 
+#pragma region TREE
+struct TreeComponent : public BaseComponent
+{
+public:
+	TreeComponent() { };
+	TreeComponent(short const nrLogs, short const nrShops, float const chopInterval, float const timeToChop) 
+	{ 
+		this->nrLogs = nrLogs; 
+		this->chops = nrShops; 
+		this->chopInterval = chopInterval; 
+		this->timeToChop = timeToChop; 
+	};
+	short nrLogs;
+	short chops;
+	float chopInterval;
+	float timeToChop;
+};
+
+#pragma endregion
+
 //Contains ids of backpack items
 #pragma region BACKPACK
 struct BackpackComponent : public BaseComponent

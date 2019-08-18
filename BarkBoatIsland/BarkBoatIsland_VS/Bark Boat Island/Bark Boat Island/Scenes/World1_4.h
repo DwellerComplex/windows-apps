@@ -2,10 +2,10 @@
 #include "../SceneBase.h"
 #include "../scenedefaults.h"
 
-class World1_1 : public SceneBase, SceneDefaults
+class World1_4 : public SceneBase, SceneDefaults
 {
 public:
-	World1_1();
+	World1_4();
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void End() override;
@@ -13,5 +13,4 @@ public:
 private:
 	class Canvas* backgroundCanvas;
 	class Canvas* mainCanvas;
-	class Canvas* console;
 };

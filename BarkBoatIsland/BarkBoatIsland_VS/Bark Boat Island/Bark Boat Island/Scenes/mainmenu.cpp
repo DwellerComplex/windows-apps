@@ -105,7 +105,7 @@ void Mainmenu::End()
 
 	if (nextScene == WORLD1_1)
 	{
-		ECS::Get<PositionComponent>(PLAYER)->posX = 30;
+		ECS::Get<PositionComponent>(PLAYER)->posX = 1;
 		ECS::Get<PositionComponent>(PLAYER)->posY = 1;
 		SceneManager::RegisterScene(new World1_2);
 	}
