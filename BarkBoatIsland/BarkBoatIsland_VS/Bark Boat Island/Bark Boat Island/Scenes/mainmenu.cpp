@@ -28,8 +28,8 @@ void Mainmenu::Start()
 	textBox->PutString("By Crumblebit", textBox->GetWidth() - 14, 4, 0x0E, false);
 
 	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
-	playerSprite->sprite = { { 'o' } };
-	playerSprite->color = { {13} };
+	playerSprite->sprite = { { '#' } };
+	playerSprite->color = { {0x08} };
 	playerSprite->drawLayer = DrawLayers::TWO;
 
 	CollisionComponent* playerCollision = ECS::Add<CollisionComponent>(PLAYER);

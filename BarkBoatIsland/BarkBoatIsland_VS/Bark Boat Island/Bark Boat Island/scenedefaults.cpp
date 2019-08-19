@@ -216,7 +216,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						{
 							spriteComponent->sprite[0][0] = '#';
 
-							spriteComponent->color[0][0] = 0x06;
+							spriteComponent->color[0][0] = 0xA6;
 						}
 
 						consoleQueue.insert(consoleQueue.begin(), "(chop)");
