@@ -13,5 +13,4 @@ public:
 private:
 	class Canvas* backgroundCanvas;
 	class Canvas* mainCanvas;
-	class Canvas* console;
 };

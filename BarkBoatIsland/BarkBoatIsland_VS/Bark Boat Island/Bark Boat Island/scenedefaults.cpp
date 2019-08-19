@@ -2,11 +2,20 @@
 #include "ecs.h"
 #include "globalenums.h"
 #include "canvas.h"
+#include "rectanglebuffers.h"
 
 SceneDefaults::SceneDefaults()
 {
 	continueUpdate = true;
 	playerSpawnTime = 0;
+
+	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
+	console = new Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
+}
+
+SceneDefaults::~SceneDefaults()
+{
+	delete console;
 }
 
 void SceneDefaults::PlayerInputMovement()
@@ -52,64 +61,65 @@ void SceneDefaults::PlayerInputMovement()
 	}
 }
 
-void SceneDefaults::PlayerInteractBackpack()
+void SceneDefaults::PlayerInteract()
 {
-	if (int const other = PlayerNearInteractable())
+	int const other = GetInteractableNearPlayer();
+
+	if (other)
 	{
-		//Backpack items
-		if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+		PlayerInteractBackpack(other);
+		PlayerInteractDoors(other);
+		PlayerInteractTrees(other);
+	}
+}
+
+void SceneDefaults::PlayerInteractBackpack(int const other)
+{
+	//Backpack items
+	if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+	{
+		if (BackpackItemComponent * backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
 		{
-			if (BackpackItemComponent * backpackItemComponent = ECS::Get<BackpackItemComponent>(other))
+			backpackItemComponent->isInBackpack = true;
+
+			PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
+			positionComponent->isActive = false;
+
+			if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
 			{
-				backpackItemComponent->isInBackpack = true;
-
-				PositionComponent* positionComponent = ECS::Get<PositionComponent>(other);
-				positionComponent->isActive = false;
-
-				if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-				{
-					spriteComponent->isActive = false;
-				}
-				if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
-				{
-					collisionComponent->isActive = false;
-				}
-
-				backpackComponent->items[backpackItemComponent->type]++;
+				spriteComponent->isActive = false;
 			}
+			if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
+			{
+				collisionComponent->isActive = false;
+			}
+
+			backpackComponent->items[backpackItemComponent->type]++;
 		}
 	}
 }
 
-void SceneDefaults::PlayerInteractDoors()
+void SceneDefaults::PlayerInteractDoors(int const other)
 {
-	if (int const other = PlayerNearInteractable())
+	if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
 	{
-		if (SceneComponent* sceneComponent = ECS::Get<SceneComponent>(other))
+		if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
 		{
-			if (LockComponent* lockComponent = ECS::Get<LockComponent>(other))
+			if (lockComponent->isActive)
 			{
-				if (lockComponent->isActive)
+				if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
 				{
-					if (BackpackComponent* backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+					for (int i = 0; i < backpackComponent->items.size(); i++)
 					{
-						for (int i = 0; i < backpackComponent->items.size(); i++)
+						if (backpackComponent->items[lockComponent->key])
 						{
-							if (backpackComponent->items[lockComponent->key])
-							{
-								backpackComponent->items[lockComponent->key]--;
-								lockComponent->isActive = false;
-								nextScene = sceneComponent->nextScene;
-								continueUpdate = false;
-								break;
-							}
+							backpackComponent->items[lockComponent->key]--;
+							lockComponent->isActive = false;
+							nextScene = sceneComponent->nextScene;
+							continueUpdate = false;
+							break;
 						}
 					}
-				}
-				else
-				{
-					nextScene = sceneComponent->nextScene;
-					continueUpdate = false;
 				}
 			}
 			else
@@ -118,107 +128,114 @@ void SceneDefaults::PlayerInteractDoors()
 				continueUpdate = false;
 			}
 		}
+		else
+		{
+			nextScene = sceneComponent->nextScene;
+			continueUpdate = false;
+		}
 	}
+	
 }
 
-void SceneDefaults::PlayerInteractTrees(Canvas* console)
+void SceneDefaults::PlayerInteractTrees(int const other)
 {
 	float timePoint = Application::GetGlobalTimer();
 
-	if (int const other = PlayerNearInteractable())
+	if (TreeComponent * treeComponent = ECS::Get<TreeComponent>(other))
 	{
-		if (TreeComponent * treeComponent = ECS::Get<TreeComponent>(other))
+
+		if (treeComponent->timeToChop > timePoint)
 		{
-
-			if (treeComponent->timeToChop > timePoint)
-			{
-				return;
-			}
+			return;
+		}
 			
-			if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+		if (BackpackComponent * backpackComponent = ECS::Get<BackpackComponent>(Entities::PLAYER))
+		{
+			for (int i = 0; i < backpackComponent->items.size(); i++)
 			{
-				for (int i = 0; i < backpackComponent->items.size(); i++)
+				if (backpackComponent->items[AXE])
 				{
-					if (backpackComponent->items[AXE])
-					{
-						treeComponent->timeToChop = timePoint + treeComponent->chopInterval;
+					treeComponent->timeToChop = timePoint + treeComponent->chopInterval;
 
-						switch (treeComponent->chops)
+					switch (treeComponent->chops)
+					{
+					case 0:
+						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
 						{
-						case 0:
-							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-							{
-								spriteComponent->isActive = false;
-							}
-							if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
-							{
-								collisionComponent->isActive = false;
-							}
+							spriteComponent->isActive = false;
+						}
+						if (CollisionComponent * collisionComponent = ECS::Get<CollisionComponent>(other))
+						{
+							collisionComponent->isActive = false;
+						}
+						if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(other))
+						{
+							positionComponent->isActive = false;
+						}
+
+						consoleQueue.insert(consoleQueue.begin(), "Take logs.");
+						console->SetDrawThisTick(true);
+
+						treeComponent->chops--;
+							
+						backpackComponent->items[LOG]++;
+
+						return;
+					case 1:
+						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+						{
+							spriteComponent->sprite = { { '#' } };
+						}
+
+						consoleQueue.insert(consoleQueue.begin(), "(chop)");
+						console->SetDrawThisTick(true);
+
+						treeComponent->chops--;
+						return;
+					case 2:
+						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+						{
+							spriteComponent->sprite = { { '.' } };
+
 							if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(other))
 							{
-								positionComponent->isActive = false;
+								positionComponent->posY++;
 							}
-
-							consoleQueue.insert(consoleQueue.begin(), "Take logs.");
-							console->SetDrawThisTick(true);
-
-							treeComponent->chops--;
-							//place nrLogs in inv
-							return;
-						case 1:
-							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-							{
-								spriteComponent->sprite = { { '#' } };
-							}
-
-							consoleQueue.insert(consoleQueue.begin(), "(chop)");
-							console->SetDrawThisTick(true);
-
-							treeComponent->chops--;
-							return;
-						case 2:
-							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-							{
-								spriteComponent->sprite = { { '.' } };
-
-								if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(other))
-								{
-									positionComponent->posY++;
-								}
-							}
-
-							consoleQueue.insert(consoleQueue.begin(), "Take logs.");
-							console->SetDrawThisTick(true);
-
-							treeComponent->chops--;
-							//place nrLogs in inv
-							return;
-						case 3:
-							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-							{
-								spriteComponent->sprite[0][0] = '#';
-
-								spriteComponent->color[0][0] = 0x06;
-							}
-
-							consoleQueue.insert(consoleQueue.begin(), "(chop)");
-							console->SetDrawThisTick(true);
-
-							treeComponent->chops--;
-							return;
-						case 4:
-							if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
-							{
-								spriteComponent->sprite[0][0] = char(240);
-								spriteComponent->sprite[0][1] = '.';
-							}
-
-							consoleQueue.insert(consoleQueue.begin(),"(chop)");
-							console->SetDrawThisTick(true);
-
-							treeComponent->chops--;
-							return;
 						}
+
+						consoleQueue.insert(consoleQueue.begin(), "Take logs.");
+						console->SetDrawThisTick(true);
+
+						treeComponent->chops--;
+							
+						backpackComponent->items[LOG]++;
+
+						return;
+					case 3:
+						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+						{
+							spriteComponent->sprite[0][0] = '#';
+
+							spriteComponent->color[0][0] = 0x06;
+						}
+
+						consoleQueue.insert(consoleQueue.begin(), "(chop)");
+						console->SetDrawThisTick(true);
+
+						treeComponent->chops--;
+						return;
+					case 4:
+						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
+						{
+							spriteComponent->sprite[0][0] = char(240);
+							spriteComponent->sprite[0][1] = '.';
+						}
+
+						consoleQueue.insert(consoleQueue.begin(),"(chop)");
+						console->SetDrawThisTick(true);
+
+						treeComponent->chops--;
+						return;
 					}
 				}
 			}
@@ -226,7 +243,7 @@ void SceneDefaults::PlayerInteractTrees(Canvas* console)
 	}
 }
 
-int SceneDefaults::PlayerNearInteractable()
+int SceneDefaults::GetInteractableNearPlayer()
 {
 	if (InputComponent * inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
@@ -245,6 +262,12 @@ int SceneDefaults::PlayerNearInteractable()
 
 						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
 						{
+							if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
+							{
+								consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+								console->SetDrawThisTick(true);
+							}
+
 							return other;
 						}
 					}
@@ -343,7 +366,7 @@ void SceneDefaults::DrawPlayerBackpack(Canvas * playerBackpack)
 	}
 }
 
-void SceneDefaults::DrawConsole(Canvas * console)
+void SceneDefaults::DrawConsole()
 {
 	if (console->GetDrawThisTick() == true)
 	{
@@ -689,6 +712,12 @@ void SceneDefaults::PlayerRespawn()
 
 	if (playerLifeComponent && playerLifeComponent->isActive && playerLifeComponent->life < 1 && spriteComponent)
 	{
+		if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(PLAYER_SPAWNPOINT))
+		{
+			consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+			console->SetDrawThisTick(true);
+		}
+
 		playerLifeComponent->life = playerLifeComponent->maxLife;
 		ECS::Get<PositionComponent>(PLAYER)->posX = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posX;
 		ECS::Get<PositionComponent>(PLAYER)->posY = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posY;

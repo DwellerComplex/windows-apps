@@ -40,6 +40,7 @@ const enum BackPackItemTypes
 	GOLD_KEY = 1,
 	SILVER_KEY,
 	AXE,
+	LOG,
 	NUMBER_OF_TYPES
 };
 

@@ -79,7 +79,7 @@ void Mainmenu::Update()
 	Collision(mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
-	PlayerInteractDoors();
+	PlayerInteract();
 	Movement(mainCanvas);
 	ExecuteOrder66();
 

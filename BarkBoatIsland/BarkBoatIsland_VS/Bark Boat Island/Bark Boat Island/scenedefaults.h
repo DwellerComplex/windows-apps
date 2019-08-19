@@ -5,18 +5,20 @@ class SceneDefaults
 {
 public:
 	SceneDefaults();
+	~SceneDefaults();
 	void PlayerInputMovement();
-	void PlayerInteractBackpack();
-	void PlayerInteractDoors();
-	void PlayerInteractTrees(class Canvas* console);
-	int PlayerNearInteractable();
+	void PlayerInteract();
+	void PlayerInteractBackpack(int const other);
+	void PlayerInteractDoors(int const other);
+	void PlayerInteractTrees(int const other);
+	int GetInteractableNearPlayer();
 	void PlayerInputEscape();
 	void ExecuteOrder66();
 	void DrawEntities(class Canvas* mainCanvas);
 	void DrawCanvas(class Canvas* canvas);
 	void DrawCanvasOnCanvas(class Canvas * mainCanvas, class Canvas * otherCanvas);
 	void DrawPlayerBackpack(class Canvas* playerBackpack);
-	void DrawConsole(class Canvas* console);
+	void DrawConsole();
 	void ZeroCanvasBuffers(class Canvas* canvas);
 
 	void ReadInput();
@@ -34,6 +36,7 @@ public:
 
 	std::vector<int> killQueue;
 	std::vector<std::string> consoleQueue;
+	class Canvas* console;
 
 	short nextScene;
 	bool continueUpdate;

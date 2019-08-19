@@ -135,8 +135,8 @@ void World1_4::Start()
 	playerSpawnpointPosition->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 
 	SpriteComponent* door = ECS::Add<SpriteComponent>(WORLD1_1_DOOR1);
-	door->sprite = { { char(205) } };
-	door->color = { {0x03} };
+	door->sprite = { { char(205) }, { char(205) } };
+	door->color = { {0x03}, {0x03} };
 	door->drawLayer = 1;
 	ECS::Add<PositionComponent>(WORLD1_1_DOOR1, PositionComponent(19, 15));
 	ECS::Add<SceneComponent>(WORLD1_1_DOOR1)->nextScene = WORLD1_1;
@@ -161,11 +161,13 @@ void World1_4::Start()
 	ECS::Add<PositionComponent>(WORLD1_4_KEY, PositionComponent(25, 19));
 	ECS::Add<CollisionComponent>(WORLD1_4_KEY, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(WORLD1_4_KEY, BackpackItemComponent(GOLD_KEY));
+	ECS::Add<ConsoleOutputComponent>(WORLD1_4_KEY)->output = { "Picked up a golden key." };
 
 	ECS::Add<SpriteComponent>(WORLD1_4_AXE, SpriteComponent({ { char(80) } }, { {0x08} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_4_AXE, PositionComponent(20, 19));
 	ECS::Add<CollisionComponent>(WORLD1_4_AXE, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<BackpackItemComponent>(WORLD1_4_AXE, BackpackItemComponent(AXE));
+	ECS::Add<ConsoleOutputComponent>(WORLD1_4_AXE)->output = { "Picked up an axe." };
 
 	update = true;
 	playerSpawnTime = Application::GetGlobalTimer();
@@ -179,14 +181,14 @@ void World1_4::Update()
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
-	PlayerInteractDoors();
-	PlayerInteractBackpack();
+	PlayerInteract();
 	PlayerRespawn();
 	Movement(mainCanvas);
 	UpdateEnemyPatrols();
 	ExecuteOrder66();
 
 	DrawEntities(mainCanvas);
+	DrawConsole();
 	DrawCanvas(mainCanvas);
 	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
 }
@@ -198,6 +200,7 @@ void World1_4::End()
 	ECS::Destroy<SceneComponent>(WORLD1_1_DOOR1);
 	ECS::Destroy<CollisionComponent>(WORLD1_1_DOOR1);
 	killQueue.push_back(PLAYER_SPAWNPOINT);
+	killQueue.push_back(WORLD1_4_AXE);
 	killQueue.push_back(WORLD1_4_OBSTACLE1);
 	killQueue.push_back(WORLD1_4_OBSTACLE2);
 

@@ -153,12 +153,13 @@ void World1_2::Update()
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
-	PlayerInteractDoors();
+	PlayerInteract();
 	PlayerRespawn();
 	Movement(mainCanvas);
 	ExecuteOrder66();
 
 	DrawEntities(mainCanvas);
+	DrawConsole();
 	DrawCanvas(mainCanvas);
 	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
 

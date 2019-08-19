@@ -30,7 +30,7 @@ void World1_1::Start()
 {char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32)},
 {char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32)},
 {char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32)},
-{char(32),char(32),char(236),char(236),char(32),char(32),char(236),char(236),char(32),char(32),char(32),char(32),char(32),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(32),char(32),char(32),char(32)},
+{char(32),char(32),char(236),char(93),char(32),char(32),char(91),char(236),char(32),char(32),char(32),char(32),char(32),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(32),char(32),char(32),char(32)},
 {char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32)},
 {char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32)},
 {char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(32),char(236),char(32),char(32),char(32),char(32)},
@@ -103,9 +103,6 @@ void World1_1::Start()
 	mainCanvas->Copy(backgroundCanvas);
 	mainCanvas->SetBuffersToZero();
 
-	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
-	console = new Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
-
 	SpriteComponent* playerSpawnpointSprite = ECS::Add<SpriteComponent>(PLAYER_SPAWNPOINT);
 	playerSpawnpointSprite->sprite = { { '#' } };
 	playerSpawnpointSprite->color = { {0x09} };
@@ -115,7 +112,7 @@ void World1_1::Start()
 	playerSpawnpointPosition->posX = ECS::Get<PositionComponent>(PLAYER)->posX;
 	playerSpawnpointPosition->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 
-	ECS::Add<SpriteComponent>(WORLD1_1_DOOR1, SpriteComponent({ { char(205) } },{ {0x03} },0,0, DrawLayers::ONE));
+	ECS::Add<SpriteComponent>(WORLD1_1_DOOR1, SpriteComponent({ { char(205) }, { char(205) } },{ {0x03}, {0x03} },0,0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_DOOR1, PositionComponent(19, 15));
 	ECS::Add<SceneComponent>(WORLD1_1_DOOR1)->nextScene = WORLD1_4;
 	ECS::Add<CollisionComponent>(WORLD1_1_DOOR1)->collisionSetting = CollisionTypes::SOLID;
@@ -193,14 +190,13 @@ void World1_1::Update()
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
-	PlayerInteractDoors();
-	PlayerInteractTrees(console);
+	PlayerInteract();
 	PlayerRespawn();
 	Movement(mainCanvas);
 	ExecuteOrder66();
 
 	DrawEntities(mainCanvas);
-	DrawConsole(console);
+	DrawConsole();
 	DrawCanvas(mainCanvas);
 	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
 
@@ -242,11 +238,9 @@ void World1_1::End()
 
 	backgroundCanvas->Erase();
 	mainCanvas->Erase();
-	console->Erase();
 
 	delete mainCanvas;
 	delete backgroundCanvas;
-	delete console;
 
 	if (nextScene == WORLD1_2)
 	{
