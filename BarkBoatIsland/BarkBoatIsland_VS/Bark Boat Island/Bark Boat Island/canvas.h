@@ -4,7 +4,7 @@
 class Canvas
 {
 public:
-	Canvas() {};
+	Canvas();
 	Canvas(int const width, int const height, int const topLeftX, int const topLeftY, short const colorKey,
 		std::vector<std::vector<char>> const charBuffer, 
 		std::vector<std::vector<short>> const colorBuffer,

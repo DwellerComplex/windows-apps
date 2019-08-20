@@ -1,7 +1,5 @@
 #pragma once
 #include "SceneBase.h"
-#include <vector>
-#include <string>
 #include "application.h"
 
 namespace SceneManager
@@ -13,5 +11,6 @@ namespace SceneManager
 
 	void RegisterScene(SceneBase* scene);
 	void ExecuteScene();
+	void EraseScene();
 	bool IsRunning();
 };

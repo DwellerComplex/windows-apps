@@ -285,15 +285,25 @@ namespace Application
 
 	void SetFontSize(int w, int h)
 	{
-		PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
-		lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
-		GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
-		lpConsoleCurrentFontEx->dwFontSize.X = w;
-		lpConsoleCurrentFontEx->dwFontSize.Y = h;
-		lpConsoleCurrentFontEx->FontFamily = FF_DONTCARE;
-		lpConsoleCurrentFontEx->FontWeight = FW_NORMAL;
-		wcscpy_s(lpConsoleCurrentFontEx->FaceName, L"Consolas");
-		SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+		//PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+		//lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+		//GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+		//lpConsoleCurrentFontEx->dwFontSize.X = w;
+		//lpConsoleCurrentFontEx->dwFontSize.Y = h;
+		//lpConsoleCurrentFontEx->FontFamily = FF_DONTCARE;
+		//lpConsoleCurrentFontEx->FontWeight = FW_NORMAL;
+		//wcscpy_s(lpConsoleCurrentFontEx->FaceName, L"Consolas");
+		//SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+
+		CONSOLE_FONT_INFOEX lpConsoleCurrentFontEx;
+		lpConsoleCurrentFontEx.cbSize = sizeof(lpConsoleCurrentFontEx);
+		lpConsoleCurrentFontEx.nFont = 0;
+		lpConsoleCurrentFontEx.dwFontSize.X = w;                   // Width of each character in the font
+		lpConsoleCurrentFontEx.dwFontSize.Y = h;                  // Height
+		lpConsoleCurrentFontEx.FontFamily = FF_DONTCARE;
+		lpConsoleCurrentFontEx.FontWeight = FW_NORMAL;
+		wcscpy_s(lpConsoleCurrentFontEx.FaceName, L"Consolas"); // Choose your font
+		SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &lpConsoleCurrentFontEx);
 	}
 
 	void SetFontEncoding(int code)

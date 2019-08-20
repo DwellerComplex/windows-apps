@@ -9,7 +9,9 @@
 World1_4::World1_4()
 {
 }
-
+World1_4::~World1_4()
+{
+}
 void World1_4::Start()
 {
 	std::vector<std::vector<char>> mapChars = {
@@ -120,10 +122,10 @@ void World1_4::Start()
 	Application::TransformVector2D(mapChars);
 	Application::TransformVector2D(mapColors);
 	Application::TransformVector2D(mapCollisions);
-	backgroundCanvas = new Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
-	mainCanvas = new Canvas();
-	mainCanvas->Copy(backgroundCanvas);
-	mainCanvas->SetBuffersToZero();
+	backgroundCanvas = Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
+	mainCanvas = Canvas();
+	mainCanvas.Copy(&backgroundCanvas);
+	mainCanvas.SetBuffersToZero();
 
 	SpriteComponent* playerSpawnpointSprite = ECS::Add<SpriteComponent>(PLAYER_SPAWNPOINT);
 	playerSpawnpointSprite->sprite = { { '#' } };
@@ -177,20 +179,20 @@ void World1_4::Update()
 {
 	update = continueUpdate;
 
-	Collision(mainCanvas);
+	Collision(&mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
 	PlayerInteract();
 	PlayerRespawn();
-	Movement(mainCanvas);
+	Movement(&mainCanvas);
 	UpdateEnemyPatrols();
 	ExecuteOrder66();
 
-	DrawEntities(mainCanvas);
+	DrawEntities(&mainCanvas);
 	DrawConsole();
-	DrawCanvas(mainCanvas);
-	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
+	DrawCanvas(&mainCanvas);
+	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 }
 
 void World1_4::End()
@@ -210,11 +212,8 @@ void World1_4::End()
 
 	ExecuteOrder66();
 
-	backgroundCanvas->Erase();
-	mainCanvas->Erase();
-
-	delete mainCanvas;
-	delete backgroundCanvas;
+	backgroundCanvas.Erase();
+	mainCanvas.Erase();
 
 	if (nextScene == WORLD1_1)
 	{

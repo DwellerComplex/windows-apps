@@ -1,5 +1,4 @@
 #include "mainmenu.h"
-#include "../canvas.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"
@@ -12,20 +11,22 @@ Mainmenu::Mainmenu()
 void Mainmenu::Start()
 {
 	RectangleBuffers backgroundBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 3, 6, 8, 3);
-	backgroundCanvas = new Canvas(0, 0, 0, *backgroundBuffers.GetCharBuffer(), *backgroundBuffers.GetColorBuffer(), *backgroundBuffers.GetCollisionBuffer());
+	backgroundCanvas = Canvas(0, 0, 0, *backgroundBuffers.GetCharBuffer(), *backgroundBuffers.GetColorBuffer(), *backgroundBuffers.GetCollisionBuffer());
 
-	mainCanvas = new Canvas();
-	mainCanvas->Copy(backgroundCanvas);
-	mainCanvas->SetBuffersToZero();
+	mainCanvas = Canvas();
+	mainCanvas.Copy(&backgroundCanvas);
+	mainCanvas.SetBuffersToZero();
 
 	RectangleBuffers textBoxBuffers = RectangleBuffers(char(32), '*', '*', '*', '*', '*', '*', 29, 6, 0, 3);
-	textBox = new Canvas(3, 0, 0, *textBoxBuffers.GetCharBuffer(), *textBoxBuffers.GetColorBuffer());
-	textBox->PutString("PLAY", 1, 1, 0x0A, false);
-	textBox->PutString("QUIT", 1, 4, 0x0A, false);
+	textBox = Canvas(3, 0, 0, *textBoxBuffers.GetCharBuffer(), *textBoxBuffers.GetColorBuffer());
+	textBox.PutString("PLAY", 1, 1, 0x0A, false);
+	textBox.PutString("QUIT", 1, 4, 0x0A, false);
 
-	textBox->PutString("WASD Move", 10, 1, 0x02, false);
-	textBox->PutString("E    Interact", 10, 2, 0x02, false);
-	textBox->PutString("By Crumblebit", textBox->GetWidth() - 14, 4, 0x0E, false);
+	textBox.PutString("WASD Move", 10, 1, 0x02, false);
+	textBox.PutString("E    Interact", 10, 2, 0x02, false);
+	textBox.PutString("By Crumblebit", textBox.GetWidth() - 14, 4, 0x0E, false);
+
+	consoleQueue.insert(consoleQueue.begin(), "Welcome to Bark Boat Island!");
 
 	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
 	playerSprite->sprite = { { '#' } };
@@ -48,7 +49,7 @@ void Mainmenu::Start()
 	doorPlaySprite->color = { {15} };
 	doorPlaySprite->drawLayer = 1;
 	ECS::Add<PositionComponent>(MAINMENU_DOOR_PLAY, PositionComponent(2, 1));
-	ECS::Add<SceneComponent>(MAINMENU_DOOR_PLAY)->nextScene = WORLD1_1;
+	ECS::Add<SceneComponent>(MAINMENU_DOOR_PLAY)->nextScene = WORLD1_2;
 	ECS::Add<CollisionComponent>(MAINMENU_DOOR_PLAY)->collisionSetting = CollisionTypes::SOLID;
 
 	SpriteComponent* doorQuitSprite = ECS::Add<SpriteComponent>(MAINMENU_DOOR_QUIT);
@@ -76,17 +77,19 @@ void Mainmenu::Update()
 {
 	update = continueUpdate;
 
-	Collision(mainCanvas);
+	Collision(&mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
+	//PlayerInputEscape();
 	PlayerInteract();
-	Movement(mainCanvas);
+	Movement(&mainCanvas);
 	ExecuteOrder66();
 
-	DrawEntities(mainCanvas);
-	DrawCanvas(mainCanvas);
-	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
-	textBox->Draw();
+	DrawEntities(&mainCanvas);
+	DrawConsole();
+	DrawCanvas(&mainCanvas);
+	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
+	textBox.Draw();
 }
 
 void Mainmenu::End()
@@ -95,19 +98,15 @@ void Mainmenu::End()
 	killQueue.emplace_back(MAINMENU_DOOR_QUIT);
 	ExecuteOrder66();
 
-	backgroundCanvas->Erase();
-	mainCanvas->Erase();
-	textBox->Erase();
+	backgroundCanvas.Erase();
+	mainCanvas.Erase();
+	textBox.Erase();
 
-	delete mainCanvas;
-	delete backgroundCanvas;
-	delete textBox;
-
-	if (nextScene == WORLD1_1)
+	if (nextScene == WORLD1_2)
 	{
 		ECS::Get<PositionComponent>(PLAYER)->posX = 1;
 		ECS::Get<PositionComponent>(PLAYER)->posY = 1;
-		SceneManager::RegisterScene(new World1_2);
+		SceneManager::RegisterScene(new World1_2());
 	}
 	else if (nextScene == QUIT)
 	{

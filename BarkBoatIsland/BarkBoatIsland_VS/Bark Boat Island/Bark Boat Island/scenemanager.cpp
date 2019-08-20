@@ -4,13 +4,13 @@ namespace SceneManager
 {
 	void RegisterScene(SceneBase* scene)
 	{
-		delete currentRunnningScene;
+		EraseScene();
 		currentRunnningScene = scene;
 	}
 
 	void ExecuteScene()
 	{
-		if (currentRunnningScene)
+		if (IsRunning())
 		{
 			currentRunnningScene->Start();
 
@@ -33,8 +33,13 @@ namespace SceneManager
 		}
 	}
 
+	void EraseScene()
+	{
+		delete currentRunnningScene;
+	}
+
 	bool IsRunning()
 	{
-		return (currentRunnningScene != nullptr);
+		return (currentRunnningScene);
 	}
 }

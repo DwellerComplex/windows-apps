@@ -1,6 +1,5 @@
 #pragma once
 #include "../SceneBase.h"
-#include "../scenemanager.h"
 #include "../scenedefaults.h"
 
 class Mainmenu : public SceneBase, SceneDefaults
@@ -13,7 +12,7 @@ public:
 	virtual void End() override;
 
 private:
-	class Canvas* backgroundCanvas;
-	class Canvas* mainCanvas;
-	class Canvas* textBox;
+	Canvas backgroundCanvas;
+	Canvas mainCanvas;
+	Canvas textBox;
 };

@@ -1,7 +1,6 @@
 #include "scenedefaults.h"
 #include "ecs.h"
 #include "globalenums.h"
-#include "canvas.h"
 #include "rectanglebuffers.h"
 
 SceneDefaults::SceneDefaults()
@@ -10,12 +9,12 @@ SceneDefaults::SceneDefaults()
 	playerSpawnTime = 0;
 
 	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
-	console = new Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
+	console = Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
 }
 
 SceneDefaults::~SceneDefaults()
 {
-	delete console;
+	console.Erase();
 }
 
 void SceneDefaults::PlayerInputMovement()
@@ -174,7 +173,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						}
 
 						consoleQueue.insert(consoleQueue.begin(), "Take logs.");
-						console->SetDrawThisTick(true);
+						console.SetDrawThisTick(true);
 
 						treeComponent->chops--;
 							
@@ -188,7 +187,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						}
 
 						consoleQueue.insert(consoleQueue.begin(), "(chop)");
-						console->SetDrawThisTick(true);
+						console.SetDrawThisTick(true);
 
 						treeComponent->chops--;
 						return;
@@ -204,7 +203,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						}
 
 						consoleQueue.insert(consoleQueue.begin(), "Take logs.");
-						console->SetDrawThisTick(true);
+						console.SetDrawThisTick(true);
 
 						treeComponent->chops--;
 							
@@ -220,7 +219,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						}
 
 						consoleQueue.insert(consoleQueue.begin(), "(chop)");
-						console->SetDrawThisTick(true);
+						console.SetDrawThisTick(true);
 
 						treeComponent->chops--;
 						return;
@@ -232,7 +231,7 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						}
 
 						consoleQueue.insert(consoleQueue.begin(),"(chop)");
-						console->SetDrawThisTick(true);
+						console.SetDrawThisTick(true);
 
 						treeComponent->chops--;
 						return;
@@ -247,7 +246,7 @@ int SceneDefaults::GetInteractableNearPlayer()
 {
 	if (InputComponent * inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
-		if (inputComponent->command == 'E' && playerSpawnTime + 1 < Application::GetGlobalTimer())
+		if (inputComponent->command == 'E' && playerSpawnTime + 0.2f < Application::GetGlobalTimer())
 		{
 			if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
 			{
@@ -265,7 +264,7 @@ int SceneDefaults::GetInteractableNearPlayer()
 							if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
 							{
 								consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-								console->SetDrawThisTick(true);
+								console.SetDrawThisTick(true);
 							}
 
 							return other;
@@ -368,29 +367,29 @@ void SceneDefaults::DrawPlayerBackpack(Canvas * playerBackpack)
 
 void SceneDefaults::DrawConsole()
 {
-	if (console->GetDrawThisTick() == true)
+	if (console.GetDrawThisTick() == true)
 	{
-		while (consoleQueue.size() > console->GetHeight() - 2)
+		while (consoleQueue.size() + 2 > console.GetHeight())
 		{
 			consoleQueue.pop_back();
 		}
 
 		for (int i = 0; i != consoleQueue.size(); i++)
 		{
-			console->PutString(std::string(console->GetWidth() - 2, ' '), 1, 1 + i, 0x0A, false);
+			console.PutString(std::string(console.GetWidth() - 2, ' '), 1, 1 + i, 0x0A, false);
 
 			if (i == 0)
 			{
-				console->PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
+				console.PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
 			}
 			else
 			{
-				console->PutString(consoleQueue[i], 1, 1 + i, 8, false);
+				console.PutString(consoleQueue[i], 1, 1 + i, 8, false);
 			}
 		}
 
-		console->Draw();
-		console->SetDrawThisTick(false);
+		console.Draw();
+		console.SetDrawThisTick(false);
 	}
 }
 
@@ -622,7 +621,7 @@ void SceneDefaults::Movement(Canvas* mainCanvas)
 	}
 }
 
-void SceneDefaults::UpdateSpikeTraps(Canvas * console)
+void SceneDefaults::UpdateSpikeTraps()
 {
 	float timePoint = Application::GetGlobalTimer();
 
@@ -686,7 +685,7 @@ void SceneDefaults::UpdateSpikeTraps(Canvas * console)
 						if (consoleOutputComponent && consoleOutputComponent->isActive)
 						{
 							consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-							console->SetDrawThisTick(true);
+							console.SetDrawThisTick(true);
 						}
 
 						playerLifeComponent->life--;
@@ -715,7 +714,7 @@ void SceneDefaults::PlayerRespawn()
 		if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(PLAYER_SPAWNPOINT))
 		{
 			consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-			console->SetDrawThisTick(true);
+			console.SetDrawThisTick(true);
 		}
 
 		playerLifeComponent->life = playerLifeComponent->maxLife;

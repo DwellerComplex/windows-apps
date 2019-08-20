@@ -3,12 +3,15 @@
 #include "World1_3.h"
 #include "World1_4.h"
 #include "mainmenu.h"
-#include "../canvas.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"
 
 World1_1::World1_1()
+{
+}
+
+World1_1::~World1_1()
 {
 }
 
@@ -98,10 +101,10 @@ void World1_1::Start()
 	Application::TransformVector2D(mapChars);
 	Application::TransformVector2D(mapColors);
 	Application::TransformVector2D(mapCollisions);
-	backgroundCanvas = new Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
-	mainCanvas = new Canvas();
-	mainCanvas->Copy(backgroundCanvas);
-	mainCanvas->SetBuffersToZero();
+	backgroundCanvas = Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
+	mainCanvas = Canvas();
+	mainCanvas.Copy(&backgroundCanvas);
+	mainCanvas.SetBuffersToZero();
 
 	SpriteComponent* playerSpawnpointSprite = ECS::Add<SpriteComponent>(PLAYER_SPAWNPOINT);
 	playerSpawnpointSprite->sprite = { { '#' } };
@@ -121,84 +124,85 @@ void World1_1::Start()
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE1, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE1, PositionComponent(15, 22));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE1, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE1, TreeComponent(3,4,0.2,0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE1, TreeComponent(3,4,0.2f,0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE2, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE2, PositionComponent(20, 22));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE2, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE2, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE2, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE3, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE3, PositionComponent(21, 22));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE3, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE3, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE3, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE4, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE4, PositionComponent(4, 21));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE4, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE4, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE4, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE5, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE5, PositionComponent(1, 11));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE5, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE5, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE5, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE6, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE6, PositionComponent(2, 10));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE6, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE6, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE6, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE7, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE7, PositionComponent(2, 11));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE7, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE7, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE7, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE8, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE8, PositionComponent(3, 10));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE8, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE8, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE8, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE9, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE9, PositionComponent(3, 11));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE9, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE9, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE9, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE10, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE10, PositionComponent(4, 9));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE10, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE10, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE10, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE11, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE11, PositionComponent(4, 10));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE11, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE11, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE11, TreeComponent(3, 4, 0.2f, 0));
 
 	ECS::Add<SpriteComponent>(WORLD1_1_TREE12, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_TREE12, PositionComponent(4, 11));
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE12, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE12, TreeComponent(3, 4, 0.2, 0));
+	ECS::Add<TreeComponent>(WORLD1_1_TREE12, TreeComponent(3, 4, 0.2f, 0));
 
 	update = true;
 	playerSpawnTime = Application::GetGlobalTimer();
+
 }
 
 void World1_1::Update()
 {
 	update = continueUpdate;
 
-	Collision(mainCanvas);
+	Collision(&mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
 	PlayerInteract();
 	PlayerRespawn();
-	Movement(mainCanvas);
+	Movement(&mainCanvas);
 	ExecuteOrder66();
 
-	DrawEntities(mainCanvas);
+	DrawEntities(&mainCanvas);
 	DrawConsole();
-	DrawCanvas(mainCanvas);
-	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
+	DrawCanvas(&mainCanvas);
+	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 
 	if (ECS::Get<PositionComponent>(PLAYER)->posY == 8)
 	{
@@ -236,11 +240,8 @@ void World1_1::End()
 	killQueue.push_back(PLAYER_SPAWNPOINT);
 	ExecuteOrder66();
 
-	backgroundCanvas->Erase();
-	mainCanvas->Erase();
-
-	delete mainCanvas;
-	delete backgroundCanvas;
+	backgroundCanvas.Erase();
+	mainCanvas.Erase();
 
 	if (nextScene == WORLD1_2)
 	{

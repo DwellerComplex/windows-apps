@@ -9,5 +9,7 @@ public:
 
 	virtual void End() = 0;
 
+	virtual ~SceneBase() {};
+
 	bool update = true;
 };

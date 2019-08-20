@@ -1,3 +1,4 @@
+//#include <vld.h> 
 #include "Scenes/mainmenu.h"
 
 int main(int argc, const char** argv)
@@ -20,5 +21,8 @@ int main(int argc, const char** argv)
 		SceneManager::ExecuteScene();
 	}
 
+	SceneManager::EraseScene();
+
+	//std::cin.get();
 	return 0;
 }

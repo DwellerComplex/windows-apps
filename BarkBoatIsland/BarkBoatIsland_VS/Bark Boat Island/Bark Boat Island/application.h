@@ -11,6 +11,7 @@
 #include <Lmcons.h>
 #include <algorithm>
 #include <unordered_map>
+#include <string>
 
 namespace Application
 {

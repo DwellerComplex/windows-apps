@@ -1,5 +1,19 @@
 #include "canvas.h"
 
+Canvas::Canvas()
+{
+	this->width = 0;
+	this->height = 0;
+	this->topLeftX = 0;
+	this->topLeftY = 0;
+	this->colorKey = 0;
+	this->drawThisTick = true;
+
+	SetCharBuffer({});
+	SetColorBuffer({});
+	SetCollisionBuffer({});
+}
+
 Canvas::Canvas(int const width, int const height, int const topLeftX, int const topLeftY, short const colorKey, std::vector<std::vector<char>> const charBuffer, std::vector<std::vector<short>> const colorBuffer, std::vector<std::vector<short>> const collisionBuffer)
 {
 	this->width = width;
@@ -282,7 +296,12 @@ void Canvas::Erase()
 	topLeftY = 0;
 	colorKey = 0;
 
-	Resize();
+	frontCharBuffer.clear();
+	backCharBuffer.clear();
+	frontColorBuffer.clear();
+	backColorBuffer.clear();
+	frontCollisionBuffer.clear();
+	backCollisionBuffer.clear();
 }
 
 

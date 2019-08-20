@@ -1,12 +1,15 @@
 #include "World1_2.h"
 #include "World1_1.h"
 #include "mainmenu.h"
-#include "../canvas.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"
 
 World1_2::World1_2()
+{
+}
+
+World1_2::~World1_2()
 {
 }
 
@@ -120,10 +123,10 @@ void World1_2::Start()
 	Application::TransformVector2D(mapChars);
 	Application::TransformVector2D(mapColors);
 	Application::TransformVector2D(mapCollisions);
-	backgroundCanvas = new Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
-	mainCanvas = new Canvas();
-	mainCanvas->Copy(backgroundCanvas);
-	mainCanvas->SetBuffersToZero();
+	backgroundCanvas = Canvas(0, 0, 1, mapChars, mapColors, mapCollisions);
+	mainCanvas = Canvas();
+	mainCanvas.Copy(&backgroundCanvas);
+	mainCanvas.SetBuffersToZero();
 
 	SpriteComponent* playerSpawnpointSprite = ECS::Add<SpriteComponent>(PLAYER_SPAWNPOINT);
 	playerSpawnpointSprite->sprite = { { '#' } };
@@ -149,19 +152,19 @@ void World1_2::Update()
 {
 	update = continueUpdate;
 
-	Collision(mainCanvas);
+	Collision(&mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
 	PlayerInputEscape();
 	PlayerInteract();
 	PlayerRespawn();
-	Movement(mainCanvas);
+	Movement(&mainCanvas);
 	ExecuteOrder66();
 
-	DrawEntities(mainCanvas);
+	DrawEntities(&mainCanvas);
 	DrawConsole();
-	DrawCanvas(mainCanvas);
-	DrawCanvasOnCanvas(mainCanvas, backgroundCanvas);
+	DrawCanvas(&mainCanvas);
+	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 
 	UpdateEnemyPatrols();
 
@@ -178,11 +181,8 @@ void World1_2::End()
 	killQueue.push_back(PLAYER_SPAWNPOINT);
 	ExecuteOrder66();
 
-	backgroundCanvas->Erase();
-	mainCanvas->Erase();
-
-	delete mainCanvas;
-	delete backgroundCanvas;
+	backgroundCanvas.Erase();
+	mainCanvas.Erase();
 
 	if (nextScene == WORLD1_1)
 	{

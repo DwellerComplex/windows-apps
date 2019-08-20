@@ -1,5 +1,7 @@
 #pragma once
 #include "scenemanager.h"
+#include "canvas.h"
+
 
 class SceneDefaults
 {
@@ -14,18 +16,18 @@ public:
 	int GetInteractableNearPlayer();
 	void PlayerInputEscape();
 	void ExecuteOrder66();
-	void DrawEntities(class Canvas* mainCanvas);
-	void DrawCanvas(class Canvas* canvas);
-	void DrawCanvasOnCanvas(class Canvas * mainCanvas, class Canvas * otherCanvas);
-	void DrawPlayerBackpack(class Canvas* playerBackpack);
+	void DrawEntities(Canvas* mainCanvas);
+	void DrawCanvas(Canvas* canvas);
+	void DrawCanvasOnCanvas(Canvas * mainCanvas, Canvas * otherCanvas);
+	void DrawPlayerBackpack(Canvas* playerBackpack);
 	void DrawConsole();
-	void ZeroCanvasBuffers(class Canvas* canvas);
+	void ZeroCanvasBuffers(Canvas* canvas);
 
 	void ReadInput();
-	void Collision(class Canvas* mainCanvas);
-	void Movement(class Canvas* mainCanvas);
+	void Collision(Canvas* mainCanvas);
+	void Movement(Canvas* mainCanvas);
 
-	void UpdateSpikeTraps(class Canvas * console);
+	void UpdateSpikeTraps();
 
 	void PlayerRespawn();
 	void UpdateEnemyPatrols();
@@ -36,7 +38,7 @@ public:
 
 	std::vector<int> killQueue;
 	std::vector<std::string> consoleQueue;
-	class Canvas* console;
+	Canvas console;
 
 	short nextScene;
 	bool continueUpdate;

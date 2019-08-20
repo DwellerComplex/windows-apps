@@ -55,6 +55,7 @@ InputComponent::InputComponent()
 {
 	this->command = ' ';
 	this->hasClicked = false;
+	this->isHoldingKey = false;
 }
 #pragma endregion
 

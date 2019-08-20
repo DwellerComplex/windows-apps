@@ -6,11 +6,12 @@ class World1_2 : public SceneBase, SceneDefaults
 {
 public:
 	World1_2();
+	virtual ~World1_2() override;
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void End() override;
 
 private:
-	class Canvas* backgroundCanvas;
-	class Canvas* mainCanvas;
+	Canvas backgroundCanvas;
+	Canvas mainCanvas;
 };
