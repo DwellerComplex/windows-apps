@@ -131,6 +131,7 @@ void World1_3::Update()
 
 	DrawEntities(&mainCanvas);
 	DrawConsole();
+	DrawPlayerStats();
 	DrawCanvas(&mainCanvas);
 	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 

@@ -8,13 +8,17 @@ SceneDefaults::SceneDefaults()
 	continueUpdate = true;
 	playerSpawnTime = 0;
 
-	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 8, 8, 3);
-	console = Canvas(0, Application::GetConsoleHeight() - 8, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
+	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 6, 8, 3);
+	console = Canvas(0, Application::GetConsoleHeight() - 6, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
+
+	RectangleBuffers statsBuffers = RectangleBuffers(char(32), char(32), char(32), char(32), char(32), char(32), char(32), Application::GetConsoleWidth(), 2, 8, 3);
+	playerStats = Canvas(0, Application::GetConsoleHeight() - 8, 15, *statsBuffers.GetCharBuffer(), *statsBuffers.GetColorBuffer());
 }
 
 SceneDefaults::~SceneDefaults()
 {
 	console.Erase();
+	playerStats.Erase();
 }
 
 void SceneDefaults::PlayerInputMovement()
@@ -393,6 +397,37 @@ void SceneDefaults::DrawConsole()
 	}
 }
 
+void SceneDefaults::DrawPlayerStats()
+{
+	if (playerStats.GetDrawThisTick() == true)
+	{
+		float timePoint = Application::GetGlobalTimer();
+		LifeComponent* lifeComponent = ECS::Get<LifeComponent>(PLAYER);
+
+		if (lifeComponent->timeToDamage > timePoint)
+		{
+			playerStats.PutString(std::string(playerStats.GetWidth(), ' '), 0, 1, 0xCC, false);
+			playerStats.Draw();
+			return;
+		}
+
+		playerStats.SetBuffersToZero();
+
+		playerStats.PutString("Health: " + std::to_string(lifeComponent->health) + "/" + std::to_string(lifeComponent->maxHealth), 1, 1, 0x0A, false);
+		playerStats.PutString("Lives: " + std::to_string(lifeComponent->lives) + "/" + std::to_string(lifeComponent->maxLives), 21, 1, 0x0A, false);
+
+		playerStats.Draw();
+
+		playerStats.SetDrawThisTick(false);
+	}
+}
+
+void SceneDefaults::HidePlayerStats()
+{
+	playerStats.PutString(std::string(playerStats.GetWidth(), ' '), 0, 1, 0x00, false);
+	playerStats.Draw();
+}
+
 void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
 {
 	canvas->SetBuffersToZero();
@@ -688,7 +723,7 @@ void SceneDefaults::UpdateSpikeTraps()
 							console.SetDrawThisTick(true);
 						}
 
-						playerLifeComponent->life--;
+						playerLifeComponent->lives--;
 					}
 					spikeTrapComponent->activated = false;
 				}	
@@ -699,7 +734,7 @@ void SceneDefaults::UpdateSpikeTraps()
 	}
 }
 
-void SceneDefaults::PlayerRespawn() 
+void SceneDefaults::PlayerRespawn()
 {
 	SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(PLAYER_SPAWNPOINT);
 	LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
@@ -709,7 +744,7 @@ void SceneDefaults::PlayerRespawn()
 		spriteComponent->isActive = false;
 	}
 
-	if (playerLifeComponent && playerLifeComponent->isActive && playerLifeComponent->life < 1 && spriteComponent)
+	if (playerLifeComponent && playerLifeComponent->isActive && playerLifeComponent->health < 1 && spriteComponent)
 	{
 		if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(PLAYER_SPAWNPOINT))
 		{
@@ -717,7 +752,17 @@ void SceneDefaults::PlayerRespawn()
 			console.SetDrawThisTick(true);
 		}
 
-		playerLifeComponent->life = playerLifeComponent->maxLife;
+		playerStats.SetDrawThisTick(true);
+
+		playerLifeComponent->health = playerLifeComponent->maxHealth;
+		playerLifeComponent->lives--;
+
+		if (playerLifeComponent->lives == 0)
+		{
+			nextScene = MAINMENU;
+			continueUpdate = false;
+		}
+
 		ECS::Get<PositionComponent>(PLAYER)->posX = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posX;
 		ECS::Get<PositionComponent>(PLAYER)->posY = ECS::Get<PositionComponent>(PLAYER_SPAWNPOINT)->posY;
 		playerSpawnTime = Application::GetGlobalTimer();
@@ -793,9 +838,12 @@ void SceneDefaults::UpdateEnemyPatrols()
 			if (enemyPatrolComponent->timeToAttack < timePoint)
 			{
 				if (playerPositionComponent->posX == positionComponent->posX &&
-					playerPositionComponent->posY == positionComponent->posY)
+					playerPositionComponent->posY == positionComponent->posY && 
+					playerLifeComponent->timeToDamage < timePoint)
 				{
-					playerLifeComponent->life--;
+					playerLifeComponent->health -= enemyPatrolComponent->damage;
+					playerLifeComponent->timeToDamage = timePoint + playerLifeComponent->immunityTime;
+					playerStats.SetDrawThisTick(true);
 					enemyPatrolComponent->timeToAttack = timePoint + enemyPatrolComponent->attackInterval;
 				}
 			}

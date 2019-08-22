@@ -41,8 +41,7 @@ void Mainmenu::Start()
 	ECS::Add<MotionComponent>(PLAYER)->movementRate = 10.0f;
 	ECS::Add<InputComponent>(PLAYER)->command = ' ';
 	ECS::Add<BackpackComponent>(PLAYER);
-	ECS::Add<LifeComponent>(PLAYER)->life = 1;
-	ECS::Add<LifeComponent>(PLAYER)->maxLife = 5;
+	ECS::Add<LifeComponent>(PLAYER, LifeComponent(2,2,100,100,0.5,0))->lives = 2;
 
 	SpriteComponent* doorPlaySprite = ECS::Add<SpriteComponent>(MAINMENU_DOOR_PLAY);
 	doorPlaySprite->sprite = { { char(179) } };
@@ -76,7 +75,6 @@ void Mainmenu::Start()
 void Mainmenu::Update()
 {
 	update = continueUpdate;
-
 	Collision(&mainCanvas);
 	ReadInput();
 	PlayerInputMovement();
@@ -84,7 +82,7 @@ void Mainmenu::Update()
 	PlayerInteract();
 	Movement(&mainCanvas);
 	ExecuteOrder66();
-
+	
 	DrawEntities(&mainCanvas);
 	DrawConsole();
 	DrawCanvas(&mainCanvas);

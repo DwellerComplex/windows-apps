@@ -138,7 +138,7 @@ void World1_2::Start()
 	playerSpawnpointPosition->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 
 	ECS::Add<SpriteComponent>(WORLD1_2_OBSTACLE1, SpriteComponent({ { '*' } }, { {0x0C} }, 0, 0, 1));
-	ECS::Add<EnemyPatrolComponent>(WORLD1_2_OBSTACLE1, EnemyPatrolComponent(0, 1, 0, 7, 0.1, 0));
+	ECS::Add<EnemyPatrolComponent>(WORLD1_2_OBSTACLE1, EnemyPatrolComponent(0, 1, 0, 7, 0.1, 0, 25));
 	ECS::Add<PositionComponent>(WORLD1_2_OBSTACLE1, PositionComponent(7, 3));
 	ECS::Add<CollisionComponent>(WORLD1_2_OBSTACLE1)->collisionSetting = CollisionTypes::KINETIC;
 	ECS::Add<MotionComponent>(WORLD1_2_OBSTACLE1, MotionComponent(1, 0, 0, 0, 10));
@@ -163,6 +163,7 @@ void World1_2::Update()
 
 	DrawEntities(&mainCanvas);
 	DrawConsole();
+	DrawPlayerStats();
 	DrawCanvas(&mainCanvas);
 	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 

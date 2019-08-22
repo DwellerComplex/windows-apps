@@ -21,16 +21,17 @@ public:
 	void DrawCanvasOnCanvas(Canvas * mainCanvas, Canvas * otherCanvas);
 	void DrawPlayerBackpack(Canvas* playerBackpack);
 	void DrawConsole();
+	void DrawPlayerStats();
+	void HidePlayerStats();
 	void ZeroCanvasBuffers(Canvas* canvas);
 
 	void ReadInput();
 	void Collision(Canvas* mainCanvas);
 	void Movement(Canvas* mainCanvas);
 
-	void UpdateSpikeTraps();
-
 	void PlayerRespawn();
 	void UpdateEnemyPatrols();
+	void UpdateSpikeTraps();
 
 	int GetEntityAt(int const posX, int const posY, int const id);
 
@@ -39,6 +40,7 @@ public:
 	std::vector<int> killQueue;
 	std::vector<std::string> consoleQueue;
 	Canvas console;
+	Canvas playerStats;
 
 	short nextScene;
 	bool continueUpdate;

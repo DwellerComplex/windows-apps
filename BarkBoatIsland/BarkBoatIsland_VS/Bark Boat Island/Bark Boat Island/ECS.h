@@ -154,9 +154,13 @@ struct LifeComponent : public BaseComponent
 {
 public:
 	LifeComponent() {};
-	LifeComponent(int life);
-	int life;
-	int maxLife;
+	LifeComponent(short const lives, short const maxLives, short const health, short const maxHealth, float const immunityTime, float const timeToDamage);
+	short lives;
+	short maxLives;
+	short health;
+	short maxHealth;
+	float immunityTime;
+	float timeToDamage;
 };
 
 #pragma endregion
@@ -180,11 +184,12 @@ struct EnemyPatrolComponent : public BaseComponent
 {
 public:
 	EnemyPatrolComponent() {};
-	EnemyPatrolComponent(short aX, short aY, short bX, short bY, float attackInterval, float timeToAttack);
+	EnemyPatrolComponent(short const aX, short const aY, short const bX, short const bY, float const attackInterval, float const timeToAttack, short const damage);
 	short aX, aY;
 	short bX, bY;
 	float attackInterval;
 	float timeToAttack;
+	short damage;
 };
 
 #pragma region ATTACK

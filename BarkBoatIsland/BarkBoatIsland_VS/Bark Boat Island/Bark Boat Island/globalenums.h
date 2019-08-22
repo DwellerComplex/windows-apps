@@ -52,6 +52,7 @@ const enum Scenes
 	WORLD1_2,
 	WORLD1_3,
 	WORLD1_4,
+	WORLD1_5,
 	NUMBER_OF_SCENES
 };
 

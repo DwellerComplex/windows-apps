@@ -2,6 +2,7 @@
 #include "World1_2.h"
 #include "World1_3.h"
 #include "World1_4.h"
+#include "World1_5.h"
 #include "mainmenu.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
@@ -32,7 +33,7 @@ void World1_1::Start()
 {char(254),char(254),char(254),char(254),char(177),char(177),char(177),char(177),char(177),char(177),char(177),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254)},
 {char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254)},
 {char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(177),char(177),char(177),char(177),char(177),char(177),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254)},
-{char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254)},
+{char(177),char(177),char(177),char(177),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(177),char(177),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254)},
 {char(254),char(254),char(236),char(93),char(254),char(254),char(91),char(236),char(254),char(254),char(254),char(254),char(254),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(236),char(254),char(254),char(254),char(254)},
 {char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254)},
 {char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(254),char(236),char(254),char(254),char(254),char(254)},
@@ -59,7 +60,7 @@ void World1_1::Start()
 	{ 0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA },
 	{ 0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA },
 	{ 0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA },
-	{ 0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA },
+	{ 0xA8,0xA8,0xA8,0xA8,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xA8,0xA8,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA },
 	{ 0xAA,0xAA,0x6E,0x6E,0,0,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA,0xAA,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA },
 	{ 0xAA,0xAA,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA,0xAA,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA },
 	{ 0xAA,0xAA,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA,0xAA,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0x6E,0xAA,0xAA,0xAA,0xAA },
@@ -81,21 +82,21 @@ void World1_1::Start()
 {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
 {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
 {3,3,3,3,3,3,3,3,3,3,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,3,3,0,0,3,3,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0},
-{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0},
-{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0},
-{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0},
-{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0},
-{0,0,3,3,3,3,3,3,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,3,3,0,0,3,3,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,3},
+{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3},
+{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3},
+{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3},
+{0,0,3,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3},
+{0,0,3,3,3,3,3,3,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3},
 };
 
 	Application::TransformVector2D(mapChars);
@@ -201,6 +202,7 @@ void World1_1::Update()
 
 	DrawEntities(&mainCanvas);
 	DrawConsole();
+	DrawPlayerStats();
 	DrawCanvas(&mainCanvas);
 	DrawCanvasOnCanvas(&mainCanvas, &backgroundCanvas);
 
@@ -213,6 +215,11 @@ void World1_1::Update()
 		(ECS::Get<PositionComponent>(PLAYER)->posX == 4 || ECS::Get<PositionComponent>(PLAYER)->posX == 5))
 	{
 		nextScene = WORLD1_3;
+		update = false;
+	}
+	if (ECS::Get<PositionComponent>(PLAYER)->posX == -1)
+	{
+		nextScene = WORLD1_5;
 		update = false;
 	}
 }
@@ -257,6 +264,11 @@ void World1_1::End()
 	{
 		ECS::Get<PositionComponent>(PLAYER)->posY+=2;
 		SceneManager::RegisterScene(new World1_4());
+	}
+	else if (nextScene == WORLD1_5)
+	{
+		ECS::Get<PositionComponent>(PLAYER)->posX = 31;
+		SceneManager::RegisterScene(new World1_5());
 	}
 	else if (nextScene == MAINMENU)
 	{

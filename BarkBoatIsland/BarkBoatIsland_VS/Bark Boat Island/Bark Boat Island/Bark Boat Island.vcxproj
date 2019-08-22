@@ -134,6 +134,7 @@
     <ClCompile Include="Scenes\World1_2.cpp" />
     <ClCompile Include="Scenes\World1_3.cpp" />
     <ClCompile Include="Scenes\World1_4.cpp" />
+    <ClCompile Include="Scenes\World1_5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scenedefaults.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Scenes\World1_2.h" />
     <ClInclude Include="Scenes\World1_3.h" />
     <ClInclude Include="Scenes\World1_4.h" />
+    <ClInclude Include="Scenes\World1_5.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

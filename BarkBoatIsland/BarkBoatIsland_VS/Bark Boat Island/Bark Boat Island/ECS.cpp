@@ -94,9 +94,14 @@ CollisionComponent::CollisionComponent(int setting)
 #pragma endregion
 
 #pragma region LIFE
-LifeComponent::LifeComponent(int life)
+LifeComponent::LifeComponent(short const lives, short const maxLives, short const health, short const maxHealth, float const immunityTime, float const timeToDamage)
 {
-	this->life = life;
+	this->lives = lives;
+	this->maxLives = maxLives;
+	this->health = health;
+	this->maxHealth = maxHealth;
+	this->immunityTime = immunityTime;
+	this->timeToDamage = timeToDamage;
 }
 #pragma endregion
 
@@ -124,7 +129,7 @@ ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const ou
 
 #pragma endregion
 
-EnemyPatrolComponent::EnemyPatrolComponent(short aX, short aY, short bX, short bY, float attackInterval, float timeToAttack)
+EnemyPatrolComponent::EnemyPatrolComponent(short const aX, short const aY, short const bX, short const bY, float const attackInterval, float const timeToAttack, short const damage)
 {
 	this->aX = aX;
 	this->aY = aY;
@@ -132,6 +137,7 @@ EnemyPatrolComponent::EnemyPatrolComponent(short aX, short aY, short bX, short b
 	this->bY = bY;
 	this->attackInterval = attackInterval;
 	this->timeToAttack = timeToAttack;
+	this->damage = damage;
 }
 
 SpriteComponent::SpriteComponent(std::vector<std::vector<char>> sprite, std::vector<std::vector<short>> color, short canvasToDrawOn, short colorKey, short drawLayer)
@@ -142,3 +148,5 @@ SpriteComponent::SpriteComponent(std::vector<std::vector<char>> sprite, std::vec
 	this->colorKey = colorKey;
 	this->drawLayer = drawLayer;
 }
+
+
