@@ -1,7 +1,6 @@
 #include "World1_1.h"
 #include "World1_4.h"
 #include "mainmenu.h"
-#include "../canvas.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"
@@ -146,18 +145,18 @@ void World1_4::Start()
 	ECS::Add<LockComponent>(WORLD1_1_DOOR1, LockComponent(SILVER_KEY));
 
 	ECS::Add<SpriteComponent>(WORLD1_4_OBSTACLE1, SpriteComponent({ { '*' } }, { {0x0C} }, 0, 0, 1));
-	ECS::Add<EnemyPatrolComponent>(WORLD1_4_OBSTACLE1, EnemyPatrolComponent(0, 16, 0, 19, 0.1, 0, 25));
+	ECS::Add<MotionPatrolComponent>(WORLD1_4_OBSTACLE1, MotionPatrolComponent(0, 16, 0, 19));
 	ECS::Add<PositionComponent>(WORLD1_4_OBSTACLE1, PositionComponent(22, 17));
 	ECS::Add<CollisionComponent>(WORLD1_4_OBSTACLE1)->collisionSetting = CollisionTypes::KINETIC;
 	ECS::Add<MotionComponent>(WORLD1_4_OBSTACLE1, MotionComponent(1, 0, 0, 0, 10));
-	ECS::Add<AttackComponent>(WORLD1_4_OBSTACLE1, AttackComponent(1));
+	ECS::Add<AttackComponent>(WORLD1_4_OBSTACLE1, AttackComponent(0.1, 0, 25));
 
 	ECS::Add<SpriteComponent>(WORLD1_4_OBSTACLE2, SpriteComponent({ { '*' } }, { {0x0C} }, 0, 0, 1));
-	ECS::Add<EnemyPatrolComponent>(WORLD1_4_OBSTACLE2, EnemyPatrolComponent(14, 0, 26, 0, 0.1, 0, 25));
+	ECS::Add<MotionPatrolComponent>(WORLD1_4_OBSTACLE2, MotionPatrolComponent(14, 0, 26, 0));
 	ECS::Add<PositionComponent>(WORLD1_4_OBSTACLE2, PositionComponent(22, 17));
 	ECS::Add<CollisionComponent>(WORLD1_4_OBSTACLE2)->collisionSetting = CollisionTypes::KINETIC;
 	ECS::Add<MotionComponent>(WORLD1_4_OBSTACLE2, MotionComponent(0, 0, 1, 0, 10));
-	ECS::Add<AttackComponent>(WORLD1_4_OBSTACLE2, AttackComponent(1));
+	ECS::Add<AttackComponent>(WORLD1_4_OBSTACLE2, AttackComponent(0.1, 0, 25));
 
 	ECS::Add<SpriteComponent>(WORLD1_4_KEY, SpriteComponent({ { char(235) } }, { {0x0E} }, 0, 0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_4_KEY, PositionComponent(25, 19));

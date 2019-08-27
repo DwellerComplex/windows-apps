@@ -91,6 +91,12 @@ CollisionComponent::CollisionComponent(int setting)
 {
 	this->collisionSetting = setting;
 }
+
+CollisionComponent::CollisionComponent(int setting, std::vector<std::vector<bool>> collisionBuffer)
+{
+	this->collisionSetting = setting;
+	this->collisionBuffer = collisionBuffer;
+}
 #pragma endregion
 
 #pragma region LIFE
@@ -106,8 +112,10 @@ LifeComponent::LifeComponent(short const lives, short const maxLives, short cons
 #pragma endregion
 
 #pragma region ATTACK
-AttackComponent::AttackComponent(int damage)
+AttackComponent::AttackComponent(float const attackInterval, float const timeToAttack, short const damage)
 {
+	this->attackInterval = attackInterval;
+	this->timeToAttack = timeToAttack;
 	this->damage = damage;
 }
 #pragma endregion
@@ -115,29 +123,29 @@ AttackComponent::AttackComponent(int damage)
 #pragma region CONSOLEOUTPUT
 ConsoleOutputComponent::ConsoleOutputComponent()
 {
+	this->iterator = 0;
 }
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::string const output)
 {
 	this->output.emplace_back(output);
+	this->iterator = 0;
 }
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const output)
 {
 	this->output = output;
+	this->iterator = 0;
 }
 
 #pragma endregion
 
-EnemyPatrolComponent::EnemyPatrolComponent(short const aX, short const aY, short const bX, short const bY, float const attackInterval, float const timeToAttack, short const damage)
+MotionPatrolComponent::MotionPatrolComponent(short const aX, short const aY, short const bX, short const bY)
 {
 	this->aX = aX;
 	this->aY = aY;
 	this->bX = bX;
 	this->bY = bY;
-	this->attackInterval = attackInterval;
-	this->timeToAttack = timeToAttack;
-	this->damage = damage;
 }
 
 SpriteComponent::SpriteComponent(std::vector<std::vector<char>> sprite, std::vector<std::vector<short>> color, short canvasToDrawOn, short colorKey, short drawLayer)

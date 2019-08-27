@@ -116,6 +116,17 @@ void World1_1::Start()
 	playerSpawnpointPosition->posX = ECS::Get<PositionComponent>(PLAYER)->posX;
 	playerSpawnpointPosition->posY = ECS::Get<PositionComponent>(PLAYER)->posY;
 
+	ECS::Add<SpriteComponent>(MERIMEL, SpriteComponent({ { char(34) } }, { {0x5F} }, 0, 1, DrawLayers::TWO));
+	ECS::Add<CollisionComponent>(MERIMEL, CollisionComponent(CollisionTypes::DYNAMIC, { {true} }));
+	ECS::Add<PositionComponent>(MERIMEL, PositionComponent(7, 10));
+	ECS::Add<ConsoleOutputComponent>(MERIMEL)->output = {"Merimel: This is so cool dad!", "Look what I found", "while you were asleep!"};
+	MotionComponent* motionComponent = ECS::Add<MotionComponent>(MERIMEL);
+	motionComponent->movementRate = 10.0f;
+	motionComponent->pathNodes =
+	{
+		MotionComponent::PathNode(PositionComponent(7,16),{MERIMEL},0,0,1,0)
+	};
+
 	ECS::Add<SpriteComponent>(WORLD1_1_DOOR1, SpriteComponent({ { char(205) }, { char(205) } },{ {0x03}, {0x03} },0,0, DrawLayers::ONE));
 	ECS::Add<PositionComponent>(WORLD1_1_DOOR1, PositionComponent(19, 15));
 	ECS::Add<SceneComponent>(WORLD1_1_DOOR1)->nextScene = WORLD1_4;
@@ -211,13 +222,13 @@ void World1_1::Update()
 		nextScene = WORLD1_2;
 		update = false;
 	}
-	if (ECS::Get<PositionComponent>(PLAYER)->posY == 15 && 
+	else if (ECS::Get<PositionComponent>(PLAYER)->posY == 15 && 
 		(ECS::Get<PositionComponent>(PLAYER)->posX == 4 || ECS::Get<PositionComponent>(PLAYER)->posX == 5))
 	{
 		nextScene = WORLD1_3;
 		update = false;
 	}
-	if (ECS::Get<PositionComponent>(PLAYER)->posX == -1)
+	else if (ECS::Get<PositionComponent>(PLAYER)->posX == -1)
 	{
 		nextScene = WORLD1_5;
 		update = false;

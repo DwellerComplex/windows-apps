@@ -35,6 +35,7 @@ namespace Application
 	const std::vector<int> ExtractSameInts(const std::vector<std::vector<int>>& v);
 	const std::vector<int> ExtractSameInts(const std::vector<int>& a, const std::vector<int>& b);
 	std::string GetWindowsUserName();
+	short InputAsync(int vKey);
 	short Input(int vKey);
 	void SetTextColor(int const color = 15);
 	void SetFontSize(int w, int h);

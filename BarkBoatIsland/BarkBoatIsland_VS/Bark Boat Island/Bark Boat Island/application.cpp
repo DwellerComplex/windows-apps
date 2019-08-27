@@ -248,9 +248,14 @@ namespace Application
 		return username;
 	}
 
-	short Input(int vKey)
+	short InputAsync(int vKey)
 	{
 		return GetAsyncKeyState(vKey);
+	}
+
+	short Input(int vKey)
+	{
+		return GetKeyState(vKey);
 	}
 
 	void SetTextColor(int const color)

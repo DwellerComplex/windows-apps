@@ -1,7 +1,6 @@
 #include "World1_3.h"
 #include "World1_1.h"
 #include "mainmenu.h"
-#include "../canvas.h"
 #include "../rectanglebuffers.h"
 #include "../ecs.h"
 #include "../globalenums.h"

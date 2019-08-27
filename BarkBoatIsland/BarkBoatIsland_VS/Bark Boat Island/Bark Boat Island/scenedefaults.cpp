@@ -11,7 +11,7 @@ SceneDefaults::SceneDefaults()
 	RectangleBuffers consoleBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), Application::GetConsoleWidth(), 6, 8, 3);
 	console = Canvas(0, Application::GetConsoleHeight() - 6, 0, *consoleBuffers.GetCharBuffer(), *consoleBuffers.GetColorBuffer());
 
-	RectangleBuffers statsBuffers = RectangleBuffers(char(32), char(32), char(32), char(32), char(32), char(32), char(32), Application::GetConsoleWidth(), 2, 8, 3);
+	RectangleBuffers statsBuffers = RectangleBuffers(char(147), char(147), char(147), char(147), char(147), char(147), char(147), Application::GetConsoleWidth(), 2, 8, 8);
 	playerStats = Canvas(0, Application::GetConsoleHeight() - 8, 15, *statsBuffers.GetCharBuffer(), *statsBuffers.GetColorBuffer());
 }
 
@@ -263,11 +263,23 @@ int SceneDefaults::GetInteractableNearPlayer()
 							continue;
 						}
 
-						if (int const other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
+						if (int other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
 						{
 							if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
 							{
 								consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+								
+								if (consoleOutputComponent->iterator < consoleOutputComponent->output.size() - 1)
+								{
+									ECS::Get<MotionComponent>(PLAYER)->isActive = false;
+									consoleOutputComponent->iterator++;
+								}
+								else
+								{
+									ECS::Get<MotionComponent>(PLAYER)->isActive = true;
+									
+								}
+								
 								console.SetDrawThisTick(true);
 							}
 
@@ -435,24 +447,54 @@ void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
 
 void SceneDefaults::ReadInput()
 {
-	const std::array<int, 6> vKeys{ 0x41, 0x57, 0x53, 0x44, 0x45, VK_ESCAPE };
+	float timePoint = Application::GetGlobalTimer();
 
 	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
 	{
 		int i = 0;
 
-		for (i; i < vKeys.size(); i++)
+		for (i = 0; i < vKeys.size(); i++)
 		{
-			if (Application::Input(vKeys[i]))
+			if (Application::Input(vKeys[i]) & 0x8000)
 			{
-				inputComponent->command = toascii(vKeys[i]);
-				return;
+				if ((!vKeysAsync[i] && !vKeysPressed[i]) || vKeysAsync[i])
+				{
+					inputComponent->command = toascii(vKeys[i]);
+					vKeysPressed[i] = true;
+					return;
+				}
 			}
 		}
 		if (i == vKeys.size())
 		{
+			if (vKeysToggleTime < timePoint)
+			{
+				for (i = 0; i < vKeys.size(); i++)
+				{
+					vKeysPressed[i] = false;
+				}
+				vKeysToggleTime = timePoint + 1.0f;
+			}
+
 			inputComponent->command = ' ';
+			return;
 		}
+		
+		//TICKBEGIN TA TIMEPOINT
+
+		//for (i = 0; i < vKeysAsync.size(); i++)
+		//{
+		//	if (Application::InputAsync(vKeysAsync[i]) < 0)
+		//	{
+		//		inputComponent->command = toascii(vKeysAsync[i]);
+		//		return;
+		//	}
+		//}
+		//if (i == vKeysAsync.size())
+		//{
+		//	inputComponent->command = ' ';
+		//	return;
+		//}
 	}
 }
 
@@ -675,7 +717,7 @@ void SceneDefaults::UpdateSpikeTraps()
 		PositionComponent* positionComponent = ECS::Get<PositionComponent>(ENTITIES[e]);
 		SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(ENTITIES[e]);
 		CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(ENTITIES[e]);
-		ConsoleOutputComponent* consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(ENTITIES[e]);
+		ConsoleOutputComponent* cconsoleOutputComponent = ECS::Get<ConsoleOutputComponent>(ENTITIES[e]);
 
 		PositionComponent* playerPositionComponent = ECS::Get<PositionComponent>(PLAYER);
 		LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
@@ -717,11 +759,11 @@ void SceneDefaults::UpdateSpikeTraps()
 						playerPositionComponent->posY == positionComponent->posY &&
 						playerLifeComponent && playerLifeComponent->isActive)
 					{
-						if (consoleOutputComponent && consoleOutputComponent->isActive)
-						{
-							consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-							console.SetDrawThisTick(true);
-						}
+						//if (consoleOutputComponent && consoleOutputComponent->isActive)
+						//{
+						//	consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+						//	console.SetDrawThisTick(true);
+						//}
 
 						playerLifeComponent->lives--;
 					}
@@ -776,75 +818,71 @@ void SceneDefaults::UpdateEnemyPatrols()
 
 	const std::vector<int> ENTITIES = Application::ExtractSameInts(
 		{
-			ECS::GetAllIDFrom<EnemyPatrolComponent>(),
+			ECS::GetAllIDFrom<MotionPatrolComponent>(),
 			ECS::GetAllIDFrom<PositionComponent>(),
-			ECS::GetAllIDFrom<SpriteComponent>(),
-			ECS::GetAllIDFrom<CollisionComponent>(),
-			ECS::GetAllIDFrom<MotionComponent>()
+			ECS::GetAllIDFrom<MotionComponent>(),
+			ECS::GetAllIDFrom<AttackComponent>()
 		});
 
 	for (int e = 0; e < ENTITIES.size(); e++)
 	{
-		EnemyPatrolComponent* enemyPatrolComponent = ECS::Get<EnemyPatrolComponent>(ENTITIES[e]);
+		MotionPatrolComponent* motionPatrolComponent = ECS::Get<MotionPatrolComponent>(ENTITIES[e]);
 		PositionComponent* positionComponent = ECS::Get<PositionComponent>(ENTITIES[e]);
-		SpriteComponent* spriteComponent = ECS::Get<SpriteComponent>(ENTITIES[e]);
-		CollisionComponent* collisionComponent = ECS::Get<CollisionComponent>(ENTITIES[e]);
 		MotionComponent* motionComponent = ECS::Get<MotionComponent>(ENTITIES[e]);
+		AttackComponent* attackComponent = ECS::Get<AttackComponent>(ENTITIES[e]);
 
 		PositionComponent* playerPositionComponent = ECS::Get<PositionComponent>(PLAYER);
 		LifeComponent* playerLifeComponent = ECS::Get<LifeComponent>(PLAYER);
 
-		if (enemyPatrolComponent &&
-			enemyPatrolComponent->isActive &&
+		if (motionPatrolComponent &&
+			motionPatrolComponent->isActive &&
 			positionComponent &&
 			positionComponent->isActive &&
 			playerPositionComponent &&
 			playerPositionComponent->isActive &&
-			spriteComponent &&
-			spriteComponent->isActive &&
-			collisionComponent &&
-			collisionComponent->isActive &&
 			motionComponent &&
-			motionComponent->isActive
+			motionComponent->isActive &&
+			attackComponent &&
+			attackComponent->isActive
 			)
 		{
-			if (enemyPatrolComponent->aY - enemyPatrolComponent->bY != 0)
+			if (motionPatrolComponent->aY - motionPatrolComponent->bY != 0)
 			{
-				if (positionComponent->posY == enemyPatrolComponent->aY)
+				if (positionComponent->posY == motionPatrolComponent->aY)
 				{
 					motionComponent->down = 1;
 					motionComponent->up = 0;
 				}
-				else if (positionComponent->posY == enemyPatrolComponent->bY)
+				else if (positionComponent->posY == motionPatrolComponent->bY)
 				{
 					motionComponent->down = 0;
 					motionComponent->up = 1;
 				}
 			}
-			else if(enemyPatrolComponent->aX - enemyPatrolComponent->bX != 0)
+			else if(motionPatrolComponent->aX - motionPatrolComponent->bX != 0)
 			{
-				if (positionComponent->posX == enemyPatrolComponent->aX)
+				if (positionComponent->posX == motionPatrolComponent->aX)
 				{
 					motionComponent->right = 1;
 					motionComponent->left = 0;
 				}
-				else if (positionComponent->posX == enemyPatrolComponent->bX)
+				else if (positionComponent->posX == motionPatrolComponent->bX)
 				{
 					motionComponent->right = 0;
 					motionComponent->left = 1;
 				}
 			}
 
-			if (enemyPatrolComponent->timeToAttack < timePoint)
+			if (attackComponent->timeToAttack < timePoint)
 			{
 				if (playerPositionComponent->posX == positionComponent->posX &&
 					playerPositionComponent->posY == positionComponent->posY && 
 					playerLifeComponent->timeToDamage < timePoint)
 				{
-					playerLifeComponent->health -= enemyPatrolComponent->damage;
+					playerLifeComponent->health -= attackComponent->damage;
 					playerLifeComponent->timeToDamage = timePoint + playerLifeComponent->immunityTime;
 					playerStats.SetDrawThisTick(true);
-					enemyPatrolComponent->timeToAttack = timePoint + enemyPatrolComponent->attackInterval;
+					attackComponent->timeToAttack = timePoint + attackComponent->attackInterval;
 				}
 			}
 		}

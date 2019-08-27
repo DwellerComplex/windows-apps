@@ -13,6 +13,7 @@ struct CollisionComponent : public BaseComponent
 public:
 	CollisionComponent();
 	CollisionComponent(int setting);
+	CollisionComponent(int setting, std::vector<std::vector<bool>> collisionBuffer);
 
 	short int collisionSetting;
 	std::vector<std::vector<bool>> collisionBuffer;
@@ -69,17 +70,38 @@ public:
 
 #pragma endregion
 
+
+
 #pragma region MOTION
 struct MotionComponent : public BaseComponent
 {
 public:
 	MotionComponent();
 	MotionComponent(bool up, bool down, bool left, bool right, float movementRate, int footprintColor = 15, char footprint = char());
-	bool up, down, left, right;
+	bool up, down, left, right, pathLooping;
 	float movementRate;
 	float timeToMove;
 	char footprint;
 	int footprintColor;
+
+	struct PathNode
+	{
+		PathNode(PositionComponent position, std::vector<int unsigned> entities, bool up, bool down, bool left, bool right) 
+		{
+			this->position = position;
+			this->entities = entities;
+
+			this->up = up;
+			this->down = down;
+			this->left = left;
+			this->right = right;
+		};
+		PositionComponent position;
+		std::vector<int unsigned> entities;
+		bool up, down, left, right;
+	};
+
+	std::vector <PathNode> pathNodes;
 };
 
 #pragma endregion
@@ -180,16 +202,13 @@ public:
 
 #pragma endregion
 
-struct EnemyPatrolComponent : public BaseComponent
+struct MotionPatrolComponent : public BaseComponent
 {
 public:
-	EnemyPatrolComponent() {};
-	EnemyPatrolComponent(short const aX, short const aY, short const bX, short const bY, float const attackInterval, float const timeToAttack, short const damage);
+	MotionPatrolComponent() {};
+	MotionPatrolComponent(short const aX, short const aY, short const bX, short const bY);
 	short aX, aY;
 	short bX, bY;
-	float attackInterval;
-	float timeToAttack;
-	short damage;
 };
 
 #pragma region ATTACK
@@ -198,8 +217,10 @@ struct AttackComponent : public BaseComponent
 {
 public:
 	AttackComponent() {};
-	AttackComponent(int damage);
-	int damage;
+	AttackComponent(float const attackInterval, float const timeToAttack, short const damage);
+	float attackInterval;
+	float timeToAttack;
+	short damage;
 };
 
 #pragma endregion
@@ -245,7 +266,7 @@ struct ConsoleOutputComponent : public BaseComponent
 		ConsoleOutputComponent(std::vector<std::string> const output);
 
 		std::vector<std::string> output;
-		int iterator = 0;
+		int iterator;
 };
 #pragma endregion
 

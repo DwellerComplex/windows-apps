@@ -28,16 +28,9 @@ void Mainmenu::Start()
 
 	consoleQueue.insert(consoleQueue.begin(), "Welcome to Bark Boat Island!");
 
-	SpriteComponent* playerSprite = ECS::Add<SpriteComponent>(PLAYER);
-	playerSprite->sprite = { { '#' } };
-	playerSprite->color = { {0x08} };
-	playerSprite->drawLayer = DrawLayers::TWO;
-
-	CollisionComponent* playerCollision = ECS::Add<CollisionComponent>(PLAYER);
-	playerCollision->collisionSetting = CollisionTypes::DYNAMIC;
-	playerCollision->collisionBuffer = { {true} };
-
-	PositionComponent* playerPosition = ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 1));
+	ECS::Add<SpriteComponent>(PLAYER, SpriteComponent({ { char(34) } }, { {0x0F} },0,1,DrawLayers::TWO));
+	ECS::Add<CollisionComponent>(PLAYER, CollisionComponent(CollisionTypes::DYNAMIC, { {true} }));
+	ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 1));
 	ECS::Add<MotionComponent>(PLAYER)->movementRate = 10.0f;
 	ECS::Add<InputComponent>(PLAYER)->command = ' ';
 	ECS::Add<BackpackComponent>(PLAYER);

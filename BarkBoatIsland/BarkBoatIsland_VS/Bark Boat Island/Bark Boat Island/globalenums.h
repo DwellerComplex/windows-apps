@@ -2,6 +2,7 @@
 const enum Entities
 {
 	PLAYER = 1,
+	MERIMEL,
 	FLASHLIGHT,
 	PLAYER_SPAWNPOINT,
 
