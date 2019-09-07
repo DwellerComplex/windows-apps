@@ -28,6 +28,7 @@ public:
 	void ReadInput();
 	void Collision(Canvas* mainCanvas);
 	void Movement(Canvas* mainCanvas);
+	void MovementPathing(unsigned int const id);
 
 	void PlayerRespawn();
 	void UpdateEnemyPatrols();
@@ -45,9 +46,12 @@ public:
 	short nextScene;
 	bool continueUpdate;
 	float playerSpawnTime;
+	float interactTime;
 
 	const std::array<int, 6> vKeys{ 0x41, 0x57, 0x53, 0x44, 0x45, VK_ESCAPE };
 	std::array<bool, 6> vKeysPressed{ 0, 0, 0, 0, 0, 0 };
 	std::array<bool, 6> vKeysAsync{ 1, 1, 1, 1, 0, 0 };
-	float vKeysToggleTime;
+	
+	char inputCommand = ' ';
+	bool isInputBlockerActive;
 };

@@ -119,12 +119,13 @@ void World1_1::Start()
 	ECS::Add<SpriteComponent>(MERIMEL, SpriteComponent({ { char(34) } }, { {0x5F} }, 0, 1, DrawLayers::TWO));
 	ECS::Add<CollisionComponent>(MERIMEL, CollisionComponent(CollisionTypes::DYNAMIC, { {true} }));
 	ECS::Add<PositionComponent>(MERIMEL, PositionComponent(7, 10));
-	ECS::Add<ConsoleOutputComponent>(MERIMEL)->output = {"Merimel: This is so cool dad!", "Look what I found", "while you were asleep!"};
+	ECS::Add<ConsoleOutputComponent>(MERIMEL)->output = {"Merimel: This is so cool dad!", "Come look!"};
 	MotionComponent* motionComponent = ECS::Add<MotionComponent>(MERIMEL);
-	motionComponent->movementRate = 10.0f;
+	motionComponent->movementRate = 3.0f;
 	motionComponent->pathNodes =
 	{
-		MotionComponent::PathNode(PositionComponent(7,16),{MERIMEL},0,0,1,0)
+		MotionComponent::PathNode(PositionComponent(7,10),0,1,0,0),
+		MotionComponent::PathNode(PositionComponent(7,14),0,0,1,0)
 	};
 
 	ECS::Add<SpriteComponent>(WORLD1_1_DOOR1, SpriteComponent({ { char(205) }, { char(205) } },{ {0x03}, {0x03} },0,0, DrawLayers::ONE));
@@ -209,6 +210,7 @@ void World1_1::Update()
 	PlayerInteract();
 	PlayerRespawn();
 	Movement(&mainCanvas);
+	if(ECS::Get<ConsoleOutputComponent>(MERIMEL)->reachedEnd == true){ MovementPathing(MERIMEL); }
 	ExecuteOrder66();
 
 	DrawEntities(&mainCanvas);

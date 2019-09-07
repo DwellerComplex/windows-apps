@@ -23,43 +23,40 @@ SceneDefaults::~SceneDefaults()
 
 void SceneDefaults::PlayerInputMovement()
 {
-	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	if (MotionComponent* motionComponent = ECS::Get<MotionComponent>(Entities::PLAYER))
 	{
-		if (MotionComponent* motionComponent = ECS::Get<MotionComponent>(Entities::PLAYER))
-		{
-			motionComponent->up = 0;
-			motionComponent->down = 0;
-			motionComponent->left = 0;
-			motionComponent->right = 0;
+		motionComponent->up = 0;
+		motionComponent->down = 0;
+		motionComponent->left = 0;
+		motionComponent->right = 0;
 
-			if (inputComponent->command == ' ')
+		if (inputCommand == ' ')
+		{
+			isInputBlockerActive = false;
+		}
+		else
+		{
+			if (isInputBlockerActive == false)
 			{
-				inputComponent->isHoldingKey = false;
+				motionComponent->timeToMove = 0;
+				isInputBlockerActive = true;
 			}
-			else
-			{
-				if (inputComponent->isHoldingKey == false)
-				{
-					motionComponent->timeToMove = 0;
-					inputComponent->isHoldingKey = true;
-				}
-			}
-			if (inputComponent->command == 'W')
-			{
-				motionComponent->up = 1;
-			}
-			if (inputComponent->command == 'A')
-			{
-				motionComponent->left = 1;
-			}
-			if (inputComponent->command == 'S')
-			{
-				motionComponent->down = 1;
-			}
-			if (inputComponent->command == 'D')
-			{
-				motionComponent->right = 1;
-			}
+		}
+		if (inputCommand == 'W')
+		{
+			motionComponent->up = 1;
+		}
+		if (inputCommand == 'A')
+		{
+			motionComponent->left = 1;
+		}
+		if (inputCommand == 'S')
+		{
+			motionComponent->down = 1;
+		}
+		if (inputCommand == 'D')
+		{
+			motionComponent->right = 1;
 		}
 	}
 }
@@ -248,43 +245,44 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 
 int SceneDefaults::GetInteractableNearPlayer()
 {
-	if (InputComponent * inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	float const timePoint = Application::GetGlobalTimer();
+
+	if (inputCommand == 'E' && playerSpawnTime + 0.2f < timePoint && interactTime < timePoint)
 	{
-		if (inputComponent->command == 'E' && playerSpawnTime + 0.2f < Application::GetGlobalTimer())
+		if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
 		{
-			if (PositionComponent * positionComponent = ECS::Get<PositionComponent>(Entities::PLAYER))
+			for (short x = -1; x != 2; x++)
 			{
-				for (short x = -1; x != 2; x++)
+				for (short y = -1; y != 2; y++)
 				{
-					for (short y = -1; y != 2; y++)
+					if (x == 0 && y == 0)
 					{
-						if (x == 0 && y == 0)//abs(x) * abs(y) || 
-						{
-							continue;
-						}
+						continue;
+					}
 
-						if (int other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
+					if (int other = GetEntityAt(positionComponent->posX + x, positionComponent->posY + y, Entities::PLAYER))
+					{
+						if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
 						{
-							if (ConsoleOutputComponent * consoleOutputComponent = ECS::Get<ConsoleOutputComponent>(other))
+							consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
+								
+							if (consoleOutputComponent->iterator < consoleOutputComponent->output.size() - 1)
 							{
-								consoleQueue.insert(consoleQueue.begin(), consoleOutputComponent->output[consoleOutputComponent->iterator]);
-								
-								if (consoleOutputComponent->iterator < consoleOutputComponent->output.size() - 1)
-								{
-									ECS::Get<MotionComponent>(PLAYER)->isActive = false;
-									consoleOutputComponent->iterator++;
-								}
-								else
-								{
-									ECS::Get<MotionComponent>(PLAYER)->isActive = true;
-									
-								}
-								
-								console.SetDrawThisTick(true);
+								ECS::Get<MotionComponent>(PLAYER)->isActive = false;
+								consoleOutputComponent->iterator++;
 							}
-
-							return other;
+							else
+							{
+								ECS::Get<MotionComponent>(PLAYER)->isActive = true;
+								consoleOutputComponent->reachedEnd = true;
+							}
+								
+							console.SetDrawThisTick(true);
 						}
+
+						interactTime = timePoint + 1.0f;
+
+						return other;
 					}
 				}
 			}
@@ -296,13 +294,10 @@ int SceneDefaults::GetInteractableNearPlayer()
 
 void SceneDefaults::PlayerInputEscape()
 {
-	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	if (inputCommand == VK_ESCAPE)
 	{
-		if (inputComponent->command == VK_ESCAPE)
-		{
-			nextScene = Scenes::MAINMENU;
-			continueUpdate = false;
-		}
+		nextScene = Scenes::MAINMENU;
+		continueUpdate = false;
 	}
 }
 
@@ -314,7 +309,6 @@ void SceneDefaults::ExecuteOrder66()
 
 		ECS::Destroy<PositionComponent>(id);
 		ECS::Destroy<SpriteComponent>(id);
-		ECS::Destroy<InputComponent>(id);
 		ECS::Destroy<MotionComponent>(id);
 		ECS::Destroy<BackpackComponent>(id);
 		ECS::Destroy<BackpackItemComponent>(id);
@@ -447,54 +441,28 @@ void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
 
 void SceneDefaults::ReadInput()
 {
-	float timePoint = Application::GetGlobalTimer();
+	int i = 0;
 
-	if (InputComponent* inputComponent = ECS::Get<InputComponent>(Entities::PLAYER))
+	for (i = 0; i < vKeys.size(); i++)
 	{
-		int i = 0;
-
+		if (Application::InputAsync(vKeys[i]) & 0x8000)
+		{
+			if ((!vKeysAsync[i] && !vKeysPressed[i]) || vKeysAsync[i])
+			{
+				inputCommand = toascii(vKeys[i]);
+				vKeysPressed[i] = true;
+				return;
+			}
+		}
+	}
+	if (i == vKeys.size())
+	{
 		for (i = 0; i < vKeys.size(); i++)
 		{
-			if (Application::Input(vKeys[i]) & 0x8000)
-			{
-				if ((!vKeysAsync[i] && !vKeysPressed[i]) || vKeysAsync[i])
-				{
-					inputComponent->command = toascii(vKeys[i]);
-					vKeysPressed[i] = true;
-					return;
-				}
-			}
+			vKeysPressed[i] = false;
 		}
-		if (i == vKeys.size())
-		{
-			if (vKeysToggleTime < timePoint)
-			{
-				for (i = 0; i < vKeys.size(); i++)
-				{
-					vKeysPressed[i] = false;
-				}
-				vKeysToggleTime = timePoint + 1.0f;
-			}
 
-			inputComponent->command = ' ';
-			return;
-		}
-		
-		//TICKBEGIN TA TIMEPOINT
-
-		//for (i = 0; i < vKeysAsync.size(); i++)
-		//{
-		//	if (Application::InputAsync(vKeysAsync[i]) < 0)
-		//	{
-		//		inputComponent->command = toascii(vKeysAsync[i]);
-		//		return;
-		//	}
-		//}
-		//if (i == vKeysAsync.size())
-		//{
-		//	inputComponent->command = ' ';
-		//	return;
-		//}
+		inputCommand = ' ';
 	}
 }
 
@@ -694,6 +662,28 @@ void SceneDefaults::Movement(Canvas* mainCanvas)
 			{
 				motionComponent->timeToMove = timePoint + (1.0f / motionComponent->movementRate);
 			}
+		}
+	}
+}
+
+void SceneDefaults::MovementPathing(unsigned int const id)
+{
+	MotionComponent* motionComponent = ECS::Get<MotionComponent>(id);
+	PositionComponent* positionComponent = ECS::Get<PositionComponent>(id);
+
+	const std::vector<MotionComponent::PathNode>* path = &motionComponent->pathNodes;
+
+	for (int n = 0; n < path->size(); n++)
+	{
+		MotionComponent::PathNode node = path->at(n);
+
+		if (positionComponent->posX == node.position.posX &&
+			positionComponent->posY == node.position.posY)
+		{
+			motionComponent->up = node.up;
+			motionComponent->left = node.left;
+			motionComponent->right = node.right;
+			motionComponent->down = node.down;
 		}
 	}
 }

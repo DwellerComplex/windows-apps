@@ -50,14 +50,6 @@ PositionComponent::PositionComponent(int const x, int const y)
 //}
 //#pragma endregion
 
-#pragma region INPUT
-InputComponent::InputComponent()
-{
-	this->command = ' ';
-	this->hasClicked = false;
-	this->isHoldingKey = false;
-}
-#pragma endregion
 
 #pragma region SCENE
 SceneComponent::SceneComponent(short nextScene)
@@ -124,18 +116,21 @@ AttackComponent::AttackComponent(float const attackInterval, float const timeToA
 ConsoleOutputComponent::ConsoleOutputComponent()
 {
 	this->iterator = 0;
+	this->reachedEnd = false;
 }
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::string const output)
 {
 	this->output.emplace_back(output);
 	this->iterator = 0;
+	this->reachedEnd = false;
 }
 
 ConsoleOutputComponent::ConsoleOutputComponent(std::vector<std::string> const output)
 {
 	this->output = output;
 	this->iterator = 0;
+	this->reachedEnd = false;
 }
 
 #pragma endregion

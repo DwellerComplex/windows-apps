@@ -32,7 +32,6 @@ void Mainmenu::Start()
 	ECS::Add<CollisionComponent>(PLAYER, CollisionComponent(CollisionTypes::DYNAMIC, { {true} }));
 	ECS::Add<PositionComponent>(PLAYER, PositionComponent(1, 1));
 	ECS::Add<MotionComponent>(PLAYER)->movementRate = 10.0f;
-	ECS::Add<InputComponent>(PLAYER)->command = ' ';
 	ECS::Add<BackpackComponent>(PLAYER);
 	ECS::Add<LifeComponent>(PLAYER, LifeComponent(2,2,100,100,0.5,0))->lives = 2;
 

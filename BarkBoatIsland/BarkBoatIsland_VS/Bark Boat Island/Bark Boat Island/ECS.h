@@ -58,18 +58,6 @@ public:
 
 #pragma endregion
 
-#pragma region INPUT
-struct InputComponent : public BaseComponent
-{
-public:
-	InputComponent();
-	char command;
-	bool hasClicked;
-	bool isHoldingKey;
-};
-
-#pragma endregion
-
 
 
 #pragma region MOTION
@@ -86,10 +74,9 @@ public:
 
 	struct PathNode
 	{
-		PathNode(PositionComponent position, std::vector<int unsigned> entities, bool up, bool down, bool left, bool right) 
+		PathNode(PositionComponent position, bool up, bool down, bool left, bool right) 
 		{
 			this->position = position;
-			this->entities = entities;
 
 			this->up = up;
 			this->down = down;
@@ -97,7 +84,6 @@ public:
 			this->right = right;
 		};
 		PositionComponent position;
-		std::vector<int unsigned> entities;
 		bool up, down, left, right;
 	};
 
@@ -267,6 +253,7 @@ struct ConsoleOutputComponent : public BaseComponent
 
 		std::vector<std::string> output;
 		int iterator;
+		bool reachedEnd;
 };
 #pragma endregion
 
