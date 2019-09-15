@@ -276,7 +276,7 @@ int SceneDefaults::GetInteractableNearPlayer()
 								ECS::Get<MotionComponent>(PLAYER)->isActive = true;
 								consoleOutputComponent->reachedEnd = true;
 							}
-								
+
 							console.SetDrawThisTick(true);
 						}
 
@@ -390,7 +390,15 @@ void SceneDefaults::DrawConsole()
 
 			if (i == 0)
 			{
-				console.PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
+				int cPos = 0;
+				for (const char c : consoleQueue[i])
+				{
+					console.PutChar(c, 1 + cPos, 1 + i, 0x0A);
+					console.Draw();
+					Sleep(30);
+					cPos++;
+				}
+				//console.PutString(consoleQueue[i], 1, 1 + i, 0x0A, false);
 			}
 			else
 			{

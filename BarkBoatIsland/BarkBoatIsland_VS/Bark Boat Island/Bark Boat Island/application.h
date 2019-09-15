@@ -19,6 +19,7 @@ namespace Application
 	int GetConsoleWidth();
 	int GetConsoleHeight();
 	const char ReadCharacterFromConsole();
+	short ReadColorFromConsole();
 	void SetConsoleInputModeFalse();
 	std::unordered_map<char, int> GetCursorPosition();
 	void ShowConsoleCursor(bool);

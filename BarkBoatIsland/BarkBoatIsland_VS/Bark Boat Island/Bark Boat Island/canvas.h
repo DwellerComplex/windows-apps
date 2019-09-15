@@ -23,9 +23,13 @@ public:
 	void SetHeight(int const height);
 	void SetDrawThisTick(bool const dTT);
 	void PutChar(char const character, int const x, int const y, short const color);
+	void PutChar(char const character, int const x, int const y);
+	void PutColor(int const x, int const y, short const color);
 	void PutCollision(int const x, int const y, short const collision);
 	void PutString(std::string const str, int const x, int const y, int const color, bool const autoFit, char const bgSprite = ' ', int const bgColor = 0);
 	short const GetCollisionAt(int const x, int const y);
+	char const GetCharAt(int const x, int const y);
+	short const GetColorAt(int const x, int const y);
 	short const GetColorKey();
 	int const GetWidth();
 	int const GetHeight();
@@ -34,6 +38,7 @@ public:
 	void Copy(Canvas* canvas);
 	void SetBuffersToZero();
 	void Erase();
+	void Redraw();
 private:
 	int width;
 	int height;

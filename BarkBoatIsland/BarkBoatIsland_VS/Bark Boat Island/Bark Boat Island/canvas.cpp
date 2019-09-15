@@ -160,6 +160,28 @@ void Canvas::PutChar(char const character, int const x, int const y, short const
 	frontColorBuffer[x][y] = color;
 }
 
+void Canvas::PutChar(char const character, int const x, int const y)
+{
+	if (x >= width || x < 0 ||
+		y >= height || y < 0)
+	{
+		return;
+	}
+
+	frontCharBuffer[x][y] = character;
+}
+
+void Canvas::PutColor(int const x, int const y, short const color)
+{
+	if (x >= width || x < 0 ||
+		y >= height || y < 0)
+	{
+		return;
+	}
+
+	frontColorBuffer[x][y] = color;
+}
+
 void Canvas::PutCollision(int const x, int const y, short const collision)
 {
 	if (x >= width || x < 0 ||
@@ -209,6 +231,28 @@ short const Canvas::GetCollisionAt(int const x, int const y)
 	return frontCollisionBuffer[x][y];
 }
 
+char const Canvas::GetCharAt(int const x, int const y)
+{
+	if (x >= width || x < 0 ||
+		y >= height || y < 0)
+	{
+		return 0;
+	}
+
+	return frontCharBuffer[x][y];
+}
+
+short const Canvas::GetColorAt(int const x, int const y)
+{
+	if (x >= width || x < 0 ||
+		y >= height || y < 0)
+	{
+		return 0;
+	}
+
+	return frontColorBuffer[x][y];
+}
+
 short const Canvas::GetColorKey()
 {
 	return colorKey;
@@ -236,7 +280,6 @@ void Canvas::Resize()
 	{
 		frontCharBuffer[i].resize(height);
 	}
-
 	backCharBuffer = frontCharBuffer;
 
 	frontColorBuffer.resize(width);
@@ -245,8 +288,13 @@ void Canvas::Resize()
 		frontColorBuffer[i].resize(height);
 	}
 	backColorBuffer = frontColorBuffer;
-	frontCollisionBuffer = frontColorBuffer;
-	backCollisionBuffer = frontColorBuffer;
+
+	frontCollisionBuffer.resize(width);
+	for (int i = 0; i < width; i++)
+	{
+		frontCollisionBuffer[i].resize(height);
+	}
+	backCollisionBuffer = frontCollisionBuffer;
 }
 
 void Canvas::Copy(Canvas * canvas)
@@ -302,6 +350,26 @@ void Canvas::Erase()
 	backColorBuffer.clear();
 	frontCollisionBuffer.clear();
 	backCollisionBuffer.clear();
+}
+
+void Canvas::Redraw()
+{
+	for (int y = 0; y != height; ++y)
+	{
+		for (int x = 0; x != width; ++x)
+		{
+			Application::SetTextColor(frontColorBuffer[x][y]);
+
+			Application::SetCursorPosition(x + topLeftX, y + topLeftY);
+			std::cout << frontCharBuffer[x][y];
+		}
+	}
+
+	std::cout.flush();
+
+	backCharBuffer = frontCharBuffer;
+	backColorBuffer = frontColorBuffer;
+	backCollisionBuffer = frontCollisionBuffer;
 }
 
 

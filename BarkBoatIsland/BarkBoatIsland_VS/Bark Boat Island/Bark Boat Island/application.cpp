@@ -65,6 +65,20 @@ namespace Application
 		return charToRead;
 	}
 
+	short ReadColorFromConsole()
+	{
+		WORD color;
+		
+		std::unordered_map<char, int> pos = GetCursorPosition();
+		COORD posC = { (short)pos['x'], (short)pos['y'] };
+
+		DWORD numberOfCharactersReaded = 0;
+		DWORD numberOfCharactersToRead = 1;
+		ReadConsoleOutputAttribute(out, &color, numberOfCharactersToRead, posC, &numberOfCharactersReaded);
+
+		return (short)color;
+	}
+
 	void SetConsoleInputModeFalse()
 	{
 		DWORD prev_mode;
@@ -103,7 +117,7 @@ namespace Application
 	void ShowConsoleCursor(bool showFlag)
 	{
 		CONSOLE_CURSOR_INFO cursorInfo;
-
+		
 		GetConsoleCursorInfo(out, &cursorInfo);
 		cursorInfo.bVisible = showFlag;
 		SetConsoleCursorInfo(out, &cursorInfo);
@@ -275,15 +289,15 @@ namespace Application
 		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count() / 1000.0f;
 	}
 
-	std::unordered_map<char, int> GetFontSize()
+	std::unordered_map<char, int> Application::GetFontSize()
 	{
 		std::unordered_map<char, int> size;
-		PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
-		lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
-		GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+		CONSOLE_FONT_INFOEX lpConsoleCurrentFontEx;
+		lpConsoleCurrentFontEx.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+		GetCurrentConsoleFontEx(out, 0, &lpConsoleCurrentFontEx);
 
-		size.insert(std::pair<char, int>('w', lpConsoleCurrentFontEx->dwFontSize.X));
-		size.insert(std::pair<char, int>('h', lpConsoleCurrentFontEx->dwFontSize.Y));
+		size.insert(std::pair<char, int>('w', lpConsoleCurrentFontEx.dwFontSize.X));
+		size.insert(std::pair<char, int>('h', lpConsoleCurrentFontEx.dwFontSize.Y));
 
 		return size;
 	}
