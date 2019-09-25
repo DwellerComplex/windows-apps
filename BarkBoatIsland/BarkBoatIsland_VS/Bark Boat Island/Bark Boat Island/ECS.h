@@ -32,17 +32,6 @@ public:
 #pragma endregion
 
 #pragma region SPRITE
-//struct Sprite
-//{
-//	Sprite(char const body, int const color = 15)
-//	{
-//		this->sprite = body;
-//		this->color = color;
-//	};
-//
-//	char sprite;
-//	int color;
-//};
 
 struct SpriteComponent : public BaseComponent
 {
@@ -57,8 +46,6 @@ public:
 };
 
 #pragma endregion
-
-
 
 #pragma region MOTION
 struct MotionComponent : public BaseComponent
@@ -211,16 +198,6 @@ public:
 
 #pragma endregion
 
-//#pragma region PERSISTENT
-//
-//struct PersistencyComponent : public BaseComponent
-//{
-//public:
-//	PersistencyComponent() {};
-//};
-//
-//#pragma endregion
-
 #pragma region PLATFORM
 
 struct PlatformComponent : public BaseComponent
@@ -306,5 +283,15 @@ namespace ECS
 	const std::vector<int> GetAllIDFrom()
 	{
 		return entities<T>;
+	}
+
+	template <int id, typename... Ts>
+	void Build(Ts... ts) {
+		
+		std::apply([](auto&& ... args)
+			{((
+				ECS::Add(id, args)
+
+				), ...); }, std::make_tuple(ts...));
 	}
 };

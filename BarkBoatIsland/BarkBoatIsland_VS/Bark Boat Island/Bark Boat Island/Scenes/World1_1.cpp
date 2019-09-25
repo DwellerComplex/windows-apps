@@ -179,20 +179,26 @@ void World1_1::Start()
 	ECS::Add<CollisionComponent>(WORLD1_1_TREE9, CollisionComponent(CollisionTypes::SOLID));
 	ECS::Add<TreeComponent>(WORLD1_1_TREE9, TreeComponent(3, 4, 0.2f, 0));
 
-	ECS::Add<SpriteComponent>(WORLD1_1_TREE10, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
-	ECS::Add<PositionComponent>(WORLD1_1_TREE10, PositionComponent(4, 9));
-	ECS::Add<CollisionComponent>(WORLD1_1_TREE10, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE10, TreeComponent(3, 4, 0.2f, 0));
+	ECS::Build<WORLD1_1_TREE10>(
+		SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE),
+		PositionComponent(4, 9),
+		CollisionComponent(CollisionTypes::SOLID),
+		TreeComponent(3, 4, 0.2f, 0)
+	);
 
-	ECS::Add<SpriteComponent>(WORLD1_1_TREE11, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
-	ECS::Add<PositionComponent>(WORLD1_1_TREE11, PositionComponent(4, 10));
-	ECS::Add<CollisionComponent>(WORLD1_1_TREE11, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE11, TreeComponent(3, 4, 0.2f, 0));
+	ECS::Build<WORLD1_1_TREE11>(
+		SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE),
+		PositionComponent(4, 10),
+		CollisionComponent(CollisionTypes::SOLID),
+		TreeComponent(3, 4, 0.2f, 0)
+	);
 
-	ECS::Add<SpriteComponent>(WORLD1_1_TREE12, SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE));
-	ECS::Add<PositionComponent>(WORLD1_1_TREE12, PositionComponent(4, 11));
-	ECS::Add<CollisionComponent>(WORLD1_1_TREE12, CollisionComponent(CollisionTypes::SOLID));
-	ECS::Add<TreeComponent>(WORLD1_1_TREE12, TreeComponent(3, 4, 0.2f, 0));
+	ECS::Build<WORLD1_1_TREE12>(
+		SpriteComponent({ { char(79), char(39) } }, { {0xA2, 0xA6} }, 0, 0, DrawLayers::ONE), 
+		PositionComponent(4, 11), 
+		CollisionComponent(CollisionTypes::SOLID), 
+		TreeComponent(3, 4, 0.2f, 0)
+	);
 
 	update = true;
 	playerSpawnTime = Application::GetGlobalTimer();

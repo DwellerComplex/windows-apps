@@ -215,7 +215,6 @@ void SceneDefaults::PlayerInteractTrees(int const other)
 						if (SpriteComponent * spriteComponent = ECS::Get<SpriteComponent>(other))
 						{
 							spriteComponent->sprite[0][0] = '#';
-
 							spriteComponent->color[0][0] = 0xA6;
 						}
 
