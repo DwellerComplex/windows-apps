@@ -15,6 +15,7 @@ public:
 	void PlayerInteractTrees(int const other);
 	int GetInteractableNearPlayer();
 	void PlayerInputEscape();
+	
 	void ExecuteOrder66();
 	void DrawEntities(Canvas* mainCanvas);
 	void DrawCanvas(Canvas* canvas);

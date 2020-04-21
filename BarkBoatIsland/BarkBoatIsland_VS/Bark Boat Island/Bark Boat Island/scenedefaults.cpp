@@ -445,30 +445,46 @@ void SceneDefaults::ZeroCanvasBuffers(Canvas * canvas)
 {
 	canvas->SetBuffersToZero();
 }
-
+//void SceneDefaults::ReadInput()
+//{
+//	int i = 0;
+//
+//	for (i = 0; i < vKeys.size(); i++)
+//	{
+//		if (Application::InputAsync(vKeys[i]) & 0x8000)
+//		{
+//			if ((!vKeysAsync[i] && !vKeysPressed[i]) || vKeysAsync[i])
+//			{
+//				inputCommand = toascii(vKeys[i]);
+//				vKeysPressed[i] = true;
+//				return;
+//			}
+//		}
+//	}
+//	if (i == vKeys.size())
+//	{
+//		for (i = 0; i < vKeys.size(); i++)
+//		{
+//			vKeysPressed[i] = false;
+//		}
+//
+//		inputCommand = ' ';
+//	}
+//}
 void SceneDefaults::ReadInput()
 {
-	int i = 0;
+	int i = 33;
 
-	for (i = 0; i < vKeys.size(); i++)
+	for (i = 33; i < 255; i++)
 	{
-		if (Application::InputAsync(vKeys[i]) & 0x8000)
+		if (Application::Input(i))
 		{
-			if ((!vKeysAsync[i] && !vKeysPressed[i]) || vKeysAsync[i])
-			{
-				inputCommand = toascii(vKeys[i]);
-				vKeysPressed[i] = true;
-				return;
-			}
+			inputCommand = i;
+			return;
 		}
 	}
-	if (i == vKeys.size())
+	if (i == 255)
 	{
-		for (i = 0; i < vKeys.size(); i++)
-		{
-			vKeysPressed[i] = false;
-		}
-
 		inputCommand = ' ';
 	}
 }

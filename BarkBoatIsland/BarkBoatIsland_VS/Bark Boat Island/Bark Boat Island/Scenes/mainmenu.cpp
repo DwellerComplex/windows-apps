@@ -8,6 +8,10 @@ Mainmenu::Mainmenu()
 {
 }
 
+Mainmenu::~Mainmenu()
+{
+}
+
 void Mainmenu::Start()
 {
 	RectangleBuffers backgroundBuffers = RectangleBuffers(char(32), char(205), char(186), char(201), char(187), char(188), char(200), 3, 6, 8, 3);

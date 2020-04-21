@@ -290,6 +290,7 @@ namespace ECS
 		
 		std::apply([](auto&& ... args)
 			{((
+
 				ECS::Add(id, args)
 
 				), ...); }, std::make_tuple(ts...));
